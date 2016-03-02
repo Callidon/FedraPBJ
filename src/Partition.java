@@ -4,37 +4,44 @@ import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class Partition {
 
     public <T,E> List<Pair<T, List<E>>> partition(List<T> sources, List<E> bindings) {
         List<Pair<T, List<E>>> results = new ArrayList<Pair<T, List<E>>>();
         List<E> subset = new ArrayList<E>();
-        int subset_size = bindings.size() / sources.size();
-        int current_source = 0;
-        int cpt = 0;
+        int subset_size = (int) Math.ceil((double)bindings.size()/(double)sources.size());
+        ListIterator<T> current_source = sources.listIterator();
 
         for(E binding : bindings) {
-            if(cpt % subset_size == 0) {
-                Pair<T, List<E>> pair = new Pair<T, List<E>>(sources.get(current_source), subset);
+            subset.add(binding);
+            if(subset.size() == subset_size) {
+                Pair<T, List<E>> pair = new Pair<T, List<E>>(current_source.next(), new ArrayList<E>(subset));
                 results.add(pair);
-                current_source++;
                 subset.clear();
             }
-            subset.add(binding);
-            cpt++;
+        }
+
+        if(subset.size() > 0) {
+            Pair<T, List<E>> pair = new Pair<T, List<E>>(current_source.next(), new ArrayList<E>(subset));
+            results.add(pair);
         }
 
         return results;
     }
 
-    public static void main(String[] args) {
+    /*
+     * Test avec |sources| > |bindings|
+     */
+    public static void testSup() {
         Partition p = new Partition();
         List<String> sources = new ArrayList<String>();
         List<String> bindings = new ArrayList<String>();
 
         sources.add("sA");
         sources.add("sB");
+        sources.add("sC");
         bindings.add("e1");
         bindings.add("e2");
         bindings.add("e3");
@@ -45,6 +52,44 @@ public class Partition {
         bindings.add("e8");
 
         System.out.println(p.partition(sources, bindings));
+    }
 
+    /*
+     * Test avec |sources| < |bindings|
+     */
+    public static void testInf() {
+        Partition p = new Partition();
+        List<String> sources = new ArrayList<String>();
+        List<String> bindings = new ArrayList<String>();
+
+        sources.add("sA");
+        sources.add("sB");
+        sources.add("sC");
+        bindings.add("e1");
+        bindings.add("e2");
+
+        System.out.println(p.partition(sources, bindings));
+    }
+
+    /*
+     * Test avec |sources| == |bindings|
+     */
+    public static void testEquals() {
+        Partition p = new Partition();
+        List<String> sources = new ArrayList<String>();
+        List<String> bindings = new ArrayList<String>();
+
+        sources.add("sA");
+        sources.add("sB");
+        bindings.add("e1");
+        bindings.add("e2");
+
+        System.out.println(p.partition(sources, bindings));
+    }
+
+    public static void main(String[] args) {
+        testSup();
+        testInf();
+        testEquals();
     }
 }
