@@ -21,14 +21,13 @@ import com.fluidops.fedx.algebra.*;
 import com.fluidops.fedx.optimizer.Pair;
 import info.aduna.iteration.CloseableIteration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
+import info.aduna.iteration.CloseableIteratorIteration;
 import org.apache.log4j.Logger;
-import org.openrdf.model.Statement;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
 
 import com.fluidops.fedx.Config;
@@ -73,17 +72,16 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 			subset.add(binding);
 
 			if( subset.size() == subset_size) {
-				Pair<T, List<E>> pair = new Pair<>(current_source.next(), subset);
+				Pair<T, List<E>> pair = new Pair<T, List<E>>(current_source.next(), new ArrayList<E>(subset));
 				results.add(pair);
 				subset.clear();
 			}
 		}
 
 		if(subset.size() > 0) {
-			Pair<T, List<E>> pair = new Pair<>(current_source.next(), subset);
+            Pair<T, List<E>> pair = new Pair<T, List<E>>(current_source.next(), new ArrayList<E>(subset));
 			results.add(pair);
 		}
-
 		return results;
 	}
 
@@ -96,13 +94,12 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 			return;
 		}
 
-		log.debug("Bound Join used !");
-
 		int nBindingsCfg = Config.getConfig().getBoundJoinBlockSize();
 		int totalBindings = 0;		// the total number of bindings
 		TupleExpr expr = rightArg;
 
 		TaskCreator taskCreator = null;
+        Map<StatementSource, TaskCreator> parralellTaskCreators = new HashMap<>();
         List<StatementSource> sources = null;
 
 		// first item is always sent in a non-bound way
@@ -110,14 +107,30 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 			BindingSet b = leftIter.next();
 			totalBindings++;
 			if (expr instanceof StatementTupleExpr) {
+
 				StatementTupleExpr stmt = (StatementTupleExpr)expr;
+
 				if (stmt.hasFreeVarsFor(b)) {
                     log.debug("Inside stmt.hasFreeVars(b)");
                     log.debug("stmt.toString : \n" + stmt.toString());
+                    if(stmt instanceof StatementSourcePattern) {
+                        StatementSourcePattern source_pattern = (StatementSourcePattern) stmt;
+                        sources = source_pattern.getStatementSources();
+                        // duplicate the tuple without his sources
+                        TupleExpr stmt_single = new StatementPattern(source_pattern.getSubjectVar(), source_pattern.getPredicateVar(), source_pattern.getObjectVar());
 
-                    sources = stmt.getStatementSources();
+                        for(StatementSource source : sources) {
+                            // create a new tuple associate with the current source
+                            StatementSourcePattern new_stmt = new StatementSourcePattern((StatementPattern) stmt_single, source_pattern.getQueryInfo());
+                            new_stmt.addStatementSource(source);
+                            log.debug("new stmt : \n" + new_stmt);
+                            // create the associated task creator
+                            parralellTaskCreators.put(source, new BoundJoinTaskCreator(this, strategy, new_stmt));
+                        }
+                    }
 
-					taskCreator = new BoundJoinTaskCreator(this, strategy, stmt);
+                    // Previous code
+                    //taskCreator = new BoundJoinTaskCreator(this, strategy, stmt);
 				} else {
 					expr = new CheckStatementPattern(stmt);
 					taskCreator = new CheckJoinTaskCreator(this, strategy, (CheckStatementPattern)expr);
@@ -147,33 +160,46 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 			 * remote SPARQL requests.
 			 *
 			 */
-
-			if (totalBindings>10)
+			// Previous code
+			/*if (totalBindings>10)
 				nBindings = nBindingsCfg;
 			else
 				nBindings = 3;
 
 			bindings = new ArrayList<BindingSet>(nBindings);
 
-			int count=0;
+			int count = 0;
 			while (count < nBindings && leftIter.hasNext()) {
                 BindingSet binding = leftIter.next();
 				bindings.add(binding);
-                allBindings.add(binding);
 				count++;
 			}
 
-			totalBindings += count;
+            log.debug("current number of bindings : " + allBindings.size());
 
-			scheduler.schedule( taskCreator.getTask(bindings) );
+			totalBindings += count;*/
+            totalBindings++;
+            allBindings.add(leftIter.next());
+
+            // Previous code
+            if(taskCreator != null) {
+                scheduler.schedule( taskCreator.getTask(bindings) );
+            }
 		}
+        log.debug("size of allBindings : " + allBindings.size() + " vs total bindings " + totalBindings);
 
-        //log.debug("Les bindings : \n" + allBindings.toString());
+        // create the partitions
+        if(taskCreator == null) {
+            List<Pair<StatementSource, List<BindingSet>>> partitions = partition(sources, allBindings);
+            log.debug("Les partitions : \n" + partitions);
 
-        List<Pair<StatementSource, List<BindingSet>>> partitions = partition(sources, allBindings);
-        log.debug("Les partitions : \n" + partitions);
+            for(Pair<StatementSource, List<BindingSet>> pair : partitions) {
+                scheduler.schedule( parralellTaskCreators.get(pair.getFirst()).getTask(pair.getSecond()) );
+            }
+        }
 
 		scheduler.informFinish(this);
+
 
 		log.debug("JoinStats: left iter of join #" + this.joinId + " had " + totalBindings + " results.");
 
