@@ -17,6 +17,7 @@
 
 package com.fluidops.fedx.optimizer;
 
+import com.fluidops.fedx.algebra.*;
 import info.aduna.iteration.CloseableIteration;
 
 import java.util.ArrayList;
@@ -36,11 +37,7 @@ import org.openrdf.repository.RepositoryConnection;
 
 import com.fluidops.fedx.EndpointManager;
 import com.fluidops.fedx.FederationManager;
-import com.fluidops.fedx.algebra.EmptyStatementPattern;
-import com.fluidops.fedx.algebra.ExclusiveStatement;
-import com.fluidops.fedx.algebra.StatementSource;
 import com.fluidops.fedx.algebra.StatementSource.StatementSourceType;
-import com.fluidops.fedx.algebra.StatementSourcePattern;
 import com.fluidops.fedx.cache.Cache;
 import com.fluidops.fedx.cache.Cache.StatementSourceAssurance;
 import com.fluidops.fedx.cache.CacheEntry;
@@ -106,10 +103,11 @@ public class SourceSelection {
                     fss.performSourceSelection();
                     selectedSources = fss.getSelectedSources();
                 }
+
 		
 		// for each statement determine the relevant sources
 		for (StatementPattern stmt : stmts) {
-			
+			log.debug("sources " + stmtToSources);
 			stmtToSources.put(stmt, new ArrayList<StatementSource>());
 			
 			SubQuery q = new SubQuery(stmt);
@@ -153,13 +151,17 @@ public class SourceSelection {
 			// if more than one source -> StatementSourcePattern
 			// exactly one source -> OwnedStatementSourcePattern
 			// otherwise: No resource seems to provide results
-			
-			if (sources.size()>1) {
-				StatementSourcePattern stmtNode = new StatementSourcePattern(stmt, queryInfo);
-				for (StatementSource s : sources)
+
+			if (sources.size() > 1) {
+				// FIX ME
+				//StatementSourcePattern stmtNode = new StatementSourcePattern(stmt, queryInfo); // Previous code
+				StatementSourcePattern stmtNode = new FedraStatementSourcePattern(stmt, queryInfo);
+
+                for (StatementSource s : sources)
 					stmtNode.addStatementSource(s);
 				stmt.replaceWith(stmtNode);
-			}
+
+            }
 		
 			else if (sources.size()==1) {
 				stmt.replaceWith( new ExclusiveStatement(stmt, sources.get(0), queryInfo));
@@ -354,3 +356,7 @@ public class SourceSelection {
 	
 		
 }
+
+
+
+

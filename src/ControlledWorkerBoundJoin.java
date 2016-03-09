@@ -5,12 +5,12 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -41,20 +41,20 @@ import com.fluidops.fedx.structures.QueryInfo;
 /**
  * Execute the nested loop join in an asynchronous fashion, using grouped requests,
  * i.e. group bindings into one SPARQL request using the UNION operator.
- *
+ * 
  * The number of concurrent threads is controlled by a {@link ControlledWorkerScheduler} which
  * works according to the FIFO principle and uses worker threads.
- *
+ * 
  * This join cursor blocks until all scheduled tasks are finished, however the result iteration
  * can be accessed from different threads to allow for pipelining.
- *
+ * 
  * @author Andreas Schwarte
- *
+ * 
  */
 public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 
 	public static Logger log = Logger.getLogger(ControlledWorkerBoundJoin.class);
-
+	
 	public ControlledWorkerBoundJoin(ControlledWorkerScheduler<BindingSet> scheduler, FederationEvalStrategy strategy,
 			CloseableIteration<BindingSet, QueryEvaluationException> leftIter,
 			TupleExpr rightArg, BindingSet bindings, QueryInfo queryInfo)
@@ -85,7 +85,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 		return results;
 	}
 
-
+	
 	@Override
 	protected void handleBindings() throws Exception {
 		if (! (canApplyVectoredEvaluation(rightArg))) {
@@ -93,15 +93,15 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 			super.handleBindings();	// fallback
 			return;
 		}
-
-		int nBindingsCfg = Config.getConfig().getBoundJoinBlockSize();
+		
+		int nBindingsCfg = Config.getConfig().getBoundJoinBlockSize();	
 		int totalBindings = 0;		// the total number of bindings
 		TupleExpr expr = rightArg;
-
+		
 		TaskCreator taskCreator = null;
-        Map<StatementSource, TaskCreator> parralellTaskCreators = new HashMap<>();
+        Map<StatementSource, TaskCreator> parallelTaskCreator = new HashMap<>();
         List<StatementSource> sources = null;
-
+				
 		// first item is always sent in a non-bound way
 		if (!closed && leftIter.hasNext()) {
 			BindingSet b = leftIter.next();
@@ -115,7 +115,8 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                     log.debug("stmt.toString : \n" + stmt.toString());
                     if(stmt instanceof StatementSourcePattern) {
                         StatementSourcePattern source_pattern = (StatementSourcePattern) stmt;
-                        sources = source_pattern.getStatementSources();
+						sources = source_pattern.getStatementSources();
+
                         // duplicate the tuple without his sources
                         TupleExpr stmt_single = new StatementPattern(source_pattern.getSubjectVar(), source_pattern.getPredicateVar(), source_pattern.getObjectVar());
 
@@ -125,12 +126,12 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                             new_stmt.addStatementSource(source);
                             log.debug("new stmt : \n" + new_stmt);
                             // create the associated task creator
-                            parralellTaskCreators.put(source, new BoundJoinTaskCreator(this, strategy, new_stmt));
+                            parallelTaskCreator.put(source, new BoundJoinTaskCreator(this, strategy, new_stmt));
                         }
                     }
 
                     // Previous code
-                    //taskCreator = new BoundJoinTaskCreator(this, strategy, stmt);
+                    taskCreator = new BoundJoinTaskCreator(this, strategy, stmt);
 				} else {
 					expr = new CheckStatementPattern(stmt);
 					taskCreator = new CheckJoinTaskCreator(this, strategy, (CheckStatementPattern)expr);
@@ -145,64 +146,55 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 			scheduler.schedule( new ParallelJoinTask(this, strategy, expr, b) );
 		}
 
+		// Collect all the bindings
 		int nBindings;
 		List<BindingSet> bindings = null;
         List<BindingSet> allBindings = new ArrayList<>();
 		while (!closed && leftIter.hasNext()) {
-
-
+			
+			
 			/*
 			 * XXX idea:
-			 *
+			 * 
 			 * make nBindings dependent on the number of intermediate results of the left argument.
-			 *
+			 * 
 			 * If many intermediate results, increase the number of bindings. This will result in less
 			 * remote SPARQL requests.
-			 *
+			 * 
 			 */
-			// Previous code
+
 			/*if (totalBindings>10)
 				nBindings = nBindingsCfg;
 			else
 				nBindings = 3;
 
 			bindings = new ArrayList<BindingSet>(nBindings);
-
+			
 			int count = 0;
 			while (count < nBindings && leftIter.hasNext()) {
                 BindingSet binding = leftIter.next();
 				bindings.add(binding);
 				count++;
-			}
-
-            log.debug("current number of bindings : " + allBindings.size());
-
-			totalBindings += count;*/
-            totalBindings++;
-            allBindings.add(leftIter.next());
-
-            // Previous code
-            if(taskCreator != null) {
-                scheduler.schedule( taskCreator.getTask(bindings) );
-            }
+			}*/
+			allBindings.add(leftIter.next());
+			
+			//totalBindings += count;
+			//scheduler.schedule( taskCreator.getTask(allBindings) );
 		}
-        log.debug("size of allBindings : " + allBindings.size() + " vs total bindings " + totalBindings);
 
-        // create the partitions
-        if(taskCreator == null) {
-            List<Pair<StatementSource, List<BindingSet>>> partitions = partition(sources, allBindings);
-            log.debug("Les partitions : \n" + partitions);
+		totalBindings = allBindings.size() + 1;
 
-            for(Pair<StatementSource, List<BindingSet>> pair : partitions) {
-                scheduler.schedule( parralellTaskCreators.get(pair.getFirst()).getTask(pair.getSecond()) );
-            }
-        }
+		for(StatementSource source : sources) {
+			// TODO add true parallel bound join
+			scheduler.schedule(parallelTaskCreator.get(source).getTask(allBindings));
+		}
+
+        log.debug("size of allBindings : " + totalBindings);
 
 		scheduler.informFinish(this);
 
-
 		log.debug("JoinStats: left iter of join #" + this.joinId + " had " + totalBindings + " results.");
-
+				
 		// wait until all tasks are executed
 		synchronized (this) {
 			try {
@@ -212,29 +204,29 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 			} catch (InterruptedException e) {
 				;	// no-op
 			}
-		}
+		}	
 	}
 
 	/**
 	 * Returns true if the vectored evaluation can be applied for the join argument, i.e.
 	 * there is no fallback to {@link ControlledWorkerJoin#handleBindings()}. This is
-	 *
+	 * 
 	 * a) if the expr is a {@link BoundJoinTupleExpr} (Mind the special handling for
 	 *    {@link FedXService} as defined in b)
 	 * b) if the expr is a {@link FedXService} and {@link Config#getEnableServiceAsBoundJoin()}
-	 *
+	 * 
 	 * @return
 	 */
 	private boolean canApplyVectoredEvaluation(TupleExpr expr) {
 		if (expr instanceof BoundJoinTupleExpr) {
-			if (expr instanceof FedXService)
+			if (expr instanceof FedXService) 
 				return Config.getConfig().getEnableServiceAsBoundJoin();
 			return true;
-		}
+		}				
 		return false;
 	}
-
-
+	
+	
 	protected interface TaskCreator {
 		public ParallelTask<BindingSet> getTask(List<BindingSet> bindings);
 	}
@@ -253,9 +245,9 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 		@Override
 		public ParallelTask<BindingSet> getTask(List<BindingSet> bindings) {
 			return new ParallelBoundJoinTask(_control, _strategy, _expr, bindings);
-		}
+		}		
 	}
-
+	
 	protected class CheckJoinTaskCreator implements TaskCreator {
 		protected final ControlledWorkerBoundJoin _control;
 		protected final FederationEvalStrategy _strategy;
@@ -270,9 +262,9 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 		@Override
 		public ParallelTask<BindingSet> getTask(List<BindingSet> bindings) {
 			return new ParallelCheckJoinTask(_control, _strategy, _expr, bindings);
-		}
+		}		
 	}
-
+	
 	protected class FedXServiceJoinTaskCreator implements TaskCreator {
 		protected final ControlledWorkerBoundJoin _control;
 		protected final FederationEvalStrategy _strategy;
@@ -287,9 +279,9 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 		@Override
 		public ParallelTask<BindingSet> getTask(List<BindingSet> bindings) {
 			return new ParallelServiceJoinTask(_control, _strategy, _expr, bindings);
-		}
+		}		
 	}
-
+	
 	protected class IndependentJoinGroupTaskCreator implements TaskCreator {
 		protected final ControlledWorkerBoundJoin _control;
 		protected final FederationEvalStrategy _strategy;
@@ -304,7 +296,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 		@Override
 		public ParallelTask<BindingSet> getTask(List<BindingSet> bindings) {
 			return new ParallelIndependentGroupJoinTask(_control, _strategy, _expr, bindings);
-		}
+		}		
 	}
-
+	
 }
