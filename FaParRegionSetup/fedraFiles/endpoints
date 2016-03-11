@@ -1,0 +1,2 @@
+frag1 http://localhost:3030/fa-par-region/ http://localhost:3030/fa-par-region/sparql
+frag2 http://localhost:3030/fa-par-region-2/ http://localhost:3030/fa-par-region-2/sparql

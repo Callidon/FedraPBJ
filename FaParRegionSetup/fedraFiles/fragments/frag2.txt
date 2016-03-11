@@ -1,0 +1,27 @@
+CONSTRUCT
+  { ?URI_REGION <http://www.w3.org/2000/01/rdf-schema#type> <http://fr.dbpedia.org/resource/Region>;
+    		<http://www.w3.org/2002/07/owl#sameAs> ?URI_REGION_DBPEDIA;
+    		<http://www.w3.org/2002/07/owl#sameAs> ?URI_REGION_PARC;
+    		<http://www.w3.org/2002/07/owl#sameAs> ?URI_BILAN_POWER;
+    		<http://schema.org/GeoShape> ?GEO_SHAPE;
+    		<http://schema.org/longitude> ?LONGITUDE;
+    		<http://schema.org/latitude> ?LATITUDE.
+
+    	?URI_PRODUCTION	<http://www.w3.org/2000/01/rdf-schema#type> ?TYPE_PRODUCTION;
+    					<http://fr.dbpedia.org/resource/region> ?URI_REGION;
+    					<https://erdf.opendatasoft.com/NbInstallation> ?NOMBRE_INSTALLATIONS;
+    		 			<http://fr.dbpedia.org/resource/Megawatt> ?PUISSANCE_CUMULEE.
+  }
+WHERE
+  { ?URI_REGION <http://www.w3.org/2000/01/rdf-schema#type> <http://fr.dbpedia.org/resource/Region>;
+        		<http://www.w3.org/2002/07/owl#sameAs> ?URI_REGION_DBPEDIA;
+        		<http://www.w3.org/2002/07/owl#sameAs> ?URI_REGION_PARC;
+        		<http://www.w3.org/2002/07/owl#sameAs> ?URI_BILAN_POWER;
+        		<http://schema.org/GeoShape> ?GEO_SHAPE;
+        		<http://schema.org/longitude> ?LONGITUDE;
+        		<http://schema.org/latitude> ?LATITUDE.
+
+        	?URI_PRODUCTION	<http://www.w3.org/2000/01/rdf-schema#type> ?TYPE_PRODUCTION;
+        					<http://fr.dbpedia.org/resource/region> ?URI_REGION;
+        					<https://erdf.opendatasoft.com/NbInstallation> ?NOMBRE_INSTALLATIONS;
+        		 			<http://fr.dbpedia.org/resource/Megawatt> ?PUISSANCE_CUMULEE. }

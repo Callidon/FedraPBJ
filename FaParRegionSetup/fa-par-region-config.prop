@@ -1,0 +1,13 @@
+# FedX Configuration
+#
+# Have a look at the documentation to get information on
+# possible configuration settings
+
+debugQueryPlan = true
+EndpointsFile=examples/FaParRegionSetup/fedraFiles/endpoints
+FragmentsSources=examples/FaParRegionSetup/fedraFiles/fragmentsSources
+FragmentsDefinitionFolder=examples/FaParRegionSetup/fedraFiles/fragments
+Random=false
+SourceSelectionStrategy=Fedra
+Threshold=1
+dataConfig=examples/FaParRegionSetup/FaParRegion.ttl
