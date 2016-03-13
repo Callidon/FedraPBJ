@@ -22,8 +22,7 @@ public class FedraStatementSourcePattern extends StatementSourcePattern {
         return relevantSources;
     }
 
-    public void addRelevantSources(List<StatementSource> sources) {
-        relevantSources.add(sources);
+    public void setRelevantSources(List<List<StatementSource>> relevantSources) {
+        this.relevantSources = relevantSources;
     }
-
 }
