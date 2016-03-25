@@ -125,7 +125,7 @@ class FedraSourceSelection {
                 if (f.canAnswer(sp)) {
                     HashSet<List<TriplePatternFragment>> redundantFragments = new HashSet<List<TriplePatternFragment>>();
                     boolean toAdd = true;
-                    List<List<TriplePatternFragment>> includeWith = new ArrayList<List<TriplePatternFragment>>(); 
+                    List<List<TriplePatternFragment>> includeWith = new ArrayList<List<TriplePatternFragment>>();
                     //System.out.println("trying to add: "+fn+" from dataset: "+f.getDataset());
                     //System.out.println("is f an exact match of sp? "+f.exactMatch(sp));
                     //System.out.println("so far there are "+selectedFragments.size()+ " fragments");
@@ -142,7 +142,7 @@ class FedraSourceSelection {
                             includeWith.add(l);
                             toAdd = false;
                         } else if (f.containedBy(f2)) {
-                            toAdd = false;                                                                                                                                          
+                            toAdd = false;
                             break;
                         } else if (f.contains(f2)) {
                             redundantFragments.add(l);
@@ -173,9 +173,9 @@ class FedraSourceSelection {
         return candidates;
     }
 
-    private static void obtainInstance(HashMap<StatementPattern, HashSet<TreeSet<Endpoint>>> candidateSources, 
-                                       TreeSet<Pair<StatementPattern, Integer>> elements, 
-                                       TreeMap<Endpoint, TreeSet<Pair<StatementPattern, Integer>>> collections) { 
+    private static void obtainInstance(HashMap<StatementPattern, HashSet<TreeSet<Endpoint>>> candidateSources,
+                                       TreeSet<Pair<StatementPattern, Integer>> elements,
+                                       TreeMap<Endpoint, TreeSet<Pair<StatementPattern, Integer>>> collections) {
         // Obtaining the instance of the minimal set covering problem
         for (StatementPattern sp : candidateSources.keySet()) {
             HashSet<TreeSet<Endpoint>> fs = candidateSources.get(sp);
@@ -196,7 +196,7 @@ class FedraSourceSelection {
         }
     }
 
-    private static TreeSet<Endpoint> getMinimalSetCovering(TreeSet<Pair<StatementPattern, Integer>> elements, 
+    private static TreeSet<Endpoint> getMinimalSetCovering(TreeSet<Pair<StatementPattern, Integer>> elements,
                                        TreeMap<Endpoint, TreeSet<Pair<StatementPattern, Integer>>> collections, boolean random) {
         TreeSet<Pair<StatementPattern, Integer>> elementsToCover = new TreeSet<Pair<StatementPattern, Integer>> (new PairComparator());
         elementsToCover.addAll(elements);
@@ -272,10 +272,22 @@ class FedraSourceSelection {
         }
     }
 
-    public void performSourceSelection() { 
-        
+    public void performSourceSelection() {
+
         HashMap<StatementPattern, HashSet<TreeSet<Endpoint>>> candidateSources = sourceSelectionPerTriple();
         //System.out.println("candidate sources: "+candidateSources);
+
+		// Fedra-PBJ : Approach without the cover set
+		// Take all the candidate sources before the cover set
+		for(Map.Entry<StatementPattern, HashSet<TreeSet<Endpoint>>> key : candidateSources.entrySet()) {
+			Set<Set<Endpoint>> new_sources = new HashSet<>();
+			for(Set<Endpoint> set : key.getValue()) {
+				Set<Endpoint> cloned_set = new TreeSet<Endpoint>(new EndpointComparator());
+				cloned_set.addAll(set);
+				new_sources.add(cloned_set);
+			}
+			allSelectedSources.put(key.getKey(), new_sources);
+		}
 
         // Priority is given to evaluate triple patterns that belong to the same basic graph pattern in as less endpoints as possible
         for (ArrayList<StatementPattern> bgp : bgps) {
@@ -296,7 +308,7 @@ class FedraSourceSelection {
                     }
                 }
             }
-            for (StatementPattern sp : bgp) {                                                                                                                                       
+            for (StatementPattern sp : bgp) {
                 if (candidateSources.get(sp).size()==1) {
                     bgp2.add(sp);
                 }
@@ -314,7 +326,7 @@ class FedraSourceSelection {
         // Then a global choice is done for all the triple patterns, selecting as few endpoints as possible.
 //        TreeSet<Pair<StatementPattern, Integer>> elements = new TreeSet<Pair<StatementPattern, Integer>>(new PairComparator());
 //        TreeMap<Endpoint, TreeSet<Pair<StatementPattern, Integer>>> collections = new TreeMap<Endpoint, TreeSet<Pair<StatementPattern, Integer>>>(new EndpointComparator());
-//        obtainInstance(candidateSources, elements, collections);                                                                                                                
+//        obtainInstance(candidateSources, elements, collections);
 //        TreeSet<Endpoint> selectedSubsets = getMinimalSetCovering(elements, collections, this.random);
 //        candidateSources = select(candidateSources, selectedSubsets);
         //System.out.println("candidate sourcesC: "+candidateSources);
@@ -324,9 +336,7 @@ class FedraSourceSelection {
         for (StatementPattern sp : candidateSources.keySet()) {
             HashSet<TreeSet<Endpoint>> fs = candidateSources.get(sp);
 
-            //modified
-            allSelectedSources.put(sp, new HashSet<Set<Endpoint>>(fs));
-            //end modified
+			// Take the set here for the approach without the cover set
 
             //System.out.println("selected sources for "+sp+" are: "+fs);
             TreeSet<Endpoint> es = new TreeSet<Endpoint>(new EndpointComparator());
@@ -366,7 +376,7 @@ class FedraSourceSelection {
                 l = br.readLine();
             }
             br.close();
-            
+
         } catch (IOException e) {
             System.err.println("Problems reading file: "+file);
             System.exit(1);
@@ -452,4 +462,4 @@ class FedraSourceSelection {
             }
         }
     }
-} 
+}

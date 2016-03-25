@@ -5,12 +5,12 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,20 +51,20 @@ import com.fluidops.fedx.util.QueryStringUtil;
 import com.fluidops.fedx.Config;
 
 /**
- * Perform source selection during optimization 
- * 
+ * Perform source selection during optimization
+ *
  * @author Andreas Schwarte
  *
  */
 public class SourceSelection {
 
 	public static Logger log = Logger.getLogger(SourceSelection.class);
-	
+
 	protected final List<Endpoint> endpoints;
 	protected final Cache cache;
 	protected final QueryInfo queryInfo;
-	
-	
+
+
 	public SourceSelection(List<Endpoint> endpoints, Cache cache, QueryInfo queryInfo) {
 		this.endpoints = endpoints;
 		this.cache = cache;
@@ -81,20 +81,20 @@ public class SourceSelection {
      * Map statements to all their relevant sources as selected by Fedra. Use synchronized access!
      */
     protected Map<StatementPattern, List<List<StatementSource>>> stmtToAllSources = new ConcurrentHashMap<>();
-	
-	
+
+
 	/**
 	 * Perform source selection for the provided statements using cache or remote ASK queries.
-	 * 
+	 *
 	 * Remote ASK queries are evaluated in parallel using the concurrency infrastructure of FedX. Note,
 	 * that this method is blocking until every source is resolved.
-	 * 
+	 *
 	 * The statement patterns are replaced by appropriate annotations in this optimization.
-	 * 
+	 *
 	 * @param stmts
 	 */
 	public void doSourceSelection(List<StatementPattern> stmts) {
-		
+
 		List<CheckTaskPair> remoteCheckTasks = new ArrayList<CheckTaskPair>();
         String sourceSelectionStrategy = Config.getConfig().getProperty("SourceSelectionStrategy", "FedX");
         Map<StatementPattern, Set<Endpoint>> selectedSources = null;
@@ -110,9 +110,8 @@ public class SourceSelection {
 
 			if(useFedraPBJ)
 				allSelectedSources = fss.getAllSelectedSources();
-            log.debug("allSelectedSource : \n" + allSelectedSources);
         }
-		
+
 		// for each statement determine the relevant sources
 		for (StatementPattern stmt : stmts) {
 			stmtToSources.put(stmt, new ArrayList<StatementSource>());
@@ -126,17 +125,17 @@ public class SourceSelection {
                     // if the statement has multiples sources selected by Fedra
                     if(allSelectedEndpoints != null && (allSelectedEndpoints.size() > 0)) {
                         stmtToAllSources.put(stmt, new ArrayList<List<StatementSource>>());
-                        int listInd = 0;
+
                         // collect all the endpoints & add them to the sources for this statement
                         for(Set<Endpoint> endpoints : allSelectedEndpoints) {
                             stmtToAllSources.get(stmt).add(new ArrayList<StatementSource>());
-                            for (Endpoint e : endpoints) {
+                            int listInd = 0;
+							for (Endpoint e : endpoints) {
                                 stmtToAllSources.get(stmt).get(listInd).add(new StatementSource(e.getId(), StatementSourceType.REMOTE));
-                                listInd++;
                                 addSource(stmt, new StatementSource(e.getId(), StatementSourceType.REMOTE));
                             }
+							listInd++;
                         }
-                        log.debug("allSources for " + stmt + " : \n" + stmtToAllSources.get(stmt));
                         continue;
                     } else {
                         // we process using normal case in Fedra Algorithm
@@ -170,7 +169,7 @@ public class SourceSelection {
 				}
 			}
 		}
-		
+
 		// if remote checks are necessary, execute them using the concurrency
 		// infrastructure and block until everything is resolved
 		if (remoteCheckTasks.size()>0) {
@@ -182,9 +181,9 @@ public class SourceSelection {
             dss.performSourceSelection();
             stmtToSources = dss.getSelectedSources();
         }
-				
+
 		for (StatementPattern stmt : stmtToSources.keySet()) {
-			
+
 			List<StatementSource> sources = stmtToSources.get(stmt);
             List<List<StatementSource>> allSources = stmtToAllSources.get(stmt);
 
@@ -193,7 +192,7 @@ public class SourceSelection {
                 StatementSourcePattern stmtNode = new FedraStatementSourcePattern(stmt, queryInfo);
                 ( (FedraStatementSourcePattern) stmtNode).setRelevantSources(allSources);
 
-                // FIX ME : we add the normal sources to the tuple, but maybe it's useless
+                // FIX ME : we add the normal sources to the tuple to don't break FedX, but maybe it's useless
                 for (StatementSource s : sources)
                     stmtNode.addStatementSource(s);
                 stmt.replaceWith(stmtNode);
@@ -220,7 +219,7 @@ public class SourceSelection {
 
 		}
 	}
-	
+
 	/**
 	 * Retrieve a set of relevant sources for this query.
 	 * @return
@@ -231,11 +230,11 @@ public class SourceSelection {
 			for (StatementSource source : sourceList)
 				endpoints.add( EndpointManager.getEndpointManager().getEndpoint(source.getEndpointID()));
 		return endpoints;
-	}	
-	
+	}
+
 	/**
 	 * Add a source to the given statement in the map (synchronized through map)
-	 * 
+	 *
 	 * @param stmt
 	 * @param source
 	 */
@@ -246,30 +245,30 @@ public class SourceSelection {
 			sources.add(source);
 		}
 	}
-	
-	
-	
+
+
+
 	protected static class SourceSelectionExecutorWithLatch implements ParallelExecutor<BindingSet> {
-		
+
 		/**
 		 * Execute the given list of tasks in parallel, and block the thread until
 		 * all tasks are completed. Synchronization is achieved by means of a latch.
-		 * Results are added to the map of the source selection instance. Errors 
+		 * Results are added to the map of the source selection instance. Errors
 		 * are reported as {@link OptimizationException} instances.
-		 * 
+		 *
 		 * @param tasks
 		 */
 		public static void run(SourceSelection sourceSelection, List<CheckTaskPair> tasks, Cache cache) {
 			new SourceSelectionExecutorWithLatch(sourceSelection).executeRemoteSourceSelection(tasks, cache);
-		}		
-		
+		}
+
 		private final SourceSelection sourceSelection;
 		private ControlledWorkerScheduler<BindingSet> scheduler = FederationManager.getInstance().getJoinScheduler();
 		private CountDownLatch latch;
 		private boolean finished=false;
 		private Thread initiatorThread;
 		protected List<Exception> errors = new ArrayList<Exception>();
-		
+
 
 		private SourceSelectionExecutorWithLatch(SourceSelection sourceSelection) {
 			this.sourceSelection = sourceSelection;
@@ -278,18 +277,18 @@ public class SourceSelection {
 		/**
 		 * Execute the given list of tasks in parallel, and block the thread until
 		 * all tasks are completed. Synchronization is achieved by means of a latch
-		 * 
+		 *
 		 * @param tasks
 		 */
 		private void executeRemoteSourceSelection(List<CheckTaskPair> tasks, Cache cache) {
 			if (tasks.size()==0)
 				return;
-			
+
 			initiatorThread = Thread.currentThread();
 			latch = new CountDownLatch(tasks.size());
 			for (CheckTaskPair task : tasks)
 				scheduler.schedule( new ParallelCheckTask(task.e, task.t, this) );
-			
+
 			try	{
 				latch.await(); 	// TODO maybe add timeout here
 			} catch (InterruptedException e) {
@@ -297,18 +296,18 @@ public class SourceSelection {
 			}
 
 			finished = true;
-			
+
 			// check for errors:
 			if (errors.size()>0) {
 				log.error(errors.size() + " errors were reported:");
 				for (Exception e : errors)
 					log.error(ExceptionUtil.getExceptionString("Error occured", e));
-								
+
 				Exception ex = errors.get(0);
 				errors.clear();
 				if (ex instanceof OptimizationException)
 					throw (OptimizationException)ex;
-				
+
 				throw new OptimizationException(ex.getMessage(), ex);
 			}
 		}
@@ -342,21 +341,21 @@ public class SourceSelection {
 			return sourceSelection.queryInfo.getQueryID();
 		}
 	}
-	
-	
+
+
 	protected class CheckTaskPair {
 		public final Endpoint e;
 		public final StatementPattern t;
 		public CheckTaskPair(Endpoint e, StatementPattern t){
 			this.e = e;
 			this.t = t;
-		}		
+		}
 	}
-	
-	
+
+
 	/**
 	 * Task for sending an ASK request to the endpoints (for source selection)
-	 * 
+	 *
 	 * @author Andreas Schwarte
 	 */
 	protected static class ParallelCheckTask implements ParallelTask<BindingSet> {
@@ -364,19 +363,19 @@ public class SourceSelection {
 		protected final Endpoint endpoint;
 		protected final StatementPattern stmt;
 		protected final SourceSelectionExecutorWithLatch control;
-		
+
 		public ParallelCheckTask(Endpoint endpoint, StatementPattern stmt, SourceSelectionExecutorWithLatch control) {
 			this.endpoint = endpoint;
 			this.stmt = stmt;
 			this.control = control;
 		}
 
-		
+
 		@Override
 		public CloseableIteration<BindingSet, QueryEvaluationException> performTask() throws Exception {
 			try {
 				TripleSource t = endpoint.getTripleSource();
-				RepositoryConnection conn = endpoint.getConn(); 
+				RepositoryConnection conn = endpoint.getConn();
 
 				boolean hasResults = t.hasStatements(stmt, conn, EmptyBindingSet.getInstance());
 
@@ -386,7 +385,7 @@ public class SourceSelection {
 
 				if (hasResults)
 					sourceSelection.addSource(stmt, new StatementSource(endpoint.getId(), StatementSourceType.REMOTE));
-				
+
 				return null;
 			} catch (Exception e) {
 				this.control.toss(e);
@@ -397,12 +396,8 @@ public class SourceSelection {
 		@Override
 		public ParallelExecutor<BindingSet> getControl() {
 			return control;
-		}		
+		}
 	}
-	
-		
+
+
 }
-
-
-
-
