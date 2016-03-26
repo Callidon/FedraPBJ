@@ -37,6 +37,8 @@ class FedraSourceSelection {
     private List<StatementPattern> stmts;
     private HashMap<String,Endpoint> endpoints;
     private HashMap<StatementPattern, Set<Endpoint>> selectedSources;
+    private HashMap<Endpoint, List<StatementPattern>> stmtsByEndpoint;
+    private StrategyType strategyType;
     private ArrayList<ArrayList<StatementPattern>> bgps;
     private TreeMap<String, TriplePatternFragment> fragments;
     private boolean random;
@@ -61,6 +63,7 @@ class FedraSourceSelection {
         //System.out.println("endpoints: "+endpoints);
         this.selectedSources = new HashMap<StatementPattern, Set<Endpoint>>();
         this.allSelectedSources = new HashMap<>(); // modified
+        stmtsByEndpoint = new HashMap<>(); // modified
         this.bgps = getBGPs(query);
         loadFragments(Config.getConfig().getProperty("FragmentsDefinitionFolder"), Config.getConfig().getProperty("FragmentsSources"));
         loadEndpoints(Config.getConfig().getProperty("EndpointsFile"));
@@ -68,6 +71,18 @@ class FedraSourceSelection {
         //System.out.println("endpoints: "+endpoints);
         //System.out.println("fragments: "+fragments);
         //System.out.println("endpoints: "+endpoints);
+
+        // determine the type of strategy
+        String sourceSelectionStrategy = Config.getConfig().getProperty("SourceSelectionStrategy", "Fedra").toLowerCase();
+        if(sourceSelectionStrategy.equals("fedra-pbj-hybrid")) {
+            strategyType = StrategyType.PBJ_Hybrid;
+        } else if(sourceSelectionStrategy.equals("fedra-pbj-pre")) {
+            strategyType = StrategyType.PBJ_Pre_SetCovering;
+        } else if(sourceSelectionStrategy.equals("fedra-pbj-post")) {
+            strategyType = StrategyType.PBJ_Post_SetCovering;
+        } else {
+            strategyType = StrategyType.FedraClassic;
+        }
     }
 
     private static ArrayList<ArrayList<StatementPattern>> getBGPs(TupleExpr query) {
@@ -278,16 +293,39 @@ class FedraSourceSelection {
         //System.out.println("candidate sources: "+candidateSources);
 
 		// Fedra-PBJ : Approach without the cover set
-		// Take all the candidate sources before the cover set
-		for(Map.Entry<StatementPattern, HashSet<TreeSet<Endpoint>>> key : candidateSources.entrySet()) {
-			Set<Set<Endpoint>> new_sources = new HashSet<>();
-			for(Set<Endpoint> set : key.getValue()) {
-				Set<Endpoint> cloned_set = new TreeSet<Endpoint>(new EndpointComparator());
-				cloned_set.addAll(set);
-				new_sources.add(cloned_set);
-			}
-			allSelectedSources.put(key.getKey(), new_sources);
-		}
+        if(strategyType == StrategyType.PBJ_Pre_SetCovering) {
+            // Take all the candidate sources before the cover set
+            for(Map.Entry<StatementPattern, HashSet<TreeSet<Endpoint>>> entry : candidateSources.entrySet()) {
+                Set<Set<Endpoint>> new_sources = new HashSet<>();
+                for(Set<Endpoint> set : entry.getValue()) {
+                    Set<Endpoint> cloned_set = new TreeSet<Endpoint>(new EndpointComparator());
+                    cloned_set.addAll(set);
+                    new_sources.add(cloned_set);
+                }
+                allSelectedSources.put(entry.getKey(), new_sources);
+            }
+        } else if (strategyType == StrategyType.PBJ_Hybrid) {
+            // Fedra-PBJ hybrid : step 1 - collect all triple patterns by endpoint
+            for(Map.Entry<StatementPattern, HashSet<TreeSet<Endpoint>>> entry : candidateSources.entrySet()) {
+                for(Set<Endpoint> set : entry.getValue()) {
+                    for(Endpoint e : set) {
+                        // if this endpoint doesn't exist in the collection, init it
+                        if(! stmtsByEndpoint.containsKey(e)) {
+                            stmtsByEndpoint.put(e, new ArrayList<StatementPattern>());
+                        }
+                        stmtsByEndpoint.get(e).add(entry.getKey());
+                    }
+                }
+            }
+
+            // then, remove all the entries for endpoint which evaluates more than one triple pattern
+            for(Endpoint entry : stmtsByEndpoint.keySet()) {
+                List<StatementPattern> patternsList = stmtsByEndpoint.get(entry);
+                if(patternsList.size() != 1) {
+                    stmtsByEndpoint.remove(entry);
+                }
+            }
+        }
 
         // Priority is given to evaluate triple patterns that belong to the same basic graph pattern in as less endpoints as possible
         for (ArrayList<StatementPattern> bgp : bgps) {
@@ -333,6 +371,28 @@ class FedraSourceSelection {
 
         // The remaining choices are done randomly to select one source for each different data fragment
         selectedSources.clear();
+
+        // Fedra-PBJ : approach with the set covering & step 2 of the hybrid approach
+        if((strategyType == StrategyType.PBJ_Post_SetCovering) || (strategyType == StrategyType.PBJ_Hybrid)) {
+            // save all relevant sources (after the set covering) for all statements patterns
+            for(Map.Entry<StatementPattern, HashSet<TreeSet<Endpoint>>> entry : candidateSources.entrySet()) {
+                Set<Set<Endpoint>> new_sources = new HashSet<>();
+                for(Set<Endpoint> set : entry.getValue()) {
+                    Set<Endpoint> cloned_set = new TreeSet<Endpoint>(new EndpointComparator());
+                    cloned_set.addAll(set);
+                    new_sources.add(cloned_set);
+                }
+                allSelectedSources.put(entry.getKey(), new_sources);
+            }
+        }
+
+        //Fedra-PBJ hybrid : step 3 - complete the sources with the endpoints who evaluate only one triple pattern
+        if(strategyType == StrategyType.PBJ_Hybrid) {
+            for(Map.Entry<Endpoint, List<StatementPattern>> entry : stmtsByEndpoint.entrySet()) {
+
+            }
+        }
+
         for (StatementPattern sp : candidateSources.keySet()) {
             HashSet<TreeSet<Endpoint>> fs = candidateSources.get(sp);
 
@@ -461,5 +521,15 @@ class FedraSourceSelection {
                 }
             }
         }
+    }
+
+    /**
+     * Enum representing th type of strategy used
+     */
+    public enum StrategyType {
+        FedraClassic,
+        PBJ_Pre_SetCovering,
+        PBJ_Post_SetCovering,
+        PBJ_Hybrid
     }
 }
