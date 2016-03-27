@@ -106,7 +106,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 		List<List<StatementSource>> sourcesGroups = null;
 
 		// first item is always sent in a non-bound way
-		final boolean useFedraPBJ = sourceSelectionStrategy.toLowerCase().equals("fedra-pbj");
+		final boolean useFedraPBJ = sourceSelectionStrategy.toLowerCase().contains("fedra-pbj");
 		if (!closed && leftIter.hasNext()) {
 			BindingSet b = leftIter.next();
 			totalBindings++;
