@@ -101,7 +101,7 @@ public class SourceSelection {
 		HashMap<StatementPattern, Set<Set<Endpoint>>> allSelectedSources = null;
 
 		final boolean useFedraStrategy = sourceSelectionStrategy.startsWith("Fedra");
-		final boolean useFedraPBJ = sourceSelectionStrategy.toLowerCase().equals("fedra-pbj");
+		final boolean useFedraPBJ = sourceSelectionStrategy.toLowerCase().contains("fedra-pbj");
 
 		if (useFedraStrategy) {
             FedraSourceSelection fss = new FedraSourceSelection(queryInfo.getQuery(), stmts, endpoints);
