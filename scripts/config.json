@@ -1,0 +1,20 @@
+{
+	"outputs" : {
+		"fedra" : "examples/outputFedra",
+		"fedra-pbj-pre" : "examples/outputFedraPBJ",
+		"fedra-pbj-post" : "examples/outputFedraPBJ",
+		"fedra-pbj-hybrid" : "examples/outputFedraPBJ"
+	},
+	"outputs_csv" : {
+		"fedra" : "output_csv/fedra.csv",
+		"fedra-pbj-pre" : "output_csv/fedra-pbj-pre.csv",
+		"fedra-pbj-post" : "output_csv/fedra-pbj-post.csv",
+		"fedra-pbj-hybrid" : "output_csv/fedra-pbj-hybrid.csv"
+	},
+	"outputs_delta" : {
+		"fedra" : "output_delta/fedra.csv",
+		"fedra-pbj-pre" : "output_delta/fedra-pbj-pre.csv",
+		"fedra-pbj-post" : "output_delta/fedra-pbj-post.csv",
+		"fedra-pbj-hybrid" : "output_delta/fedra-pbj-hybrid.csv"
+	}
+}
