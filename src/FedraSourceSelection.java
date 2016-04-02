@@ -44,6 +44,7 @@ class FedraSourceSelection {
     private boolean random;
 
     private HashMap<StatementPattern, Set<Set<Endpoint>>> allSelectedSources;
+    private HashMap<StatementPattern, Set<Set<Endpoint>>> originalSelectedSources;
 
     public FedraSourceSelection(String queryStr, List<StatementPattern> stmts, List<Endpoint> endpoints) {
         QueryParser qp = (new SPARQLParserFactory()).getParser();
@@ -63,6 +64,7 @@ class FedraSourceSelection {
         //System.out.println("endpoints: "+endpoints);
         this.selectedSources = new HashMap<StatementPattern, Set<Endpoint>>();
         this.allSelectedSources = new HashMap<>(); // modified
+        originalSelectedSources = new HashMap<>(); //modified
         stmtsByEndpoint = new HashMap<>(); // modified
         this.bgps = getBGPs(query);
         loadFragments(Config.getConfig().getProperty("FragmentsDefinitionFolder"), Config.getConfig().getProperty("FragmentsSources"));
@@ -305,7 +307,18 @@ class FedraSourceSelection {
                 allSelectedSources.put(entry.getKey(), new_sources);
             }
         } else if (strategyType == StrategyType.PBJ_Hybrid) {
-            // Fedra-PBJ hybrid : step 1 - collect all triple patterns by endpoint
+            // Fedra-PBJ hybrid : step 1 - save the original repartition of the relevant sources before the set covering
+            for(Map.Entry<StatementPattern, HashSet<TreeSet<Endpoint>>> entry : candidateSources.entrySet()) {
+                Set<Set<Endpoint>> new_sources = new HashSet<>();
+                for(Set<Endpoint> set : entry.getValue()) {
+                    Set<Endpoint> cloned_set = new TreeSet<Endpoint>(new EndpointComparator());
+                    cloned_set.addAll(set);
+                    new_sources.add(cloned_set);
+                }
+                originalSelectedSources.put(entry.getKey(), new_sources);
+            }
+
+            // Fedra-PBJ hybrid : step 2 - collect all triple patterns by endpoint
             for(Map.Entry<StatementPattern, HashSet<TreeSet<Endpoint>>> entry : candidateSources.entrySet()) {
                 for(Set<Endpoint> set : entry.getValue()) {
                     for(Endpoint e : set) {
@@ -319,12 +332,14 @@ class FedraSourceSelection {
             }
 
             // then, remove all the entries for endpoint which evaluates more than one triple pattern
-            for(Endpoint entry : stmtsByEndpoint.keySet()) {
-                List<StatementPattern> patternsList = stmtsByEndpoint.get(entry);
-                if(patternsList.size() != 1) {
-                    stmtsByEndpoint.remove(entry);
+            HashMap<Endpoint, List<StatementPattern>> tmpStmtsByEndpoint = new HashMap<>();
+            for(Map.Entry<Endpoint, List<StatementPattern>> entry : stmtsByEndpoint.entrySet()) {
+                List<StatementPattern> patternsList = stmtsByEndpoint.get(entry.getKey());
+                if(patternsList.size() == 1) {
+                    tmpStmtsByEndpoint.put(entry.getKey(), new ArrayList<>(entry.getValue()));
                 }
             }
+            stmtsByEndpoint = tmpStmtsByEndpoint;
         }
 
         // Priority is given to evaluate triple patterns that belong to the same basic graph pattern in as less endpoints as possible
@@ -386,10 +401,25 @@ class FedraSourceSelection {
             }
         }
 
-        //Fedra-PBJ hybrid : step 3 - complete the sources with the endpoints who evaluate only one triple pattern
+        //Fedra-PBJ hybrid : step 4 - complete the selected sources with the endpoints which evaluate only one triple pattern
         if(strategyType == StrategyType.PBJ_Hybrid) {
             for(Map.Entry<Endpoint, List<StatementPattern>> entry : stmtsByEndpoint.entrySet()) {
-
+                // search for each entry it's origin groups before the set covering
+                for(Map.Entry<StatementPattern, Set<Set<Endpoint>>> originEntry : originalSelectedSources.entrySet()) {
+                    // if the current statement is evaluated by the endpoint of the current entry
+                    if(entry.getValue().contains(originEntry.getKey())) {
+                        Iterator<Set<Endpoint>> it = allSelectedSources.get(originEntry.getKey()).iterator();
+                        for(Set<Endpoint> originGroup : originEntry.getValue()) {
+                            // if the current origin group contains the endpoint, we add it to the select source corresponding group
+                            if(originGroup.contains(entry.getKey())) {
+                                it.next().add(entry.getKey());
+                            } else if(it.hasNext()) {
+                                // else, we move the iterator to the next entry
+                                it.next();
+                            }
+                        }
+                    }
+                }
             }
         }
 
