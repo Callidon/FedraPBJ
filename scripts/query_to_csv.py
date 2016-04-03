@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Script for converting results output by Fedra + Fedx with Parallel Bound Join algorithm into csv format
-# Authors : Naixin Wang & Thomas Minier
+# Authors : Thomas Minier & Naixin Wang
 import json
 import csv
 

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Script for validating results from Fedra + FedX with and without Parallel Bound Join algorithm
-# Authors : Naixin Wang & Thomas Minier
+# Authors : Thomas Minier & Naixin Wang
 import os
 import filecmp
 

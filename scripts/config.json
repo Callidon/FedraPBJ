@@ -22,5 +22,10 @@
 			"fedra-pbj-post" : "output_delta/diseasome/fedra-pbj-post.csv",
 			"fedra-pbj-hybrid" : "output_delta/diseasome/fedra-pbj-hybrid.csv"
 		}
+	},
+	"outputs_barplots" : {
+		"diseasome" : {
+			"sum_exectime" : "output_barplots/diseasome/sum_exectime.csv"
+		}
 	}
 }

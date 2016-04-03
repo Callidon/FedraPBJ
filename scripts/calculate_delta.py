@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Script for calculating the difference bewteen results from Fedra + Fedx and Fedra + Fedx + PBJ
-# Authors : Naixin Wang & Thomas Minier
+# Authors : Thomas Minier & Naixin Wang
 import json
 import csv
 
