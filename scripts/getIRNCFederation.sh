@@ -8,7 +8,7 @@ lastPort=$3
 ir=0
 nc=0
 ic_tot=""
-nc_toto=""
+nc_tot=""
 
 for i in  `seq $firstPort $lastPort`; do
    line=`tail -n 1 $prefix$i`
@@ -17,7 +17,7 @@ for i in  `seq $firstPort $lastPort`; do
    ir=$(($ir+$x))
    nc=$(($nc+$y))
    irc_tot="${irc_tot} ${x}"
-   nc_toto="${nc_toto} ${y}"
+   nc_tot="${nc_tot} ${y}"
 done
 
 if [ -f "${prefix}PublicEndpoint" ]; then
@@ -28,4 +28,4 @@ if [ -f "${prefix}PublicEndpoint" ]; then
   nc=$(($nc+$y))
 fi
 
-echo "$ir $nc $irc_tot $nc_toto"
+echo "$ir $nc $irc_tot $nc_tot"
