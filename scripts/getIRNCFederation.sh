@@ -7,8 +7,8 @@ lastPort=$3
 
 ir=0
 nc=0
-ic_tot = ""
-nc_toto = ""
+ic_tot=""
+nc_toto=""
 
 for i in  `seq $firstPort $lastPort`; do
    line=`tail -n 1 $prefix$i`
