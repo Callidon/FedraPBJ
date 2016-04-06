@@ -1,11 +1,12 @@
 #!/usr/bin/env Rscript
-# Script to produce boxplot for the results from various executions of the setup
-# author : Thomas Minier
+# Script to produce boxplots for the results from various executions of the setup
+# author : Thomas Minier & Naixin Wang, M1 ALMA
 
 require(ggplot2)
-require(gridExtra)
 
 # Load the datas from files
+
+# from Diseasome
 outputDiseasomeEngine <- read.table("../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client")
 outputDiseasomeFedra <- read.table("../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client")
 outputDiseasomePBJPre <- read.table("../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client")
@@ -19,6 +20,13 @@ execTimeDiseasomePBJPre <- outputDiseasomePBJPre[2]
 execTimeDiseasomePBJPost <- outputDiseasomePBJPost[2]
 execTimeDiseasomePBJHybrid <- outputDiseasomePBJHybrid[2]
 
+# create the data origin column
+execTimeDiseasomeEngine$dataset <- "Diseasome"
+execTimeDiseasomeFedra$dataset <- "Diseasome"
+execTimeDiseasomePBJPre$dataset <- "Diseasome"
+execTimeDiseasomePBJPost$dataset <- "Diseasome"
+execTimeDiseasomePBJHybrid$dataset <- "Diseasome"
+
 # create the approach column
 execTimeDiseasomeEngine$approach <- "Fedx"
 execTimeDiseasomeFedra$approach <- "Fedx + Fedra"
@@ -26,11 +34,13 @@ execTimeDiseasomePBJPre$approach <- "PBJ pre SC"
 execTimeDiseasomePBJPost$approach <- "PBJ post SC"
 execTimeDiseasomePBJHybrid$approach <- "PBJ hybrid"
 
-# merge results in one table
-graph <- rbind(execTimeDiseasomeEngine, execTimeDiseasomeFedra, execTimeDiseasomePBJPre, execTimeDiseasomePBJPost, execTimeDiseasomePBJHybrid)
+# merge results by table, then into one unique table
+diseasomeTable <- rbind(execTimeDiseasomeEngine, execTimeDiseasomeFedra, execTimeDiseasomePBJPre, execTimeDiseasomePBJPost, execTimeDiseasomePBJHybrid)
+
+table <- rbind(diseasomeTable)
 
 # set the colnames
-colnames(graph) <- c("QueryExecutionTime", "Approach")
+colnames(table) <- c("time", "dataset", "Approach")
 
 # create the boxplots
-ggplot(data = graph, aes(x=Approach, y=QueryExecutionTime)) + geom_boxplot(aes(fill=Approach))
+ggplot(data = table, aes(x=dataset, y=time)) + geom_boxplot(aes(fill=Approach))
