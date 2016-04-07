@@ -1,7 +1,0 @@
-@prefix fluid: <http://fluidops.org/config#>.
-
-<http://fa-par-region> fluid:store "SPARQLEndpoint";
-fluid:SPARQLEndpoint "http://localhost:3030/fa-par-region/".
-
-<http://fa-par-region-2> fluid:store "SPARQLEndpoint";
-fluid:SPARQLEndpoint "http://localhost:3030/fa-par-region-2/".
