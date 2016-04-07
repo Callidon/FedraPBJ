@@ -49,59 +49,62 @@ processTable <- function(setupName, value_ind, outputEnginePath, outputFedraPath
 # path to output files
 
 # from Diseasome setup
-outputDiseasomeEngine <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputDiseasomeFedra <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputDiseasomeEngine <- "../results/diseasome/outputFedXengineFEDERATION10Client"
+outputDiseasomeFedra <- "../results/diseasome/outputFedXFedraFEDERATION10Client"
 outputDiseasomePBJPre <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputDiseasomePBJPost <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputDiseasomePBJHybrid <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputDiseasomePBJPost <- "../results/diseasome/outputFedXFedra-PBJ-postFEDERATION10Client"
+outputDiseasomePBJHybrid <- "../results/diseasome/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
 # from linkedMDB setup
-outputLinkedMDBEngine <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputLinkedMDBFedra <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputLinkedMDBPBJPre <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputLinkedMDBPBJPost <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputLinkedMDBPBJHybrid <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputLinkedMDBEngine <- "../results/linkedMDB/outputFedXengineFEDERATION10Client"
+outputLinkedMDBFedra <- "../results/linkedMDB/outputFedXFedraFEDERATION10Client"
+outputLinkedMDBPBJPre <- "../results/linkedMDB/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputLinkedMDBPBJPost <- "../results/linkedMDB/outputFedXFedra-PBJ-postFEDERATION10Client"
+outputLinkedMDBPBJHybrid <- "../results/linkedMDB/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
 # from geoCoordinates setup
-outputGeoCoordinatesEngine <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputGeoCoordinatesFedra <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputGeoCoordinatesPBJPre <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputGeoCoordinatesPBJPost <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputGeoCoordinatesPBJHybrid <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputGeoCoordinatesEngine <- "../results/geoCoordinates/outputFedXengineFEDERATION10Client"
+outputGeoCoordinatesFedra <- "../results/geoCoordinates/outputFedXFedraFEDERATION10Client"
+outputGeoCoordinatesPBJPre <- "../results/geoCoordinates/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputGeoCoordinatesPBJPost <- "../results/geoCoordinates/outputFedXFedra-PBJ-postFEDERATION10Client"
+outputGeoCoordinatesPBJHybrid <- "../results/geoCoordinates/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
 # from swdf setup
-outputSWDFEngine <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputSWDFFedra <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputSWDFPBJPre <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputSWDFPBJPost <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputSWDFPBJHybrid <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputSWDFEngine <- "../results/swdf/outputFedXengineFEDERATION10Client"
+outputSWDFFedra <- "../results/swdf/outputFedXFedraFEDERATION10Client"
+outputSWDFPBJPre <- "../results/swdf/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputSWDFPBJPost <- "../results/swdf/outputFedXFedra-PBJ-postFEDERATION10Client"
+outputSWDFPBJHybrid <- "../results/swdf/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
 # from watDiv setup
-outputWatDivEngine <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputWatDivFedra <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputWatDivPBJPre <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputWatDivPBJPost <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputWatDivPBJHybrid <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputWatDivEngine <- "../results/watDiv/outputFedXengineFEDERATION10Client"
+outputWatDivFedra <- "../results/watDiv/outputFedXFedraFEDERATION10Client"
+outputWatDivPBJPre <- "../results/watDiv/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputWatDivPBJPost <- "../results/watDiv/outputFedXFedra-PBJ-postFEDERATION10Client"
+outputWatDivPBJHybrid <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
 # from watDiv100 setup
-outputWatDiv100Engine <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputWatDiv100Fedra <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputWatDiv100PBJPre <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputWatDiv100PBJPost <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputWatDiv100PBJHybrid <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputWatDiv100Engine <- "../results/watDiv/outputFedXengineFEDERATION10Client"
+outputWatDiv100Fedra <- "../results/watDiv/outputFedXFedraFEDERATION10Client"
+outputWatDiv100PBJPre <- "../results/watDiv/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputWatDiv100PBJPost <- "../results/watDiv/outputFedXFedra-PBJ-postFEDERATION10Client"
+outputWatDiv100PBJHybrid <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION10Client"
+
+# For the execution time
 
 # Process the datas & merge them into one unique table
-
 diseasomeTable <- processTable(diseasomeSetupName, 2, outputDiseasomeEngine, outputDiseasomeFedra, outputDiseasomePBJPre, outputDiseasomePBJPost, outputDiseasomePBJHybrid)
 linkedMDBTable <- processTable(linkedMDBSetupName, 2, outputLinkedMDBEngine, outputLinkedMDBFedra, outputLinkedMDBPBJPre, outputLinkedMDBPBJPost, outputLinkedMDBPBJHybrid)
 geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 2, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
 SWDFTable <- processTable(swdfSetupName, 2, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
 watDivTable <- processTable(watDivSetupName, 2, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
-watDiv100Table <- processTable(watDiv100SetupName, 2, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
-table <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
+#watDiv100Table <- processTable(watDiv100SetupName, 2, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
+timesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable) #, watDiv100Table)
 
 # set the colnames
-colnames(table) <- c("time", "dataset", "Approach")
+colnames(timesTable) <- c("time", "dataset", "Approach")
 
 # create the boxplots
-ggplot(data = table, aes(x=dataset, y=time)) + geom_boxplot(aes(fill=Approach))
+pdf("execution_time.pdf")
+ggplot(data = timesTable, aes(x=dataset, y=time)) + geom_boxplot(aes(fill=Approach)) + ylab("Execution time (s)") + xlab("Dataset")
+dev.off()
