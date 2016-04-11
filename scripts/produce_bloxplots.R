@@ -105,6 +105,6 @@ timesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTab
 colnames(timesTable) <- c("time", "dataset", "Approach")
 
 # create the boxplots
-pdf("execution_time.pdf")
-ggplot(data = timesTable, aes(x=dataset, y=time)) + geom_boxplot(aes(fill=Approach)) + ylab("Execution time (s)") + xlab("Dataset")
+pdf("../results/execution_time.pdf")
+ggplot(data = subset(timesTable, time < 10), aes(x=dataset, y=time)) + geom_boxplot(aes(fill=Approach)) + ylab("Execution time (s)") + xlab("Dataset")
 dev.off()
