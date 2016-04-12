@@ -91,7 +91,6 @@ outputWatDiv100PBJPost <- "../results/watDiv/outputFedXFedra-PBJ-postFEDERATION1
 outputWatDiv100PBJHybrid <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
 # For the execution time
-
 # Process the datas & merge them into one unique table
 diseasomeTable <- processTable(diseasomeSetupName, 2, outputDiseasomeEngine, outputDiseasomeFedra, outputDiseasomePBJPre, outputDiseasomePBJPost, outputDiseasomePBJHybrid)
 linkedMDBTable <- processTable(linkedMDBSetupName, 2, outputLinkedMDBEngine, outputLinkedMDBFedra, outputLinkedMDBPBJPre, outputLinkedMDBPBJPost, outputLinkedMDBPBJHybrid)
@@ -104,7 +103,41 @@ timesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTab
 # set the colnames
 colnames(timesTable) <- c("time", "dataset", "Approach")
 
+# For the number of transfered tuples
+# Process the datas & merge them into one unique table
+diseasomeTable <- processTable(diseasomeSetupName, 11, outputDiseasomeEngine, outputDiseasomeFedra, outputDiseasomePBJPre, outputDiseasomePBJPost, outputDiseasomePBJHybrid)
+linkedMDBTable <- processTable(linkedMDBSetupName, 11, outputLinkedMDBEngine, outputLinkedMDBFedra, outputLinkedMDBPBJPre, outputLinkedMDBPBJPost, outputLinkedMDBPBJHybrid)
+geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 11, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
+SWDFTable <- processTable(swdfSetupName, 11, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
+watDivTable <- processTable(watDivSetupName, 11, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
+#watDiv100Table <- processTable(watDiv100SetupName, 2, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
+tuplesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable) #, watDiv100Table)
+
+# set the colnames
+colnames(tuplesTable) <- c("tuples", "dataset", "Approach")
+
+# For the completness
+# Process the datas & merge them into one unique table
+diseasomeTable <- processTable(diseasomeSetupName, 6, outputDiseasomeEngine, outputDiseasomeFedra, outputDiseasomePBJPre, outputDiseasomePBJPost, outputDiseasomePBJHybrid)
+linkedMDBTable <- processTable(linkedMDBSetupName, 6, outputLinkedMDBEngine, outputLinkedMDBFedra, outputLinkedMDBPBJPre, outputLinkedMDBPBJPost, outputLinkedMDBPBJHybrid)
+geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 6, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
+SWDFTable <- processTable(swdfSetupName, 6, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
+watDivTable <- processTable(watDivSetupName, 6, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
+#watDiv100Table <- processTable(watDiv100SetupName, 2, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
+completnessTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable) #, watDiv100Table)
+
+# set the colnames
+colnames(completnessTable) <- c("completness", "dataset", "Approach")
+
 # create the boxplots
 pdf("../results/execution_time.pdf")
 ggplot(data = subset(timesTable, time < 10), aes(x=dataset, y=time)) + geom_boxplot(aes(fill=Approach)) + ylab("Execution time (s)") + xlab("Dataset")
+dev.off()
+
+pdf("../results/transfered_tuples.pdf")
+ggplot(data = subset(tuplesTable, tuples < 100), aes(x=dataset, y=tuples)) + geom_boxplot(aes(fill=Approach)) + ylab("Number of transfered tuples") + xlab("Dataset")
+dev.off()
+
+pdf("../results/completness.pdf")
+ggplot(data = completnessTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Approach)) + ylab("Completness") + xlab("Dataset")
 dev.off()
