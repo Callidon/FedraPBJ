@@ -1,10 +1,39 @@
 {
 	"outputs" : {
 		"diseasome": {
-			"fedra" : "examples/diseasome/outputFedra",
-			"fedra-pbj-pre" : "examples/diseasome/outputFedraPBJ",
-			"fedra-pbj-post" : "examples/diseasome/outputFedraPBJ",
-			"fedra-pbj-hybrid" : "examples/diseasome/outputFedraPBJ"
+			"fedra" : "../results/diseasome/outputFedXFedraFEDERATION10Client",
+			"engine" : "../results/diseasome/outputFedXengineFEDERATION10Client",
+			"fedra-pbj-pre" : "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client",
+			"fedra-pbj-post" : "../results/diseasome/outputFedXFedra-PBJ-postFEDERATION10Client",
+			"fedra-pbj-hybrid" : "../results/diseasome/outputFedXFedra-PBJ-hybridFEDERATION10Client"
+		},
+		"linkedMDB": {
+			"fedra" : "../results/linkedMDB/outputFedXFedraFEDERATION10Client",
+			"engine" : "../results/linkedMDB/outputFedXengineFEDERATION10Client",
+			"fedra-pbj-pre" : "../results/linkedMDB/outputFedXFedra-PBJ-preFEDERATION10Client",
+			"fedra-pbj-post" : "../results/linkedMDB/outputFedXFedra-PBJ-postFEDERATION10Client",
+			"fedra-pbj-hybrid" : "../results/linkedMDB/outputFedXFedra-PBJ-hybridFEDERATION10Client"
+		},
+		"geoCoordinates": {
+			"fedra" : "../results/geoCoordinates/outputFedXFedraFEDERATION10Client",
+			"engine" : "../results/geoCoordinates/outputFedXengineFEDERATION10Client",
+			"fedra-pbj-pre" : "../results/geoCoordinates/outputFedXFedra-PBJ-preFEDERATION10Client",
+			"fedra-pbj-post" : "../results/geoCoordinates/outputFedXFedra-PBJ-postFEDERATION10Client",
+			"fedra-pbj-hybrid" : "../results/geoCoordinates/outputFedXFedra-PBJ-hybridFEDERATION10Client"
+		},
+		"swdf": {
+			"fedra" : "../results/swdf/outputFedXFedraFEDERATION10Client",
+			"engine" : "../results/swdf/outputFedXengineFEDERATION10Client",
+			"fedra-pbj-pre" : "../results/swdf/outputFedXFedra-PBJ-preFEDERATION10Client",
+			"fedra-pbj-post" : "../results/swdf/outputFedXFedra-PBJ-postFEDERATION10Client",
+			"fedra-pbj-hybrid" : "../results/swdf/outputFedXFedra-PBJ-hybridFEDERATION10Client"
+		},
+		"watDiv": {
+			"fedra" : "../results/watDiv/outputFedXFedraFEDERATION10Client",
+			"engine" : "../results/watDiv/outputFedXengineFEDERATION10Client",
+			"fedra-pbj-pre" : "../results/watDiv/outputFedXFedra-PBJ-preFEDERATION10Client",
+			"fedra-pbj-post" : "../results/watDiv/outputFedXFedra-PBJ-postFEDERATION10Client",
+			"fedra-pbj-hybrid" : "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 		}
 	},
 	"outputs_csv" : {
