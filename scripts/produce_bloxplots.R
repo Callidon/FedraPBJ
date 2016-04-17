@@ -14,8 +14,8 @@ watDiv100SetupName <- "WatDiv100"
 
 approachFedxName <- "FedX"
 approachFedxFedraName <- "FedX + Fedra"
-approachPBJPreName <- "PBJ pre"
-approachPBJPostName <- "PBJ post"
+approachPBJPreName <- "PBJ Pre"
+approachPBJPostName <- "PBJ Post"
 approachPBJHybridName <- "PBJ Hybrid"
 
 # Function used to process a value from output tables
@@ -204,15 +204,15 @@ colnames(watDivHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
 #colnames(watDiv100HotspotsTable) <- c("query", "value", "endpoint", "Approach")
 
 # create the boxplots
-pdf("../results/execution_time.pdf")
-ggplot(data = subset(timesTable, time < 10), aes(x=dataset, y=time)) + geom_boxplot(aes(fill=Approach)) + ylab("Execution time (s)") + xlab("Dataset")
+pdf("../results/execution_time.pdf", width=7, height=4)
+ggplot(data = subset(timesTable, time < 8), aes(x=dataset, y=time)) + geom_boxplot(aes(fill=Approach)) + ylab("Execution time (s)") + xlab("Dataset")
 dev.off()
 
-pdf("../results/transfered_tuples.pdf")
+pdf("../results/transfered_tuples.pdf", width=7, height=4)
 ggplot(data = subset(tuplesTable, tuples < 100), aes(x=dataset, y=tuples)) + geom_boxplot(aes(fill=Approach)) + ylab("Number of transfered tuples") + xlab("Dataset")
 dev.off()
 
-pdf("../results/completness.pdf")
+pdf("../results/completness.pdf", width=7, height=4)
 ggplot(data = completnessTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Approach)) + ylab("Completness") + xlab("Dataset")
 dev.off()
 
