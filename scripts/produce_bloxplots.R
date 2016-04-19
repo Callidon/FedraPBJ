@@ -158,7 +158,7 @@ watDiv100Table <- processTable(watDiv100SetupName, 2, outputWatDiv100Engine, out
 timesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
 # set the colnames
-colnames(timesTable) <- c("time", "dataset", "Approach")
+colnames(timesTable) <- c("time", "dataset", "Strategy")
 
 # For the number of transfered tuples
 # Process the datas & merge them into one unique table
@@ -171,7 +171,7 @@ watDiv100Table <- processTable(watDiv100SetupName, 11, outputWatDiv100Engine, ou
 tuplesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
 # set the colnames
-colnames(tuplesTable) <- c("tuples", "dataset", "Approach")
+colnames(tuplesTable) <- c("tuples", "dataset", "Strategy")
 
 # For the completness
 # Process the datas & merge them into one unique table
@@ -184,7 +184,7 @@ watDiv100Table <- processTable(watDiv100SetupName, 6, outputWatDiv100Engine, out
 completnessTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
 # set the colnames
-colnames(completnessTable) <- c("completness", "dataset", "Approach")
+colnames(completnessTable) <- c("completness", "dataset", "Strategy")
 
 # For the endpoint hotspots
 # Process the datas & merge them into one unique table
@@ -196,30 +196,30 @@ colnames(completnessTable) <- c("completness", "dataset", "Approach")
 #watDiv100HotspotsTable <- processEndpointsTable(outputWatDiv100EngineEndpoints, outputWatDiv100FedraEndpoints, outputWatDiv100PBJPreEndpoints, outputWatDiv100PBJPostEndpoints, outputWatDiv100PBJHybridEndpoints)
 
 # set the colnames
-#colnames(diseasomeHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
-#colnames(linkedMDBHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
-#colnames(geoCoordinatesHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
-#colnames(SWDFHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
-#colnames(watDivHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
-#colnames(watDiv100HotspotsTable) <- c("query", "value", "endpoint", "Approach")
+#colnames(diseasomeHotspotsTable) <- c("query", "value", "Endpoint", "Strategy")
+#colnames(linkedMDBHotspotsTable) <- c("query", "value", "Endpoint", "Strategy")
+#colnames(geoCoordinatesHotspotsTable) <- c("query", "value", "Endpoint", "Strategy")
+#colnames(SWDFHotspotsTable) <- c("query", "value", "Endpoint", "Strategy")
+#colnames(watDivHotspotsTable) <- c("query", "value", "Endpoint", "Strategy")
+#colnames(watDiv100HotspotsTable) <- c("query", "value", "endpoint", "Strategy")
 
 # create the boxplots
 pdf("../results/execution_time.pdf", width=7, height=4)
-ggplot(data = subset(timesTable, time < 8), aes(x=dataset, y=time)) + geom_boxplot(aes(fill=Approach)) + ylab("Execution time (s)") + xlab("Dataset")
+ggplot(data = subset(timesTable, time < 8), aes(x=dataset, y=time)) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
 dev.off()
 
 pdf("../results/transfered_tuples.pdf", width=7, height=4)
-ggplot(data = subset(tuplesTable, tuples < 100), aes(x=dataset, y=tuples)) + geom_boxplot(aes(fill=Approach)) + ylab("Number of transfered tuples") + xlab("Dataset")
+ggplot(data = subset(tuplesTable, tuples < 100), aes(x=dataset, y=tuples)) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transfered tuples") + xlab("Dataset")
 dev.off()
 
 pdf("../results/completness.pdf", width=7, height=4)
-ggplot(data = completnessTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Approach)) + ylab("Completness") + xlab("Dataset")
+ggplot(data = completnessTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Strategy)) + ylab("Completness") + xlab("Dataset")
 dev.off()
 
 #pdf("../results/hotspots_diseasome.pdf")
-#ggplot(data = subset(diseasomeHotspotsTable, value < 20), aes(x=Approach, y=value)) + geom_boxplot(aes(fill=Endpoint)) + xlab("Approaches") + ylab("Number of transfered tuples")
+#ggplot(data = subset(diseasomeHotspotsTable, value < 20), aes(x=Strategy, y=value)) + geom_boxplot(aes(fill=Endpoint)) + xlab("Strategies") + ylab("Number of transfered tuples")
 #dev.off()
 
 #pdf("../results/hotspots_linkedMDB.pdf")
-#ggplot(data = subset(linkedMDBHotspotsTable, value < 20), aes(x=Approach, y=value)) + geom_boxplot(aes(fill=Endpoint)) + xlab("Approaches") + ylab("Number of transfered tuples")
+#ggplot(data = subset(linkedMDBHotspotsTable, value < 20), aes(x=Strategy, y=value)) + geom_boxplot(aes(fill=Endpoint)) + xlab("Strategies") + ylab("Number of transfered tuples")
 #dev.off()
