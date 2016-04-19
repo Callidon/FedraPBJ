@@ -7,7 +7,7 @@ require(ggplot2)
 # Global variables
 diseasomeSetupName <- "Diseasome"
 linkedMDBSetupName <- "LinkedMDB"
-geoCoordinatesSetupName <- "GeoCoordinates"
+geoCoordinatesSetupName <- "GeoCoords"
 swdfSetupName <- "SWDF"
 watDivSetupName <- "WatDiv"
 watDiv100SetupName <- "WatDiv100"
@@ -135,17 +135,17 @@ outputWatDivPBJPostEndpoints <- "../results/watDiv/outputFedXFedra-PBJ-postFEDER
 outputWatDivPBJHybridEndpoints <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION10ClientEndpoints"
 
 # from watDiv100 setup
-outputWatDiv100Engine <- "../results/watDiv/outputFedXengineFEDERATION10Client"
-outputWatDiv100Fedra <- "../results/watDiv/outputFedXFedraFEDERATION10Client"
-outputWatDiv100PBJPre <- "../results/watDiv/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputWatDiv100PBJPost <- "../results/watDiv/outputFedXFedra-PBJ-postFEDERATION10Client"
-outputWatDiv100PBJHybrid <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION10Client"
+outputWatDiv100Engine <- "../results/watDiv100/outputFedXengineFEDERATION10Client"
+outputWatDiv100Fedra <- "../results/watDiv100/outputFedXFedraFEDERATION10Client"
+outputWatDiv100PBJPre <- "../results/watDiv100/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputWatDiv100PBJPost <- "../results/watDiv100/outputFedXFedra-PBJ-postFEDERATION10Client"
+outputWatDiv100PBJHybrid <- "../results/watDiv100/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
-outputWatDiv100EngineEndpoints <- "../results/watDiv/outputFedXengineFEDERATION10ClientEndpoints"
-outputWatDiv100FedraEndpoints <- "../results/watDiv/outputFedXFedraFEDERATION10ClientEndpoints"
-outputWatDiv100PBJPreEndpoints <- "../results/watDiv/outputFedXFedra-PBJ-preFEDERATION10ClientEndpoints"
-outputWatDiv100PBJPostEndpoints <- "../results/watDiv/outputFedXFedra-PBJ-postFEDERATION10ClientEndpoints"
-outputWatDiv100PBJHybridEndpoints <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION10ClientEndpoints"
+outputWatDiv100EngineEndpoints <- "../results/watDiv100/outputFedXengineFEDERATION10ClientEndpoints"
+outputWatDiv100FedraEndpoints <- "../results/watDiv100/outputFedXFedraFEDERATION10ClientEndpoints"
+outputWatDiv100PBJPreEndpoints <- "../results/watDiv100/outputFedXFedra-PBJ-preFEDERATION10ClientEndpoints"
+outputWatDiv100PBJPostEndpoints <- "../results/watDiv100/outputFedXFedra-PBJ-postFEDERATION10ClientEndpoints"
+outputWatDiv100PBJHybridEndpoints <- "../results/watDiv100/outputFedXFedra-PBJ-hybridFEDERATION10ClientEndpoints"
 
 # For the execution time
 # Process the datas & merge them into one unique table
@@ -154,8 +154,8 @@ linkedMDBTable <- processTable(linkedMDBSetupName, 2, outputLinkedMDBEngine, out
 geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 2, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
 SWDFTable <- processTable(swdfSetupName, 2, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
 watDivTable <- processTable(watDivSetupName, 2, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
-#watDiv100Table <- processTable(watDiv100SetupName, 2, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
-timesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable) #, watDiv100Table)
+watDiv100Table <- processTable(watDiv100SetupName, 2, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
+timesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
 # set the colnames
 colnames(timesTable) <- c("time", "dataset", "Approach")
@@ -167,8 +167,8 @@ linkedMDBTable <- processTable(linkedMDBSetupName, 11, outputLinkedMDBEngine, ou
 geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 11, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
 SWDFTable <- processTable(swdfSetupName, 11, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
 watDivTable <- processTable(watDivSetupName, 11, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
-#watDiv100Table <- processTable(watDiv100SetupName, 11, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
-tuplesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable) #, watDiv100Table)
+watDiv100Table <- processTable(watDiv100SetupName, 11, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
+tuplesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
 # set the colnames
 colnames(tuplesTable) <- c("tuples", "dataset", "Approach")
@@ -180,27 +180,27 @@ linkedMDBTable <- processTable(linkedMDBSetupName, 6, outputLinkedMDBEngine, out
 geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 6, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
 SWDFTable <- processTable(swdfSetupName, 6, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
 watDivTable <- processTable(watDivSetupName, 6, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
-#watDiv100Table <- processTable(watDiv100SetupName, 6, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
-completnessTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable) #, watDiv100Table)
+watDiv100Table <- processTable(watDiv100SetupName, 6, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
+completnessTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
 # set the colnames
 colnames(completnessTable) <- c("completness", "dataset", "Approach")
 
 # For the endpoint hotspots
 # Process the datas & merge them into one unique table
-diseasomeHotspotsTable <- processEndpointsTable(outputDiseasomeEngineEndpoints, outputDiseasomeFedraEndpoints, outputDiseasomePBJPreEndpoints, outputDiseasomePBJPostEndpoints, outputDiseasomePBJHybridEndpoints)
-linkedMDBHotspotsTable <- processEndpointsTable(outputLinkedMDBEngineEndpoints, outputLinkedMDBFedraEndpoints, outputLinkedMDBPBJPreEndpoints, outputLinkedMDBPBJPostEndpoints, outputLinkedMDBPBJHybridEndpoints)
-geoCoordinatesHotspotsTable <- processEndpointsTable(outputGeoCoordinatesEngineEndpoints, outputGeoCoordinatesFedraEndpoints, outputGeoCoordinatesPBJPreEndpoints, outputGeoCoordinatesPBJPostEndpoints, outputGeoCoordinatesPBJHybridEndpoints)
-SWDFHotspotsTable <- processEndpointsTable(outputSWDFEngineEndpoints, outputSWDFFedraEndpoints, outputSWDFPBJPreEndpoints, outputSWDFPBJPostEndpoints, outputSWDFPBJHybridEndpoints)
-watDivHotspotsTable <- processEndpointsTable(outputWatDivEngineEndpoints, outputWatDivFedraEndpoints, outputWatDivPBJPreEndpoints, outputWatDivPBJPostEndpoints, outputWatDivPBJHybridEndpoints)
+#diseasomeHotspotsTable <- processEndpointsTable(outputDiseasomeEngineEndpoints, outputDiseasomeFedraEndpoints, outputDiseasomePBJPreEndpoints, outputDiseasomePBJPostEndpoints, outputDiseasomePBJHybridEndpoints)
+#linkedMDBHotspotsTable <- processEndpointsTable(outputLinkedMDBEngineEndpoints, outputLinkedMDBFedraEndpoints, outputLinkedMDBPBJPreEndpoints, outputLinkedMDBPBJPostEndpoints, outputLinkedMDBPBJHybridEndpoints)
+#geoCoordinatesHotspotsTable <- processEndpointsTable(outputGeoCoordinatesEngineEndpoints, outputGeoCoordinatesFedraEndpoints, outputGeoCoordinatesPBJPreEndpoints, outputGeoCoordinatesPBJPostEndpoints, outputGeoCoordinatesPBJHybridEndpoints)
+#SWDFHotspotsTable <- processEndpointsTable(outputSWDFEngineEndpoints, outputSWDFFedraEndpoints, outputSWDFPBJPreEndpoints, outputSWDFPBJPostEndpoints, outputSWDFPBJHybridEndpoints)
+#watDivHotspotsTable <- processEndpointsTable(outputWatDivEngineEndpoints, outputWatDivFedraEndpoints, outputWatDivPBJPreEndpoints, outputWatDivPBJPostEndpoints, outputWatDivPBJHybridEndpoints)
 #watDiv100HotspotsTable <- processEndpointsTable(outputWatDiv100EngineEndpoints, outputWatDiv100FedraEndpoints, outputWatDiv100PBJPreEndpoints, outputWatDiv100PBJPostEndpoints, outputWatDiv100PBJHybridEndpoints)
 
 # set the colnames
-colnames(diseasomeHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
-colnames(linkedMDBHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
-colnames(geoCoordinatesHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
-colnames(SWDFHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
-colnames(watDivHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
+#colnames(diseasomeHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
+#colnames(linkedMDBHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
+#colnames(geoCoordinatesHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
+#colnames(SWDFHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
+#colnames(watDivHotspotsTable) <- c("query", "value", "Endpoint", "Approach")
 #colnames(watDiv100HotspotsTable) <- c("query", "value", "endpoint", "Approach")
 
 # create the boxplots
@@ -216,10 +216,10 @@ pdf("../results/completness.pdf", width=7, height=4)
 ggplot(data = completnessTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Approach)) + ylab("Completness") + xlab("Dataset")
 dev.off()
 
-pdf("../results/hotspots_diseasome.pdf")
-ggplot(data = subset(diseasomeHotspotsTable, value < 20), aes(x=Approach, y=value)) + geom_boxplot(aes(fill=Endpoint)) + xlab("Approaches") + ylab("Number of transfered tuples")
-dev.off()
+#pdf("../results/hotspots_diseasome.pdf")
+#ggplot(data = subset(diseasomeHotspotsTable, value < 20), aes(x=Approach, y=value)) + geom_boxplot(aes(fill=Endpoint)) + xlab("Approaches") + ylab("Number of transfered tuples")
+#dev.off()
 
-pdf("../results/hotspots_linkedMDB.pdf")
-ggplot(data = subset(linkedMDBHotspotsTable, value < 20), aes(x=Approach, y=value)) + geom_boxplot(aes(fill=Endpoint)) + xlab("Approaches") + ylab("Number of transfered tuples")
-dev.off()
+#pdf("../results/hotspots_linkedMDB.pdf")
+#ggplot(data = subset(linkedMDBHotspotsTable, value < 20), aes(x=Approach, y=value)) + geom_boxplot(aes(fill=Endpoint)) + xlab("Approaches") + ylab("Number of transfered tuples")
+#dev.off()
