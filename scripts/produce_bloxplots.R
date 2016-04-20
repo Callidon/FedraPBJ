@@ -209,11 +209,11 @@ ggplot(data = subset(timesTable, time < 8), aes(x=dataset, y=time)) + geom_boxpl
 dev.off()
 
 pdf("../results/transfered_tuples.pdf", width=7, height=4)
-ggplot(data = subset(tuplesTable, tuples < 100), aes(x=dataset, y=tuples)) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transfered tuples") + xlab("Dataset")
+ggplot(data = subset(tuplesTable, tuples < 100), aes(x=dataset, y=tuples)) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
 dev.off()
 
 pdf("../results/completness.pdf", width=7, height=4)
-ggplot(data = completnessTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Strategy)) + ylab("Completness") + xlab("Dataset")
+ggplot(data = completnessTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Strategy)) + ylab("Completeness") + xlab("Dataset")
 dev.off()
 
 #pdf("../results/hotspots_diseasome.pdf")
