@@ -3,6 +3,7 @@
 # author : Thomas Minier & Naixin Wang, M1 ALMA
 
 require(ggplot2)
+require(scales)
 
 # Global variables
 diseasomeSetupName <- "Diseasome"
@@ -205,14 +206,14 @@ colnames(completnessTable) <- c("completness", "dataset", "Strategy")
 
 # create the boxplots
 pdf("../results/execution_time.pdf", width=7, height=4)
-ggplot(data = subset(timesTable, time < 8), aes(x=dataset, y=time)) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
+ggplot(data = timesTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
 dev.off()
 
-pdf("../results/transfered_tuples.pdf", width=7, height=4)
-ggplot(data = subset(tuplesTable, tuples < 100), aes(x=dataset, y=tuples)) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
+pdf("../results/transferred_tuples.pdf", width=7, height=4)
+ggplot(data = tuplesTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
 dev.off()
 
-pdf("../results/completness.pdf", width=7, height=4)
+pdf("../results/completeness.pdf", width=7, height=4)
 ggplot(data = completnessTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Strategy)) + ylab("Completeness") + xlab("Dataset")
 dev.off()
 
