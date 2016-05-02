@@ -23,7 +23,6 @@ import info.aduna.iteration.CloseableIteration;
 
 import java.util.*;
 
-import info.aduna.iteration.CloseableIteratorIteration;
 import org.apache.log4j.Logger;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
@@ -35,7 +34,6 @@ import com.fluidops.fedx.evaluation.FederationEvalStrategy;
 import com.fluidops.fedx.evaluation.concurrent.ControlledWorkerScheduler;
 import com.fluidops.fedx.evaluation.concurrent.ParallelTask;
 import com.fluidops.fedx.structures.QueryInfo;
-import org.openrdf.query.impl.ListBindingSet;
 
 
 /**
@@ -55,37 +53,16 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 
 	public static Logger log = Logger.getLogger(ControlledWorkerBoundJoin.class);
 	private String sourceSelectionStrategy;
+    private ParallelFedraPartitioning PBJPartitionning;
 
 	public ControlledWorkerBoundJoin(ControlledWorkerScheduler<BindingSet> scheduler, FederationEvalStrategy strategy,
 									 CloseableIteration<BindingSet, QueryEvaluationException> leftIter,
 									 TupleExpr rightArg, BindingSet bindings, QueryInfo queryInfo)
 			throws QueryEvaluationException {
-		super(scheduler, strategy, leftIter, rightArg, bindings, queryInfo);
-		sourceSelectionStrategy = Config.getConfig().getProperty("SourceSelectionStrategy", "FedX");
-	}
-
-	protected <T,E> List<Pair<T, List<E>>> partition(List<T> sources, List<E> bindings) {
-		List<Pair<T, List<E>>> results = new ArrayList<>();
-		List<E> subset = new ArrayList<>();
-		int subset_size = (int) Math.ceil((double) bindings.size() / (double) sources.size());
-		ListIterator<T> current_source = sources.listIterator();
-
-		for(E binding : bindings) {
-			subset.add(binding);
-
-			if( subset.size() == subset_size) {
-				Pair<T, List<E>> pair = new Pair<T, List<E>>(current_source.next(), new ArrayList<E>(subset));
-				results.add(pair);
-				subset.clear();
-			}
-		}
-
-		if(subset.size() > 0) {
-			Pair<T, List<E>> pair = new Pair<T, List<E>>(current_source.next(), new ArrayList<E>(subset));
-			results.add(pair);
-		}
-		return results;
-	}
+        super(scheduler, strategy, leftIter, rightArg, bindings, queryInfo);
+        sourceSelectionStrategy = Config.getConfig().getProperty("SourceSelectionStrategy", "FedX");
+        PBJPartitionning = new ParallelFedraPartitioning();
+    }
 
 
 	@Override
@@ -101,7 +78,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 		TupleExpr expr = rightArg;
 
 		TaskCreator taskCreator = null;
-		Map<StatementSource, TaskCreator> parallelTaskCreator = new HashMap<>();
+		Map<StatementSource, TaskCreator> parallelTaskCreators = new HashMap<>();
 		List<StatementSource> sources = null;
 		List<List<StatementSource>> sourcesGroups = null;
 
@@ -109,56 +86,31 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 		final boolean useFedraPBJ = sourceSelectionStrategy.toLowerCase().contains("fedra-pbj");
 		if (!closed && leftIter.hasNext()) {
 			BindingSet b = leftIter.next();
-			totalBindings++;
+            System.out.println("join#" + joinId + " mysterious b : " + b);
+            totalBindings++;
 			if (expr instanceof StatementTupleExpr) {
 
 				StatementTupleExpr stmt = (StatementTupleExpr)expr;
 
 				if (stmt.hasFreeVarsFor(b)) {
 
-					log.debug("Inside stmt.hasFreeVars(b)");
-					log.debug("stmt.toString : \n" + stmt.toString());
-
 					if(stmt instanceof StatementSourcePattern) {
-						// if we are using the Parallel Bound Join algorithm
-						if(useFedraPBJ) {
-                            // if this triple has multiples sources selected by Fedra
-                            if(stmt instanceof FedraStatementSourcePattern) {
-                                log.debug("case of a FedraStatementSourcePattern");
-                                FedraStatementSourcePattern source_pattern = (FedraStatementSourcePattern) stmt;
-                                sourcesGroups = source_pattern.getRelevantSources();
+						// if we are using the Parallel Bound Join algorithm & this triple has multiples sources selected by Fedra
+						if(useFedraPBJ && stmt instanceof FedraStatementSourcePattern) {
+                            FedraStatementSourcePattern source_pattern = (FedraStatementSourcePattern) stmt;
+                            sourcesGroups = source_pattern.getRelevantSources();
 
-                                // duplicate the tuple without his sources
-                                TupleExpr stmt_single = new StatementPattern(source_pattern.getSubjectVar(), source_pattern.getPredicateVar(), source_pattern.getObjectVar());
+                            // duplicate the tuple without his sources
+                            TupleExpr stmt_single = new StatementPattern(source_pattern.getSubjectVar(), source_pattern.getPredicateVar(), source_pattern.getObjectVar());
 
-                                // create a StatmentSourcePattern & his associate Task Creator for each source
-                                for(List<StatementSource> endpoints : sourcesGroups) {
-                                    for(StatementSource source : endpoints) {
-                                        StatementSourcePattern new_stmt = new StatementSourcePattern((StatementPattern) stmt_single, source_pattern.getQueryInfo());
-                                        new_stmt.addStatementSource(source);
-                                        log.debug("new stmt : \n" + new_stmt);
-                                        // create the associated task creator
-                                        parallelTaskCreator.put(source, new BoundJoinTaskCreator(this, strategy, new_stmt));
-                                    }
-                                }
-                            } else {
-                                // FIX ME : use the classic FedX bound Join for this case, because we doesn't gain much with that ?
-                                log.debug("case of a non FedraStatementSourcePattern");
-                                StatementSourcePattern source_pattern = (StatementSourcePattern) stmt;
-                                sources = source_pattern.getStatementSources();
-
-                                // duplicate the tuple without his sources
-                                TupleExpr stmt_single = new StatementPattern(source_pattern.getSubjectVar(), source_pattern.getPredicateVar(), source_pattern.getObjectVar());
-
-                                // create a StatmentSourcePattern & his associate Task Creator for each source
-                                for(StatementSource source : sources) {
+                            // create a StatmentSourcePattern & his associate Task Creator for each source
+                            for(List<StatementSource> endpoints : sourcesGroups) {
+                                for(StatementSource source : endpoints) {
                                     StatementSourcePattern new_stmt = new StatementSourcePattern((StatementPattern) stmt_single, source_pattern.getQueryInfo());
                                     new_stmt.addStatementSource(source);
-                                    log.debug("new stmt : \n" + new_stmt);
                                     // create the associated task creator
-                                    parallelTaskCreator.put(source, new BoundJoinTaskCreator(this, strategy, new_stmt));
+                                    parallelTaskCreators.put(source, new BoundJoinTaskCreator(this, strategy, new_stmt));
                                 }
-                                // End FIX ME
                             }
 						} else {
 							// classic case in FedX Bound Join algorithm
@@ -176,16 +128,14 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 			} else {
 				throw new RuntimeException("Expr is of unexpected type: " + expr.getClass().getCanonicalName() + ". Please report this problem.");
 			}
-			scheduler.schedule( new ParallelJoinTask(this, strategy, expr, b) );
+            scheduler.schedule( new ParallelJoinTask(this, strategy, expr, b) );
 		}
 
-		// Collect all the bindings & schedule the tasks
-
-		// if we are using the Parallel Bound Join algorithm
-		if(useFedraPBJ) {
-			List<BindingSet> allBindings = new ArrayList<>();
-
-			while (!closed && leftIter.hasNext()) {
+		// Collect all the bindings
+        int nBindings;
+        List<BindingSet> bindings = null;
+        List<List<BindingSet>> bindingPages = new ArrayList<>();
+        while (!closed && leftIter.hasNext()) {
 			/*
 			 * XXX idea:
 			 *
@@ -195,7 +145,84 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 			 * remote SPARQL requests.
 			 *
 			 */
-				allBindings.add(leftIter.next());
+
+            if (totalBindings > 10)
+                nBindings = nBindingsCfg;
+            else
+                nBindings = 3;
+
+            bindings = new ArrayList<>(nBindings);
+
+            int count = 0;
+            while (count < nBindings && leftIter.hasNext()) {
+                BindingSet binding = leftIter.next();
+                bindings.add(binding);
+                count++;
+            }
+
+            totalBindings += count;
+
+            // add the bindings page only if it contains at least one elt
+            if(bindings.size() > 0) {
+                bindingPages.add(new ArrayList<>(bindings));
+            }
+        }
+
+        // if we are using the Parallel Bound Join algorithm
+        if(useFedraPBJ) {
+            // schedule the tasks using the Parallel Bound Join algorithm
+            assert sourcesGroups != null;
+            System.out.println("join#" + joinId + " parallel bound join");
+            for(List<StatementSource> endpoints : sourcesGroups) {
+                // if no parallelization is possible
+                if(endpoints.size() == 1) {
+                    System.out.println("join#" + joinId + " simple case");
+                    // classic case for Bound Join
+                    for(List<BindingSet> page : bindingPages) {
+                        scheduler.schedule(parallelTaskCreators.get(endpoints.get(0)).getTask(page));
+                    }
+                } else {
+                    // if we a parallelization is possible, we apply the parallel bound join algorithm
+                    System.out.println("join#" + joinId + " parallel case");
+                    PBJPartitionning.setSources(endpoints);
+                    PBJPartitionning.setBindingsPage(bindingPages);
+                    PBJPartitionning.performPartition(ParallelFedraPartitioning.PARTITION_ALGORITHM.BRUTE_FORCE);
+                    List<Pair<StatementSource, List<List<BindingSet>>>> groups = PBJPartitionning.getPartition();
+
+                    for(Pair<StatementSource, List<List<BindingSet>>> pair : groups) {
+                        // for each pair assignated to this source, schedule a task
+                        System.out.println("join#" + joinId + " source used : " + pair.getFirst());
+                        for(List<BindingSet> page : pair.getSecond()) {
+                            scheduler.schedule(parallelTaskCreators.get(pair.getFirst()).getTask(page));
+                        }
+                    }
+                }
+            }
+        } else {
+            System.out.println("join#" + joinId + " normal bound join");
+            // classic case for Bound Join
+            for(List<BindingSet> page : bindingPages) {
+                assert taskCreator != null;
+                scheduler.schedule(taskCreator.getTask(page));
+            }
+        }
+
+
+        // OLD CODE - didn't use the bindings pagination
+		/*if(useFedraPBJ) {
+			List<BindingSet> allBindings = new ArrayList<>();
+
+			while (!closed && leftIter.hasNext()) {*/
+			/*
+			 * XXX idea:
+			 *
+			 * make nBindings dependent on the number of intermediate results of the left argument.
+			 *
+			 * If many intermediate results, increase the number of bindings. This will result in less
+			 * remote SPARQL requests.
+			 *
+			 */
+			/*	allBindings.add(leftIter.next());
 			}
 
 			totalBindings = allBindings.size() + 1;
@@ -223,7 +250,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 			// classic case using FedX native Bound Join algorithm
 			int nBindings;
 			List<BindingSet> bindings = null;
-			while (!closed && leftIter.hasNext()) {
+			while (!closed && leftIter.hasNext()) {*/
 
 
 			/*
@@ -236,12 +263,12 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 			 *
 			 */
 
-				if (totalBindings>10)
+			/*	if (totalBindings>10)
 					nBindings = nBindingsCfg;
 				else
 					nBindings = 3;
 
-				bindings = new ArrayList<BindingSet>(nBindings);
+				bindings = new ArrayList<>(nBindings);
 
 				int count = 0;
 				while (count < nBindings && leftIter.hasNext()) {
@@ -255,12 +282,11 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 					scheduler.schedule(taskCreator.getTask(bindings));
 				}
 			}
-		}
-		log.debug("total number of bindings : " + totalBindings);
+		}*/
+
+        System.out.println("join#" + joinId + " number of tasks " + scheduler.getNumberOfTasks());
 
 		scheduler.informFinish(this);
-
-		log.debug("JoinStats: left iter of join #" + this.joinId + " had " + totalBindings + " results.");
 
 		// wait until all tasks are executed
 		synchronized (this) {
