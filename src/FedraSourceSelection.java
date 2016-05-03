@@ -343,8 +343,8 @@ class FedraSourceSelection {
                 }
             }
             stmtsByEndpoint = tmpStmtsByEndpoint;
-            System.out.println("#--------------------------------#");
-            System.out.println("stmtsByEndpoint : " + stmtsByEndpoint);
+            //System.out.println("#--------------------------------#");
+            //System.out.println("stmtsByEndpoint : " + stmtsByEndpoint);
         }
 
         // Priority is given to evaluate triple patterns that belong to the same basic graph pattern in as less endpoints as possible
@@ -408,9 +408,9 @@ class FedraSourceSelection {
 
         //Fedra-PBJ hybrid : step 4 - complete the selected sources with the endpoints which evaluate only one triple pattern
         if(strategyType == StrategyType.PBJ_Hybrid) {
-            System.out.println("#--------------------------------#");
+            /*System.out.println("#--------------------------------#");
             System.out.println("SS before adding endpoints");
-            System.out.println(allSelectedSources);
+            System.out.println(allSelectedSources);*/
             for(Map.Entry<Endpoint, List<StatementPattern>> entry : stmtsByEndpoint.entrySet()) {
                 // search for each entry it's origin groups before the set covering
                 for(Map.Entry<StatementPattern, Set<Set<Endpoint>>> originEntry : originalSelectedSources.entrySet()) {
@@ -429,9 +429,9 @@ class FedraSourceSelection {
                     }
                 }
             }
-            System.out.println("#--------------------------------#");
+            /*System.out.println("#--------------------------------#");
             System.out.println("SS after adding endpoints");
-            System.out.println(allSelectedSources);
+            System.out.println(allSelectedSources);*/
         }
 
         for (StatementPattern sp : candidateSources.keySet()) {
