@@ -126,16 +126,15 @@ public class SourceSelection {
                     if(allSelectedEndpoints != null && (allSelectedEndpoints.size() > 0)) {
                         stmtToAllSources.put(stmt, new ArrayList<List<StatementSource>>());
 
-                        // collect all the endpoints & add them to the sources for this statement
-                        for(Set<Endpoint> endpoints : allSelectedEndpoints) {
-                            stmtToAllSources.get(stmt).add(new ArrayList<StatementSource>());
-                            int listInd = 0;
+						// collect all the endpoints & add them to the sources for this statement
+						for(Set<Endpoint> endpoints : allSelectedEndpoints) {
+							List<StatementSource> endpointList = new ArrayList<>();
 							for (Endpoint e : endpoints) {
-                                stmtToAllSources.get(stmt).get(listInd).add(new StatementSource(e.getId(), StatementSourceType.REMOTE));
-                                addSource(stmt, new StatementSource(e.getId(), StatementSourceType.REMOTE));
-                            }
-							listInd++;
-                        }
+                                endpointList.add(new StatementSource(e.getId(), StatementSourceType.REMOTE));
+								addSource(stmt, new StatementSource(e.getId(), StatementSourceType.REMOTE));
+							}
+                            stmtToAllSources.get(stmt).add(endpointList);
+						}
                         continue;
                     } else {
                         // we process using normal case in Fedra Algorithm
@@ -189,13 +188,26 @@ public class SourceSelection {
 
             // process in priority the collection of endpoints for the Parallel Bound Join
             if(allSources != null) {
-                StatementSourcePattern stmtNode = new FedraStatementSourcePattern(stmt, queryInfo);
-                ( (FedraStatementSourcePattern) stmtNode).setRelevantSources(allSources);
 
-                // FIX ME : we add the normal sources to the tuple to don't break FedX, but maybe it's useless
-                for (StatementSource s : sources)
-                    stmtNode.addStatementSource(s);
-                stmt.replaceWith(stmtNode);
+                // if more than one source -> FedraStatementSourcePattern
+                // exactly one source -> OwnedStatementSourcePattern
+                // otherwise: No resource seems to provide results
+                if (sources.size() > 1) {
+                    StatementSourcePattern stmtNode = new FedraStatementSourcePattern(stmt, queryInfo);
+                    ( (FedraStatementSourcePattern) stmtNode).setRelevantSources(stmt, allSources, queryInfo);
+
+                    // we add the normal sources to the tuple to don't break FedX
+                    for (StatementSource s : sources)
+                        stmtNode.addStatementSource(s);
+                    stmt.replaceWith(stmtNode);
+
+                } else if (sources.size() == 1) {
+                    stmt.replaceWith( new ExclusiveStatement(stmt, sources.get(0), queryInfo));
+                } else {
+                    if (log.isDebugEnabled())
+                        log.debug("Statement " + QueryStringUtil.toString(stmt) + " does not produce any results at the provided sources, replacing node with EmptyStatementPattern." );
+                    stmt.replaceWith( new EmptyStatementPattern(stmt));
+                }
             } else {
                 // if more than one source -> StatementSourcePattern
                 // exactly one source -> OwnedStatementSourcePattern
