@@ -4,18 +4,12 @@ import com.fluidops.fedx.algebra.StatementSource;
 import com.fluidops.fedx.optimizer.Pair;
 import org.openrdf.query.BindingSet;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 /**
  * Class to perform the partition for the Parallel Bound Join algorithm using different algorithms
  */
 public class ParallelFedraPartitioning {
-
-    public enum PARTITION_ALGORITHM {
-        BRUTE_FORCE
-    }
 
     private List<StatementSource> sources;
     private List<List<BindingSet>> bindingsPages;
@@ -48,9 +42,37 @@ public class ParallelFedraPartitioning {
             case BRUTE_FORCE:
                 this.bruteForcePairs();
                 break;
+            case LPT:
+                this.LPTPairs();
+                break;
             default:
                 this.bruteForcePairs();
                 break;
+        }
+        this.printPartition();
+    }
+
+    /**
+     * Print informations about the current stored partition
+     */
+    public void printPartition() {
+        if( (sources.size() >0 ) && (bindingsPages.size() > 0)) {
+            int num = 0;
+            //ouput infos about the partition
+            for(Pair<StatementSource, List<List<BindingSet>>> pair : partition) {
+                System.out.println("Pair n " + num);
+                System.out.println("-> source : " + pair.getFirst().getEndpointID());
+                System.out.println("-> #bindings : ");
+                int nbBindings = 0;
+                for(List<BindingSet> page : pair.getSecond()) {
+                    System.out.println("--> page of : " + page.size() + " bindings");
+                    nbBindings += page.size();
+                }
+                System.out.println("-> total bindings : " + nbBindings);
+                num++;
+            }
+        } else {
+            System.out.println("Empty partition");
         }
     }
 
@@ -79,20 +101,6 @@ public class ParallelFedraPartitioning {
             results.add(pair);
         }
         partition = results;
-        int num = 0;
-        //ouput infos about the partition
-        for(Pair<StatementSource, List<List<BindingSet>>> pair : partition) {
-            System.out.println("Pair n " + num);
-            System.out.println("-> source : " + pair.getFirst().getEndpointID());
-            System.out.println("-> #bindings : ");
-            int nbBindings = 0;
-            for(List<BindingSet> page : pair.getSecond()) {
-                System.out.println("--> page of : " + page.size() + " bindings");
-                nbBindings += page.size();
-            }
-            System.out.println("-> total bindings : " + nbBindings);
-            num++;
-        }
     }
 
     /**
@@ -100,5 +108,87 @@ public class ParallelFedraPartitioning {
      */
     private void LPTPairs() {
         List<Pair<StatementSource, List<List<BindingSet>>>> results = new ArrayList<>();
+        ListIterator<StatementSource> current_source = sources.listIterator();
+        List<List<List<BindingSet>>> bins = new ArrayList<>(sources.size());
+
+        // sort binding pages by decreasing order
+        Collections.sort(bindingsPages, new BindingPageSizeComparator(true));
+
+        // init the bins
+        for(int i = 0; i < sources.size(); i++) {
+            bins.add(new ArrayList<List<BindingSet>>());
+        }
+
+        // fill the bins with LPT algorithm
+        for(List<BindingSet> page : bindingsPages) {
+            // find the bin with the smallest weight & assign the current page to it
+            List<List<BindingSet>> min_bin = Collections.min(bins, new BinWeightComparator(false));
+            min_bin.add(page);
+        }
+
+        // assign the bins to source in order to make pairs
+        for(List<List<BindingSet>> bin : bins) {
+            Pair<StatementSource, List<List<BindingSet>>> pair = new Pair<StatementSource, List<List<BindingSet>>>(current_source.next(), new ArrayList<>(bin));
+            results.add(pair);
+        }
+        partition = results;
+    }
+
+    /**
+     * Comparator for the pages of bindings, used in LTP algorithm, for sorting them by their size
+     */
+    private class BindingPageSizeComparator implements Comparator<List<BindingSet>> {
+        private boolean reverse;
+
+        public BindingPageSizeComparator(boolean r) {
+            reverse = r;
+        }
+
+        @Override
+        public int compare(List<BindingSet> o1, List<BindingSet> o2) {
+            if(reverse) {
+                return o2.size() - o1.size();
+            } else {
+                return o1.size() - o2.size();
+            }
+        }
+    }
+
+    /**
+     * Comparator for the bins, used in LTP algorithm, for sorting them by their weight
+     */
+    private class BinWeightComparator implements Comparator<List<List<BindingSet>>> {
+        private boolean reverse;
+
+        public BinWeightComparator(boolean r) {
+            reverse = r;
+        }
+
+        @Override
+        public int compare(List<List<BindingSet>> b1, List<List<BindingSet>> b2) {
+            // compute the weight of each bin
+            int weight_b1 = 0, weight_b2 = 0;
+
+            for(List<BindingSet> page : b1){
+                weight_b1 += page.size();
+            }
+            for(List<BindingSet> page : b2){
+                weight_b2 += page.size();
+            }
+
+            if(reverse) {
+                return weight_b2 - weight_b1;
+            } else {
+                return weight_b1 - weight_b2;
+            }
+        }
+    }
+
+    /**
+     * Enum for listing available algorithm for the partition
+     */
+    public enum PARTITION_ALGORITHM {
+        BRUTE_FORCE,
+        LPT
     }
 }
