@@ -94,29 +94,33 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
         if (!closed && leftIter.hasNext()) {
             BindingSet firstBinding = leftIter.next();
             StatementSourcePattern stmtFirstSource = null;
-            System.out.println("join#" + joinId + " mysterious b : " + firstBinding);
             totalBindings++;
 			if (expr instanceof StatementTupleExpr) {
 
 				StatementTupleExpr stmt = (StatementTupleExpr)expr;
+                System.out.println("join#" + joinId + " a");
+                if (stmt.hasFreeVarsFor(firstBinding)) {
+                    System.out.println("join#" + joinId + " b");
+                    if((stmt instanceof StatementSourcePattern) || (stmt instanceof ExclusiveStatement)) {
+                        FedXStatementPattern source_pattern = (FedXStatementPattern) stmt;
 
-				if (stmt.hasFreeVarsFor(firstBinding)) {
-
-                    if(stmt instanceof StatementSourcePattern) {
                         // if we are using the Parallel Bound Join algorithm & this triple has multiples sources selected by Fedra
-						if(strategyIsPBJ && stmt instanceof FedraStatementSourcePattern) {
+                        System.out.println("join#" + joinId + " for statement " + stmt.getSignature() + " hasMultipleRelevantSources ? " + source_pattern.hasMultipleRelevantSources());
+                        if(strategyIsPBJ && source_pattern.hasMultipleRelevantSources()) {
                             usePBJ = true;
-                            FedraStatementSourcePattern source_pattern = (FedraStatementSourcePattern) stmt;
+                            // get the relevant sources & the associated StatementSourcePattern
                             sourcesGroups = source_pattern.getRelevantSources();
                             sourcePatternGroups = source_pattern.getRelevantSourcePatterns();
 
                             System.out.println("join#" + joinId + " sourceGroups : " + sourcesGroups);
                             System.out.println("join#" + joinId + " sourcePatternGroups : " + sourcePatternGroups);
 
+                            // register the task creators associated to each relevant source
                             for(Map.Entry<StatementSource, StatementSourcePattern> pair : sourcePatternGroups.entrySet()) {
 
                                 parallelTaskCreators.put(pair.getKey(), new BoundJoinTaskCreator(this, strategy, pair.getValue()));
 
+								// set the first source statement to be used for sending the first item
                                 if(stmtFirstSource == null) {
                                     stmtFirstSource = pair.getValue();
                                 }
@@ -218,7 +222,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                 }
             }
         } else {
-            // classic case for Bound Join
+            // classic case using FedX native Bound Join algorithm
             System.out.println("join#" + joinId + " normal bound join");
             for(List<BindingSet> page : bindingPages) {
                 assert taskCreator != null;
@@ -226,8 +230,6 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
             }
         }
 
-
-        // OLD CODE - didn't use the bindings pagination
         /*
         // classic case using FedX native Bound Join algorithm
         int nBindings;

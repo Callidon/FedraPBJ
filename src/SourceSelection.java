@@ -108,8 +108,9 @@ public class SourceSelection {
             fss.performSourceSelection();
             selectedSources = fss.getSelectedSources();
 
-			if(useFedraPBJ)
-				allSelectedSources = fss.getAllSelectedSources();
+			if(useFedraPBJ) {
+                allSelectedSources = fss.getAllSelectedSources();
+            }
         }
 
 		// for each statement determine the relevant sources
@@ -122,8 +123,10 @@ public class SourceSelection {
                 // the Parallel Bound Join Algorithm needs all the sources selected by Fedra for this statement
                 if(useFedraPBJ) {
                     Set<Set<Endpoint>> allSelectedEndpoints = allSelectedSources.get(stmt);
-                    // if the statement has multiples sources selected by Fedra
-                    if(allSelectedEndpoints != null && (allSelectedEndpoints.size() > 0)) {
+                    System.out.println("allSelectedEndpoints " + allSelectedEndpoints);
+
+                    // if the statement has multiples sources selected by Fedra, we processed them
+                    if( (allSelectedEndpoints != null) && (allSelectedEndpoints.size() > 0) ) {
                         stmtToAllSources.put(stmt, new ArrayList<List<StatementSource>>());
 
 						// collect all the endpoints & add them to the sources for this statement
@@ -131,29 +134,27 @@ public class SourceSelection {
 							List<StatementSource> endpointList = new ArrayList<>();
 							for (Endpoint e : endpoints) {
                                 endpointList.add(new StatementSource(e.getId(), StatementSourceType.REMOTE));
-								addSource(stmt, new StatementSource(e.getId(), StatementSourceType.REMOTE));
+								//addSource(stmt, new StatementSource(e.getId(), StatementSourceType.REMOTE));
 							}
                             stmtToAllSources.get(stmt).add(endpointList);
 						}
-                        continue;
-                    } else {
-                        // we process using normal case in Fedra Algorithm
-                        Set<Endpoint> selectedEndpoints = selectedSources.get(stmt);
-                        if (selectedEndpoints != null && selectedEndpoints.size() > 0) {
-                            for (Endpoint e : selectedEndpoints) {
-                                addSource(stmt, new StatementSource(e.getId(), StatementSourceType.REMOTE));
-                            }
-                            continue;
-                        }
                     }
-                } else {
-                    Set<Endpoint> selectedEndpoints = selectedSources.get(stmt);
+
+                    // then, we process using normal case in Fedra Algorithm
+                    /*Set<Endpoint> selectedEndpoints = selectedSources.get(stmt);
                     if (selectedEndpoints != null && selectedEndpoints.size() > 0) {
                         for (Endpoint e : selectedEndpoints) {
                             addSource(stmt, new StatementSource(e.getId(), StatementSourceType.REMOTE));
                         }
                         continue;
+                    }*/
+                }
+                Set<Endpoint> selectedEndpoints = selectedSources.get(stmt);
+                if (selectedEndpoints != null && selectedEndpoints.size() > 0) {
+                    for (Endpoint e : selectedEndpoints) {
+                        addSource(stmt, new StatementSource(e.getId(), StatementSourceType.REMOTE));
                     }
+                    continue;
                 }
             }
 			// check for each current federation member (cache or remote ASK)
@@ -187,7 +188,7 @@ public class SourceSelection {
             List<List<StatementSource>> allSources = stmtToAllSources.get(stmt);
 
             // process in priority the collection of endpoints for the Parallel Bound Join
-            if(allSources != null) {
+            /*if(allSources != null) {
 
                 // if more than one source -> FedraStatementSourcePattern
                 // exactly one source -> OwnedStatementSourcePattern
@@ -208,7 +209,7 @@ public class SourceSelection {
                         log.debug("Statement " + QueryStringUtil.toString(stmt) + " does not produce any results at the provided sources, replacing node with EmptyStatementPattern." );
                     stmt.replaceWith( new EmptyStatementPattern(stmt));
                 }
-            } else {
+            } else {*/
                 // if more than one source -> StatementSourcePattern
                 // exactly one source -> OwnedStatementSourcePattern
                 // otherwise: No resource seems to provide results
@@ -216,18 +217,27 @@ public class SourceSelection {
                 if (sources.size() > 1) {
                     StatementSourcePattern stmtNode = new StatementSourcePattern(stmt, queryInfo);
 
+					if(useFedraPBJ && (allSources != null)) {
+                        stmtNode.setRelevantSources(stmt, allSources, queryInfo);
+                    }
+
                     for (StatementSource s : sources)
                         stmtNode.addStatementSource(s);
                     stmt.replaceWith(stmtNode);
 
                 } else if (sources.size() == 1) {
-                    stmt.replaceWith( new ExclusiveStatement(stmt, sources.get(0), queryInfo));
+                    ExclusiveStatement stmtNode = new ExclusiveStatement(stmt, sources.get(0), queryInfo);
+                    if(useFedraPBJ && (allSources != null)) {
+                        stmtNode.setRelevantSources(stmt, allSources, queryInfo);
+                    }
+                    stmt.replaceWith(stmtNode);
+                    //System.out.println("in exclusive statement source pattern  : allSources = " + allSources);
                 } else {
                     if (log.isDebugEnabled())
                         log.debug("Statement " + QueryStringUtil.toString(stmt) + " does not produce any results at the provided sources, replacing node with EmptyStatementPattern." );
                     stmt.replaceWith( new EmptyStatementPattern(stmt));
                 }
-            }
+            //}
 
 		}
 	}
