@@ -58,7 +58,6 @@ public class ParallelFedraPartitioning {
     public void printPartition() {
         if( (sources.size() >0 ) && (bindingsPages.size() > 0)) {
             int num = 0;
-            //ouput infos about the partition
             for(Pair<StatementSource, List<List<BindingSet>>> pair : partition) {
                 System.out.println("Pair n " + num);
                 System.out.println("-> source : " + pair.getFirst().getEndpointID());
@@ -78,7 +77,7 @@ public class ParallelFedraPartitioning {
 
     /**
      * Perform the partition using a brute force algorithm
-     * @warning possibly very poorly optimized
+     * WARNING : this algorithm does not ensure the load balancing between the endpoints
      */
     private void bruteForcePairs() {
         List<Pair<StatementSource, List<List<BindingSet>>>> results = new ArrayList<>();
@@ -104,7 +103,8 @@ public class ParallelFedraPartitioning {
     }
 
     /**
-     * Perform the partition using a LPT algorithm
+     * Perform the partition using a Longest Processing Time (LPT) heuristic
+     * @see <a href="http://www.serc.iisc.ernet.in/~simmhan/SE252-JAN2014/lectures/SE252.Jan2014.Lecture-17.pdf">reference lecture (p.12)</a>
      */
     private void LPTPairs() {
         List<Pair<StatementSource, List<List<BindingSet>>>> results = new ArrayList<>();
@@ -114,7 +114,7 @@ public class ParallelFedraPartitioning {
         // sort binding pages by decreasing order
         Collections.sort(bindingsPages, new BindingPageSizeComparator(true));
 
-        // init the bins
+        // initialize the bins
         for(int i = 0; i < sources.size(); i++) {
             bins.add(new ArrayList<List<BindingSet>>());
         }
@@ -135,7 +135,7 @@ public class ParallelFedraPartitioning {
     }
 
     /**
-     * Comparator for the pages of bindings, used in LTP algorithm, for sorting them by their size
+     * Comparator for the pages of bindings, used in the LTP algorithm, for sorting them by their size
      */
     private class BindingPageSizeComparator implements Comparator<List<BindingSet>> {
         private boolean reverse;
@@ -155,7 +155,7 @@ public class ParallelFedraPartitioning {
     }
 
     /**
-     * Comparator for the bins, used in LTP algorithm, for sorting them by their weight
+     * Comparator for the bins, used in the LTP algorithm, for sorting them by their weight
      */
     private class BinWeightComparator implements Comparator<List<List<BindingSet>>> {
         private boolean reverse;
@@ -185,7 +185,7 @@ public class ParallelFedraPartitioning {
     }
 
     /**
-     * Enum for listing available algorithm for the partition
+     * Enum representing available algorithm for the partition
      */
     public enum PARTITION_ALGORITHM {
         BRUTE_FORCE,

@@ -64,14 +64,6 @@ public class SourceSelection {
 	protected final Cache cache;
 	protected final QueryInfo queryInfo;
 
-
-	public SourceSelection(List<Endpoint> endpoints, Cache cache, QueryInfo queryInfo) {
-		this.endpoints = endpoints;
-		this.cache = cache;
-		this.queryInfo = queryInfo;
-	}
-
-
 	/**
 	 * Map statements to their sources. Use synchronized access!
 	 */
@@ -82,6 +74,17 @@ public class SourceSelection {
      */
     protected Map<StatementPattern, List<List<StatementSource>>> stmtToAllSources = new ConcurrentHashMap<>();
 
+    /**
+     * Constructor
+     * @param endpoints
+     * @param cache
+     * @param queryInfo
+     */
+    public SourceSelection(List<Endpoint> endpoints, Cache cache, QueryInfo queryInfo) {
+        this.endpoints = endpoints;
+        this.cache = cache;
+        this.queryInfo = queryInfo;
+    }
 
 	/**
 	 * Perform source selection for the provided statements using cache or remote ASK queries.
@@ -123,9 +126,8 @@ public class SourceSelection {
                 // the Parallel Bound Join Algorithm needs all the sources selected by Fedra for this statement
                 if(useFedraPBJ) {
                     Set<Set<Endpoint>> allSelectedEndpoints = allSelectedSources.get(stmt);
-                    System.out.println("allSelectedEndpoints " + allSelectedEndpoints);
 
-                    // if the statement has multiples sources selected by Fedra, we processed them
+                    // if the statement has multiples sources selected by Fedra
                     if( (allSelectedEndpoints != null) && (allSelectedEndpoints.size() > 0) ) {
                         stmtToAllSources.put(stmt, new ArrayList<List<StatementSource>>());
 
@@ -134,21 +136,12 @@ public class SourceSelection {
 							List<StatementSource> endpointList = new ArrayList<>();
 							for (Endpoint e : endpoints) {
                                 endpointList.add(new StatementSource(e.getId(), StatementSourceType.REMOTE));
-								//addSource(stmt, new StatementSource(e.getId(), StatementSourceType.REMOTE));
 							}
                             stmtToAllSources.get(stmt).add(endpointList);
 						}
                     }
-
-                    // then, we process using normal case in Fedra Algorithm
-                    /*Set<Endpoint> selectedEndpoints = selectedSources.get(stmt);
-                    if (selectedEndpoints != null && selectedEndpoints.size() > 0) {
-                        for (Endpoint e : selectedEndpoints) {
-                            addSource(stmt, new StatementSource(e.getId(), StatementSourceType.REMOTE));
-                        }
-                        continue;
-                    }*/
                 }
+                // add the sources selected by Fedra to the statement
                 Set<Endpoint> selectedEndpoints = selectedSources.get(stmt);
                 if (selectedEndpoints != null && selectedEndpoints.size() > 0) {
                     for (Endpoint e : selectedEndpoints) {
@@ -182,63 +175,42 @@ public class SourceSelection {
             stmtToSources = dss.getSelectedSources();
         }
 
+        // assign the sources to their respective statement
 		for (StatementPattern stmt : stmtToSources.keySet()) {
 
 			List<StatementSource> sources = stmtToSources.get(stmt);
             List<List<StatementSource>> allSources = stmtToAllSources.get(stmt);
 
-            // process in priority the collection of endpoints for the Parallel Bound Join
-            /*if(allSources != null) {
+            // if more than one source -> StatementSourcePattern
+            // exactly one source -> OwnedStatementSourcePattern
+            // otherwise: No resource seems to provide results
+            if (sources.size() > 1) {
+                StatementSourcePattern stmtNode = new StatementSourcePattern(stmt, queryInfo);
 
-                // if more than one source -> FedraStatementSourcePattern
-                // exactly one source -> OwnedStatementSourcePattern
-                // otherwise: No resource seems to provide results
-                if (sources.size() > 1) {
-                    StatementSourcePattern stmtNode = new FedraStatementSourcePattern(stmt, queryInfo);
-                    ( (FedraStatementSourcePattern) stmtNode).setRelevantSources(stmt, allSources, queryInfo);
-
-                    // we add the normal sources to the tuple to don't break FedX
-                    for (StatementSource s : sources)
-                        stmtNode.addStatementSource(s);
-                    stmt.replaceWith(stmtNode);
-
-                } else if (sources.size() == 1) {
-                    stmt.replaceWith( new ExclusiveStatement(stmt, sources.get(0), queryInfo));
-                } else {
-                    if (log.isDebugEnabled())
-                        log.debug("Statement " + QueryStringUtil.toString(stmt) + " does not produce any results at the provided sources, replacing node with EmptyStatementPattern." );
-                    stmt.replaceWith( new EmptyStatementPattern(stmt));
+                // keep all the relevant sources when using the PBJ algorithm
+                if(useFedraPBJ && (allSources != null)) {
+                    stmtNode.setRelevantSources(stmt, allSources, queryInfo);
                 }
-            } else {*/
-                // if more than one source -> StatementSourcePattern
-                // exactly one source -> OwnedStatementSourcePattern
-                // otherwise: No resource seems to provide results
 
-                if (sources.size() > 1) {
-                    StatementSourcePattern stmtNode = new StatementSourcePattern(stmt, queryInfo);
-
-					if(useFedraPBJ && (allSources != null)) {
-                        stmtNode.setRelevantSources(stmt, allSources, queryInfo);
-                    }
-
-                    for (StatementSource s : sources)
-                        stmtNode.addStatementSource(s);
-                    stmt.replaceWith(stmtNode);
-
-                } else if (sources.size() == 1) {
-                    ExclusiveStatement stmtNode = new ExclusiveStatement(stmt, sources.get(0), queryInfo);
-                    if(useFedraPBJ && (allSources != null)) {
-                        stmtNode.setRelevantSources(stmt, allSources, queryInfo);
-                    }
-                    stmt.replaceWith(stmtNode);
-                    //System.out.println("in exclusive statement source pattern  : allSources = " + allSources);
-                } else {
-                    if (log.isDebugEnabled())
-                        log.debug("Statement " + QueryStringUtil.toString(stmt) + " does not produce any results at the provided sources, replacing node with EmptyStatementPattern." );
-                    stmt.replaceWith( new EmptyStatementPattern(stmt));
+                for (StatementSource source : sources) {
+                    stmtNode.addStatementSource(source);
                 }
-            //}
 
+                stmt.replaceWith(stmtNode);
+
+            } else if (sources.size() == 1) {
+                ExclusiveStatement stmtNode = new ExclusiveStatement(stmt, sources.get(0), queryInfo);
+                // keep all the relevant sources when using the PBJ algorithm
+                if(useFedraPBJ && (allSources != null)) {
+                    stmtNode.setRelevantSources(stmt, allSources, queryInfo);
+                }
+                stmt.replaceWith(stmtNode);
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("Statement " + QueryStringUtil.toString(stmt) + " does not produce any results at the provided sources, replacing node with EmptyStatementPattern." );
+                }
+                stmt.replaceWith( new EmptyStatementPattern(stmt));
+            }
 		}
 	}
 

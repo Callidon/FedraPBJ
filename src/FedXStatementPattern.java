@@ -46,6 +46,7 @@ public abstract class FedXStatementPattern extends StatementPattern implements S
 	protected final List<String> localVars = new ArrayList<String>();
 	protected FilterValueExpr filterExpr = null;
 
+    // Additional information needed for the PBJ algorithm
     private List<List<StatementSource>> relevantSources;
     private Map<StatementSource, StatementSourcePattern> relevantSourcePatterns;
     private boolean hasMultipleRelevantSources;

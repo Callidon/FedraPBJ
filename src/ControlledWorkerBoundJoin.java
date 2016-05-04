@@ -96,7 +96,6 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
             StatementSourcePattern stmtFirstSource = null;
             totalBindings++;
 			if (expr instanceof StatementTupleExpr) {
-
 				StatementTupleExpr stmt = (StatementTupleExpr)expr;
                 System.out.println("join#" + joinId + " a");
                 if (stmt.hasFreeVarsFor(firstBinding)) {
@@ -108,7 +107,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                         System.out.println("join#" + joinId + " for statement " + stmt.getSignature() + " hasMultipleRelevantSources ? " + source_pattern.hasMultipleRelevantSources());
                         if(strategyIsPBJ && source_pattern.hasMultipleRelevantSources()) {
                             usePBJ = true;
-                            // get the relevant sources & the associated StatementSourcePattern
+                            // get the relevant sources & the associated StatementSourcePatterns
                             sourcesGroups = source_pattern.getRelevantSources();
                             sourcePatternGroups = source_pattern.getRelevantSourcePatterns();
 
@@ -153,7 +152,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
             }
 		}
 
-        System.out.println("parallelTaskCreators : " + parallelTaskCreators);
+        System.out.println("join#" + joinId + " parallelTaskCreators : " + parallelTaskCreators);
 
         // Collect all the bindings
         while (!closed && leftIter.hasNext()) {
@@ -191,11 +190,11 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
             bindings.clear();
         }
 
+        System.out.println("join#" + joinId + " number of bindings " + bindingPages.size());
         // if we are using the Parallel Bound Join algorithm
         if(usePBJ) {
             // schedule the tasks using the Parallel Bound Join algorithm
             System.out.println("join#" + joinId + " parallel bound join");
-            System.out.println("join#" + joinId + " number of bindings " + bindingPages.size());
             for(List<StatementSource> endpoints : sourcesGroups) {
                 // if no parallelization is possible
                 if(endpoints.size() == 1) {
