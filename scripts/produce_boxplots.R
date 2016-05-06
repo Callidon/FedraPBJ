@@ -154,12 +154,37 @@ diseasomeTable <- processTable(diseasomeSetupName, 2, outputDiseasomeEngine, out
 linkedMDBTable <- processTable(linkedMDBSetupName, 2, outputLinkedMDBEngine, outputLinkedMDBFedra, outputLinkedMDBPBJPre, outputLinkedMDBPBJPost, outputLinkedMDBPBJHybrid)
 geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 2, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
 SWDFTable <- processTable(swdfSetupName, 2, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
-watDivTable <- processTable(watDivSetupName, 2, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
-watDiv100Table <- processTable(watDiv100SetupName, 2, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
-timesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
+#watDivTable <- processTable(watDivSetupName, 2, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
+#watDiv100Table <- processTable(watDiv100SetupName, 2, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
+timesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable)#, watDivTable, watDiv100Table)
 
 # set the colnames
+colnames(diseasomeTable) <- c("time", "dataset", "Strategy")
+colnames(linkedMDBTable) <- c("time", "dataset", "Strategy")
+colnames(geoCoordinatesTable) <- c("time", "dataset", "Strategy")
+colnames(SWDFTable) <- c("time", "dataset", "Strategy")
 colnames(timesTable) <- c("time", "dataset", "Strategy")
+
+# create the boxplots
+pdf("../results/execution_time.pdf", width=7, height=4)
+ggplot(data = timesTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
+dev.off()
+
+pdf("../results/diseasome/execution_time.pdf", width=7, height=4)
+ggplot(data = diseasomeTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
+dev.off()
+
+pdf("../results/linkedMDB/execution_time.pdf", width=7, height=4)
+ggplot(data = linkedMDBTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
+dev.off()
+
+pdf("../results/geoCoordinates/execution_time.pdf", width=7, height=4)
+ggplot(data = geoCoordinatesTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
+dev.off()
+
+pdf("../results/swdf/execution_time.pdf", width=7, height=4)
+ggplot(data = SWDFTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
+dev.off()
 
 # For the number of transfered tuples
 # Process the datas & merge them into one unique table
@@ -167,12 +192,37 @@ diseasomeTable <- processTable(diseasomeSetupName, 11, outputDiseasomeEngine, ou
 linkedMDBTable <- processTable(linkedMDBSetupName, 11, outputLinkedMDBEngine, outputLinkedMDBFedra, outputLinkedMDBPBJPre, outputLinkedMDBPBJPost, outputLinkedMDBPBJHybrid)
 geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 11, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
 SWDFTable <- processTable(swdfSetupName, 11, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
-watDivTable <- processTable(watDivSetupName, 11, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
-watDiv100Table <- processTable(watDiv100SetupName, 11, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
-tuplesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
+#watDivTable <- processTable(watDivSetupName, 11, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
+#watDiv100Table <- processTable(watDiv100SetupName, 11, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
+tuplesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable)#, watDivTable, watDiv100Table)
 
 # set the colnames
+colnames(diseasomeTable) <- c("tuples", "dataset", "Strategy")
+colnames(linkedMDBTable) <- c("tuples", "dataset", "Strategy")
+colnames(geoCoordinatesTable) <- c("tuples", "dataset", "Strategy")
+colnames(SWDFTable) <- c("tuples", "dataset", "Strategy")
 colnames(tuplesTable) <- c("tuples", "dataset", "Strategy")
+
+# create the boxplots
+pdf("../results/transferred_tuples.pdf", width=7, height=4)
+ggplot(data = tuplesTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
+dev.off()
+
+pdf("../results/diseasome/transferred_tuples.pdf", width=7, height=4)
+ggplot(data = diseasomeTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
+dev.off()
+
+pdf("../results/linkedMDB/transferred_tuples.pdf", width=7, height=4)
+ggplot(data = linkedMDBTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
+dev.off()
+
+pdf("../results/geoCoordinates/transferred_tuples.pdf", width=7, height=4)
+ggplot(data = geoCoordinatesTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
+dev.off()
+
+pdf("../results/swdf/transferred_tuples.pdf", width=7, height=4)
+ggplot(data = SWDFTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
+dev.off()
 
 # For the completness
 # Process the datas & merge them into one unique table
@@ -180,12 +230,37 @@ diseasomeTable <- processTable(diseasomeSetupName, 6, outputDiseasomeEngine, out
 linkedMDBTable <- processTable(linkedMDBSetupName, 6, outputLinkedMDBEngine, outputLinkedMDBFedra, outputLinkedMDBPBJPre, outputLinkedMDBPBJPost, outputLinkedMDBPBJHybrid)
 geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 6, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
 SWDFTable <- processTable(swdfSetupName, 6, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
-watDivTable <- processTable(watDivSetupName, 6, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
-watDiv100Table <- processTable(watDiv100SetupName, 6, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
-completnessTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
+#watDivTable <- processTable(watDivSetupName, 6, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
+#watDiv100Table <- processTable(watDiv100SetupName, 6, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
+completnessTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable)#, watDivTable, watDiv100Table)
 
 # set the colnames
+colnames(diseasomeTable) <- c("completness", "dataset", "Strategy")
+colnames(linkedMDBTable) <- c("completness", "dataset", "Strategy")
+colnames(geoCoordinatesTable) <- c("completness", "dataset", "Strategy")
+colnames(SWDFTable) <- c("completness", "dataset", "Strategy")
 colnames(completnessTable) <- c("completness", "dataset", "Strategy")
+
+# create the boxplots
+pdf("../results/completeness.pdf", width=7, height=4)
+ggplot(data = completnessTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Strategy)) + ylab("Completeness") + xlab("Dataset")
+dev.off()
+
+pdf("../results/diseasome/completeness.pdf", width=7, height=4)
+ggplot(data = diseasomeTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Strategy)) + ylab("Completeness") + xlab("Dataset")
+dev.off()
+
+pdf("../results/linkedMDB/completeness.pdf", width=7, height=4)
+ggplot(data = linkedMDBTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Strategy)) + ylab("Completeness") + xlab("Dataset")
+dev.off()
+
+pdf("../results/geoCoordinates/completeness.pdf", width=7, height=4)
+ggplot(data = geoCoordinatesTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Strategy)) + ylab("Completeness") + xlab("Dataset")
+dev.off()
+
+pdf("../results/swdf/completeness.pdf", width=7, height=4)
+ggplot(data = SWDFTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Strategy)) + ylab("Completeness") + xlab("Dataset")
+dev.off()
 
 # For the endpoint hotspots
 # Process the datas & merge them into one unique table
@@ -203,19 +278,6 @@ colnames(completnessTable) <- c("completness", "dataset", "Strategy")
 #colnames(SWDFHotspotsTable) <- c("query", "value", "Endpoint", "Strategy")
 #colnames(watDivHotspotsTable) <- c("query", "value", "Endpoint", "Strategy")
 #colnames(watDiv100HotspotsTable) <- c("query", "value", "endpoint", "Strategy")
-
-# create the boxplots
-pdf("../results/execution_time.pdf", width=7, height=4)
-ggplot(data = timesTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
-dev.off()
-
-pdf("../results/transferred_tuples.pdf", width=7, height=4)
-ggplot(data = tuplesTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
-dev.off()
-
-pdf("../results/completeness.pdf", width=7, height=4)
-ggplot(data = completnessTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Strategy)) + ylab("Completeness") + xlab("Dataset")
-dev.off()
 
 #pdf("../results/hotspots_diseasome.pdf")
 #ggplot(data = subset(diseasomeHotspotsTable, value < 20), aes(x=Strategy, y=value)) + geom_boxplot(aes(fill=Endpoint)) + xlab("Strategies") + ylab("Number of transfered tuples")
