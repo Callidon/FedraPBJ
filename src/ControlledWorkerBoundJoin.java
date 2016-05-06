@@ -5,12 +5,12 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,7 +26,6 @@ import java.util.*;
 import org.apache.log4j.Logger;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
-import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
 
 import com.fluidops.fedx.Config;
@@ -53,7 +52,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 
 	public static Logger log = Logger.getLogger(ControlledWorkerBoundJoin.class);
 	private String sourceSelectionStrategy;
-    private ParallelFedraPartitioning PBJPartitionning;
+    private BindingsPartition partition;
 
 	public ControlledWorkerBoundJoin(ControlledWorkerScheduler<BindingSet> scheduler, FederationEvalStrategy strategy,
 									 CloseableIteration<BindingSet, QueryEvaluationException> leftIter,
@@ -61,7 +60,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 			throws QueryEvaluationException {
         super(scheduler, strategy, leftIter, rightArg, bindings, queryInfo);
         sourceSelectionStrategy = Config.getConfig().getProperty("SourceSelectionStrategy", "FedX");
-        PBJPartitionning = new ParallelFedraPartitioning();
+        partition = new BindingsPartition();
     }
 
 
@@ -206,11 +205,11 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                 } else {
                     // if parallelization is possible, we apply the parallel bound join algorithm
                     System.out.println("join#" + joinId + " parallel case");
-                    PBJPartitionning.setSources(endpoints);
-                    PBJPartitionning.setBindingsPage(bindingPages);
-                    //PBJPartitionning.performPartition(ParallelFedraPartitioning.PARTITION_ALGORITHM.BRUTE_FORCE);
-                    PBJPartitionning.performPartition(ParallelFedraPartitioning.PARTITION_ALGORITHM.LPT);
-                    List<Pair<StatementSource, List<List<BindingSet>>>> groups = PBJPartitionning.getPartition();
+                    partition.setSources(endpoints);
+                    partition.setBindingsPage(bindingPages);
+                    //partition.performPartition(partition.PARTITION_ALGORITHM.BRUTE_FORCE);
+                    partition.performPartition(BindingsPartition.PARTITION_ALGORITHM.LPT);
+                    List<Pair<StatementSource, List<List<BindingSet>>>> groups = partition.getPartition();
 
                     for(Pair<StatementSource, List<List<BindingSet>>> pair : groups) {
                         // for each pair assigned to this source, schedule a task

@@ -7,15 +7,16 @@ import org.openrdf.query.BindingSet;
 import java.util.*;
 
 /**
- * Class to perform the partition for the Parallel Bound Join algorithm using different algorithms
+ * Class to manage the partition for the Parallel Bound Join algorithm using different algorithms
+ * @author Thomas Minier <tminier01@gmail.com>
  */
-public class ParallelFedraPartitioning {
+public class BindingsPartition {
 
     private List<StatementSource> sources;
     private List<List<BindingSet>> bindingsPages;
     private List<Pair<StatementSource, List<List<BindingSet>>>> partition;
 
-    public ParallelFedraPartitioning() {
+    public BindingsPartition() {
         sources = new ArrayList<>();
         bindingsPages = new ArrayList<>();
     }
