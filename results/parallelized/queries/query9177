@@ -1,0 +1,6 @@
+SELECT DISTINCT ?v0 ?v1 ?v3 ?v4
+WHERE {
+  ?v0 <http://purl.org/goodrelations/includes> ?v1 .
+  <http://db.uwaterloo.ca/~galuc/wsdbm/Retailer1032> <http://purl.org/goodrelations/offers> ?v0 .
+  ?v1 <http://schema.org/contentRating> ?v3 . ?v1 <http://schema.org/expires> ?v4
+}
