@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 # Script to produce boxplots for the results from various executions of the setup
-# author : Thomas Minier & Naixin Wang, M1 ALMA
+# author : Thomas Minier
 
 require(ggplot2)
 require(scales)
@@ -83,6 +83,7 @@ outputDiseasomeFedra <- "../results/diseasome/outputFedXFedraFEDERATION10Client"
 outputDiseasomePBJPre <- "../results/diseasome/outputFedXFedra-PBJ-preFEDERATION10Client"
 outputDiseasomePBJPost <- "../results/diseasome/outputFedXFedra-PBJ-postFEDERATION10Client"
 outputDiseasomePBJHybrid <- "../results/diseasome/outputFedXFedra-PBJ-hybridFEDERATION10Client"
+
 
 # from linkedMDB setup
 outputLinkedMDBEngine <- "../results/linkedMDB/outputFedXengineFEDERATION10Client"
@@ -216,6 +217,7 @@ geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 11, outputGeoCoordi
 SWDFTable <- processTable(swdfSetupName, 11, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
 watDivTable <- processTable(watDivSetupName, 11, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
 watDiv100Table <- processTable(watDiv100SetupName, 11, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
+watDiv100ParallelizedTable <- processTable(watDiv100SetupName, 11, outputWatDiv100ParallelizedEngine, outputWatDiv100ParallelizedFedra, outputWatDiv100ParallelizedPBJPre, outputWatDiv100ParallelizedPBJPost, outputWatDiv100ParallelizedPBJHybrid)
 tuplesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
 # set the colnames
@@ -225,11 +227,16 @@ colnames(geoCoordinatesTable) <- c("tuples", "dataset", "Strategy")
 colnames(SWDFTable) <- c("tuples", "dataset", "Strategy")
 colnames(watDivTable) <- c("tuples", "dataset", "Strategy")
 colnames(watDiv100Table) <- c("tuples", "dataset", "Strategy")
+colnames(watDiv100ParallelizedTable) <- c("tuples", "dataset", "Strategy")
 colnames(tuplesTable) <- c("tuples", "dataset", "Strategy")
 
 # create the boxplots
 pdf("../results/transferred_tuples.pdf", width=7, height=4)
 ggplot(data = tuplesTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
+dev.off()
+
+pdf("../results/parallelized/transferred_tuples.pdf", width=7, height=4)
+ggplot(data = watDiv100ParallelizedTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
 dev.off()
 
 pdf("../results/diseasome/transferred_tuples.pdf", width=7, height=4)
