@@ -1,6 +1,5 @@
-SELECT DISTINCT ?v0 ?v1 ?v2
+SELECT DISTINCT ?v0 ?v1
 WHERE {
-  ?v0 <http://ogp.me/ns#tag> ?v1 .
-  ?v0 <http://schema.org/caption> ?v2 .
-  ?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/hasGenre> <http://db.uwaterloo.ca/~galuc/wsdbm/SubGenre92>
+  ?v0 <http://purl.org/dc/terms/Location> ?v1 .
+  <http://db.uwaterloo.ca/~galuc/wsdbm/Product48> <http://purl.org/ontology/mo/performed_in> ?v1
 }

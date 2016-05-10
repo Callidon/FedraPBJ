@@ -1,4 +1,5 @@
-SELECT DISTINCT ?v1
+SELECT DISTINCT ?v0 ?v1
 WHERE {
-  <http://db.uwaterloo.ca/~galuc/wsdbm/User88823> <http://xmlns.com/foaf/familyName> ?v1
+  ?v0 <http://purl.org/stuff/rev#hasReview> ?v1 .
+  ?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/hasGenre> <http://db.uwaterloo.ca/~galuc/wsdbm/SubGenre101>
 }

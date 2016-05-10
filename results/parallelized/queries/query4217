@@ -1,7 +1,5 @@
-SELECT DISTINCT ?v0 ?v1 ?v3 ?v4
+SELECT DISTINCT ?v0 ?v1
 WHERE {
-  ?v0 <http://xmlns.com/foaf/homepage> ?v1 .
-  ?v0 <http://ogp.me/ns#tag> <http://db.uwaterloo.ca/~galuc/wsdbm/Topic134> .
-  ?v0 <http://schema.org/description> ?v3 .
-  ?v4 <http://db.uwaterloo.ca/~galuc/wsdbm/purchaseFor> ?v0
+  ?v0 <http://schema.org/language> ?v1 .
+  ?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/hasGenre> <http://db.uwaterloo.ca/~galuc/wsdbm/SubGenre68>
 }

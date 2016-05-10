@@ -1,15 +1,12 @@
-SELECT DISTINCT ?v0 ?v1 ?v10 ?v11 ?v2 ?v3 ?v4 ?v5 ?v7 ?v8 ?v9
+SELECT DISTINCT ?v0 ?v1 ?v2 ?v3 ?v4 ?v6 ?v7 ?v8
 WHERE {
-  ?v0 <http://purl.org/goodrelations/includes> ?v1 .
-  ?v2 <http://purl.org/goodrelations/offers> ?v0 .
-  ?v2 <http://purl.org/goodrelations/offers> ?v0 .
-  ?v0 <http://purl.org/goodrelations/validFrom> ?v3 .
-  ?v0 <http://purl.org/goodrelations/validFrom> ?v4 .
-  ?v5 <http://ogp.me/ns#tag> <http://db.uwaterloo.ca/~galuc/wsdbm/Topic158> .
-  ?v5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?v7 .
-  ?v1 <http://schema.org/caption> ?v8 .
-  ?v1 <http://schema.org/description> ?v9 .
-  ?v1 <http://schema.org/text> ?v10 .
-  ?v1 <http://db.uwaterloo.ca/~galuc/wsdbm/hasGenre> ?v5 .
-  ?v11 <http://db.uwaterloo.ca/~galuc/wsdbm/purchaseFor> ?v1
+  ?v0 <http://purl.org/goodrelations/price> ?v1 .
+  ?v0 <http://purl.org/goodrelations/price> ?v2 .
+  ?v0 <http://purl.org/goodrelations/price> ?v3 .
+  ?v4 <http://ogp.me/ns#tag> <http://db.uwaterloo.ca/~galuc/wsdbm/Topic159> .
+  ?v4 <http://schema.org/description> ?v6 .
+  ?v7 <http://db.uwaterloo.ca/~galuc/wsdbm/makesPurchase> ?v0 .
+  ?v7 <http://db.uwaterloo.ca/~galuc/wsdbm/makesPurchase> ?v0 .
+  ?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/purchaseDate> ?v8 .
+  ?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/purchaseFor> ?v4
 }
