@@ -1,0 +1,1 @@
+SELECT DISTINCT ?v1 ?v2 WHERE { %p% <http://purl.org/goodrelations/offers> ?v1 . ?v1 <http://purl.org/goodrelations/validThrough> ?v2 }
