@@ -4,8 +4,8 @@
 
 import csv
 
-fedraFile = '../results/watDiv/outputFedXFedraFEDERATION10Client'
-hybridFile = '../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION10Client'
+fedraFile = '../results/watDiv100/outputFedXFedraFEDERATION10Client'
+hybridFile = '../results/watDiv100/outputFedXFedra-PBJ-hybridFEDERATION10Client'
 outputFile = '../results/queriesParallelized.txt'
 
 federationFiles = [ 'outputFedXengineFEDERATION10Client',
@@ -69,13 +69,12 @@ def main():
     # create files for the boxplot script
     for fileName in federationFiles:
         # collect datas about parallelized queries
-        with open('../results/watDiv/{}'.format(fileName), 'r', newline='') as csvfile:
+        with open('../results/watDiv100/{}'.format(fileName), 'r', newline='') as csvfile:
             csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
             queries = [ row for row in csvreader if (row[0] in parallelizedQueries) ]
         # output them in corresponding file
-        with open('../results/parallelized/{}'.format(fileName), 'w', newline='') as csvfile:
+        with open('../results/watDiv100Parallelized/{}'.format(fileName), 'w', newline='') as csvfile:
             csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             csvwriter.writerows(queries)
-
 if __name__ == '__main__':
     main()
