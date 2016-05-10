@@ -113,6 +113,12 @@ outputWatDivPBJPre <- "../results/watDiv/outputFedXFedra-PBJ-preFEDERATION10Clie
 outputWatDivPBJPost <- "../results/watDiv/outputFedXFedra-PBJ-postFEDERATION10Client"
 outputWatDivPBJHybrid <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
+outputWatDivParallelizedEngine <- "../results/watDivParallelized/outputFedXengineFEDERATION10Client"
+outputWatDivParallelizedFedra <- "../results/watDivParallelized/outputFedXFedraFEDERATION10Client"
+outputWatDivParallelizedPBJPre <- "../results/watDivParallelized/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputWatDivParallelizedPBJPost <- "../results/watDivParallelized/outputFedXFedra-PBJ-postFEDERATION10Client"
+outputWatDivParallelizedPBJHybrid <- "../results/watDivParallelized/outputFedXFedra-PBJ-hybridFEDERATION10Client"
+
 # from watDiv100 setup
 outputWatDiv100Engine <- "../results/watDiv100/outputFedXengineFEDERATION10Client"
 outputWatDiv100Fedra <- "../results/watDiv100/outputFedXFedraFEDERATION10Client"
@@ -120,11 +126,11 @@ outputWatDiv100PBJPre <- "../results/watDiv100/outputFedXFedra-PBJ-preFEDERATION
 outputWatDiv100PBJPost <- "../results/watDiv100/outputFedXFedra-PBJ-postFEDERATION10Client"
 outputWatDiv100PBJHybrid <- "../results/watDiv100/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
-outputWatDiv100ParallelizedEngine <- "../results/parallelized/outputFedXengineFEDERATION10Client"
-outputWatDiv100ParallelizedFedra <- "../results/parallelized/outputFedXFedraFEDERATION10Client"
-outputWatDiv100ParallelizedPBJPre <- "../results/parallelized/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputWatDiv100ParallelizedPBJPost <- "../results/parallelized/outputFedXFedra-PBJ-postFEDERATION10Client"
-outputWatDiv100ParallelizedPBJHybrid <- "../results/parallelized/outputFedXFedra-PBJ-hybridFEDERATION10Client"
+outputWatDiv100ParallelizedEngine <- "../results/watDiv100Parallelized/outputFedXengineFEDERATION10Client"
+outputWatDiv100ParallelizedFedra <- "../results/watDiv100Parallelized/outputFedXFedraFEDERATION10Client"
+outputWatDiv100ParallelizedPBJPre <- "../results/watDiv100Parallelized/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputWatDiv100ParallelizedPBJPost <- "../results/watDiv100Parallelized/outputFedXFedra-PBJ-postFEDERATION10Client"
+outputWatDiv100ParallelizedPBJHybrid <- "../results/watDiv100Parallelized/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
 # For the execution time
 # Process the datas & merge them into one unique table
@@ -134,6 +140,7 @@ geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 2, outputGeoCoordin
 SWDFTable <- processTable(swdfSetupName, 2, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
 watDivTable <- processTable(watDivSetupName, 2, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
 watDiv100Table <- processTable(watDiv100SetupName, 2, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
+watDivParallelizedTable <- processTable(watDivSetupName, 2, outputWatDivParallelizedEngine, outputWatDivParallelizedFedra, outputWatDivParallelizedPBJPre, outputWatDivParallelizedPBJPost, outputWatDivParallelizedPBJHybrid)
 watDiv100ParallelizedTable <- processTable(watDiv100SetupName, 2, outputWatDiv100ParallelizedEngine, outputWatDiv100ParallelizedFedra, outputWatDiv100ParallelizedPBJPre, outputWatDiv100ParallelizedPBJPost, outputWatDiv100ParallelizedPBJHybrid)
 timesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
@@ -144,6 +151,7 @@ colnames(geoCoordinatesTable) <- c("time", "dataset", "Strategy")
 colnames(SWDFTable) <- c("time", "dataset", "Strategy")
 colnames(watDivTable) <- c("time", "dataset", "Strategy")
 colnames(watDiv100Table) <- c("time", "dataset", "Strategy")
+colnames(watDivParallelizedTable) <- c("time", "dataset", "Strategy")
 colnames(watDiv100ParallelizedTable) <- c("time", "dataset", "Strategy")
 colnames(timesTable) <- c("time", "dataset", "Strategy")
 
@@ -152,7 +160,11 @@ pdf("../results/execution_time.pdf", width=7, height=4)
 ggplot(data = timesTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
 dev.off()
 
-pdf("../results/parallelized/execution_time.pdf", width=7, height=4)
+pdf("../results/watDivParallelized/execution_time.pdf", width=7, height=4)
+ggplot(data = watDivParallelizedTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
+dev.off()
+
+pdf("../results/watDiv100Parallelized/execution_time.pdf", width=7, height=4)
 ggplot(data = watDiv100ParallelizedTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
 dev.off()
 
@@ -217,6 +229,7 @@ geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 11, outputGeoCoordi
 SWDFTable <- processTable(swdfSetupName, 11, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
 watDivTable <- processTable(watDivSetupName, 11, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
 watDiv100Table <- processTable(watDiv100SetupName, 11, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
+watDivParallelizedTable <- processTable(watDivSetupName, 11, outputWatDivParallelizedEngine, outputWatDivParallelizedFedra, outputWatDivParallelizedPBJPre, outputWatDivParallelizedPBJPost, outputWatDivParallelizedPBJHybrid)
 watDiv100ParallelizedTable <- processTable(watDiv100SetupName, 11, outputWatDiv100ParallelizedEngine, outputWatDiv100ParallelizedFedra, outputWatDiv100ParallelizedPBJPre, outputWatDiv100ParallelizedPBJPost, outputWatDiv100ParallelizedPBJHybrid)
 tuplesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
@@ -227,6 +240,7 @@ colnames(geoCoordinatesTable) <- c("tuples", "dataset", "Strategy")
 colnames(SWDFTable) <- c("tuples", "dataset", "Strategy")
 colnames(watDivTable) <- c("tuples", "dataset", "Strategy")
 colnames(watDiv100Table) <- c("tuples", "dataset", "Strategy")
+colnames(watDivParallelizedTable) <- c("tuples", "dataset", "Strategy")
 colnames(watDiv100ParallelizedTable) <- c("tuples", "dataset", "Strategy")
 colnames(tuplesTable) <- c("tuples", "dataset", "Strategy")
 
@@ -235,7 +249,11 @@ pdf("../results/transferred_tuples.pdf", width=7, height=4)
 ggplot(data = tuplesTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
 dev.off()
 
-pdf("../results/parallelized/transferred_tuples.pdf", width=7, height=4)
+pdf("../results/watDivParallelized/transferred_tuples.pdf", width=7, height=4)
+ggplot(data = watDivParallelizedTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
+dev.off()
+
+pdf("../results/watDiv100Parallelized/transferred_tuples.pdf", width=7, height=4)
 ggplot(data = watDiv100ParallelizedTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
 dev.off()
 
