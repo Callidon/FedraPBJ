@@ -11,6 +11,11 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+# Project related
+queries100_15_500_100_b
 scripts/examples/
 old_results/
 *Endpoints
+
+# Python related
+__pycache__/

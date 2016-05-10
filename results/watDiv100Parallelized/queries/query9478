@@ -1,5 +1,1 @@
-SELECT DISTINCT ?v1 ?v2
-WHERE {
-  <http://db.uwaterloo.ca/~galuc/wsdbm/Retailer18> <http://purl.org/goodrelations/offers> ?v1 .
-  ?v1 <http://purl.org/goodrelations/validThrough> ?v2
-}
+SELECT DISTINCT ?v1 ?v2 WHERE { <http://db.uwaterloo.ca/~galuc/wsdbm/Retailer18> <http://purl.org/goodrelations/offers> ?v1 . ?v1 <http://purl.org/goodrelations/validThrough> ?v2 }
