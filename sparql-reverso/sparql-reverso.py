@@ -9,11 +9,11 @@ import argparse
 from node import Node
 from triplePattern import TriplePattern
 
-def loadBGP(line):
-    """Create a list of triple patterns from a BGP contains in a text line
+def loadBGP(query):
+    """Create a BGP as a list of triple patterns from a SPARQL query
     """
     queryBGP = list()
-    bgp = re.search('WHERE {(.*)}', line).group(1)
+    bgp = re.search('WHERE {(.*)}', query).group(1)
     for triple in bgp.split(' . '):
         elements = triple.strip().split(' ')
         # check if current triple pattern is well formed
@@ -40,6 +40,7 @@ def main():
     args = parser.parse_args()
 
     queryPatterns = list()
+    queries = list()
     results = list()
 
     # load all the patterns
@@ -55,14 +56,20 @@ def main():
         # load the BGP from the query of each line
         for line in reader:
             bgp = loadBGP(line)
-            # if this query match a pattern, save its line number as a result
-            if bgp in queryPatterns:
+            # save the queries which math a pattern & doesn't have been selected before
+            if (bgp in queryPatterns) and (line not in queries):
+                queries.append(line)
                 results.append(lineNumber)
             lineNumber += 1
 
     # output 100 random line numbers in output file
     with open(args.output, 'w') as writer:
-        sample = random.sample(results, 100)
+        if(len(results) >= 100):
+            sample = random.sample(results, 100)
+        else:
+            # use sampling with replacement when we doesn't have engouh results
+            sample = results + random.sample(results, 100 - len(results))
+            random.shuffle(sample)
         for result in sample:
             writer.write('{}\n'.format(result))
 
