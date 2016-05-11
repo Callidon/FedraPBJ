@@ -1,9 +1,8 @@
 
 class TriplePattern:
-    '''
-        A SPARQL triple pattern
-        author : Thomas Minier
-    '''
+    """A SPARQL triple pattern
+    author : Thomas Minier
+    """
 
     def __init__(self, subject, predicate, obj):
         self.subject = subject
