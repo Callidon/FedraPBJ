@@ -17,6 +17,9 @@ queries100_15_500_100_b
 scripts/examples/
 old_results/
 *Endpoints
+data/
+scripts/res/
+scripts/fragments/
 
 # Python related
 __pycache__/

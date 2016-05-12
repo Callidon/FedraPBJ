@@ -35,31 +35,33 @@ def main():
     #pid, err = subprocess.Popen('echo $!', stdout=subprocess.PIPE, shell=True).communicate()
     results = list()
     with open(args.file, 'r') as reader:
-        queryNumber = 1
+        queryNumber = 0
         for query in reader:
             queryIsValid = True
-            for triple in splitQuery(query):
-                query = 'SELECT DISTINCT (COUNT (*) AS ?c) WHERE { ' + triple + ' }'
-                # fetch number of triples using jena
-                p = subprocess.Popen('s-query --service http://127.0.0.1:{}/ds/query --output=json \'{}\''.format(args.port,query),
-                                     stdout=subprocess.PIPE, shell=True)
-                (data, err) = p.communicate()
-                answer = json.loads(data.decode('utf-8'))
-                count = answer['results']['bindings'][0]['c']['value']
-                # discard the query if any triple pattern doesn't match the criteria
-                if float(count) < float(args.minimum):
-                    queryIsValid = False
-                    break
+            queryNumber += 1
+            triples = splitQuery(query)
+            # only keep queries with at least one join
+            if len(triples) <= 1:
+                next
+            else:
+                for triple in triples:
+                    query = 'SELECT DISTINCT (COUNT (*) AS ?c) WHERE { ' + triple + ' }'
+                    # fetch number of triples using jena
+                    p = subprocess.Popen('s-query --service http://127.0.0.1:{}/ds/query --output=json \'{}\''.format(args.port,query),
+                                         stdout=subprocess.PIPE, shell=True)
+                    (data, err) = p.communicate()
+                    answer = json.loads(data.decode('utf-8'))
+                    count = answer['results']['bindings'][0]['c']['value']
+                    # discard the query if any triple pattern doesn't match the criteria
+                    if float(count) < float(args.minimum):
+                        queryIsValid = False
+                        break
 
-            # save valid queries as results
-            if queryIsValid:
-                print('query {} done processing'.format(queryNumber))
-                results.append(queryNumber)
-                queryNumber += 1
-    # output results in file
-    with open(args.output, 'w') as writer:
-        for result in results:
-            writer.write(result)
+                # save valid queries as results
+                if queryIsValid:
+                    print('query {} done processing'.format(queryNumber))
+                    with open(args.output, 'a') as writer:
+                        writer.write('{}\n'.format(queryNumber))
 
     #subprocess.call('kill -9 {}'.format(pid))
 
