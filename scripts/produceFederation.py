@@ -11,13 +11,13 @@ import subprocess
 FEDRA_ENDPOINTS_FILE = 'endpoints'
 
 
-def divideFragments(fragments, endpoints, threshold):
-    """Associate N = threshold fragments to each endpoint
+def divideFragments(fragments, endpoints, nbEndpoints):
+    """Associate nbEndpoints fragments to each endpoint
     """
     bins = {key: list() for key in endpoints}
     # put fragments in N endpoints
     for fragment in fragments:
-        sample = random.sample(endpoints, threshold)
+        sample = random.sample(endpoints, nbEndpoints)
         for endpoint in sample:
             bins[endpoint].append(fragment)
     return {fragment: [endpoint for (endpoint, bin) in bins.items() if fragment in bin] for fragment in fragments}
@@ -30,9 +30,10 @@ def createEndpointFile(filename, repartition, fragments):
         for fragment, endpoints in repartition.items():
             writer.write(fragment)
             for endpoint in endpoints:
-                port = endpoint[8:]
+                port = '{}1{}'.format(endpoint[8], endpoint[10:])
                 writer.write(' http://172.16.9.3:{}/ds/sparql'.format(port))
-            writer.write('\n')
+            # add the public endpoint to the list
+            writer.write(' http://172.16.9.3:3100/ds/sparql\n'.format(port))
 
 
 def dispatchFragments(fragment_folder, repartition, output_folder):
