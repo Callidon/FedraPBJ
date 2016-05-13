@@ -5,11 +5,12 @@
 import csv
 import argparse
 
-FEDERATION_FILES = [ 'outputFedXengineFEDERATION10Client',
+FEDERATION_FILES = ['outputFedXengineFEDERATION10Client',
                     'outputFedXFedra-PBJ-hybridFEDERATION10Client',
                     'outputFedXFedra-PBJ-postFEDERATION10Client',
                     'outputFedXFedra-PBJ-preFEDERATION10Client',
                     'outputFedXFedraFEDERATION10Client']
+
 
 def main():
     """Main function
@@ -30,7 +31,7 @@ def main():
     hybridHotspots = dict()
     hybridTimes = dict()
 
-    parallelizedQueries  = list()
+    parallelizedQueries = list()
     shapes = dict()
     tuples = dict()
 
@@ -60,10 +61,10 @@ def main():
         for query in fedraHotspots.keys():
             if fedraHotspots[query] != hybridHotspots[query]:
                 parallelizedQueries.append(query)
-                ratio = 100.0 - ( (float(hybridTimes[query]) / float(fedraTimes[query])) * 100.0)
+                ratio = 100.0 - ((float(hybridTimes[query]) / float(fedraTimes[query])) * 100.0)
                 if ratio > 0.0:
                     nbImprovedQueries += 1
-                    print('Execution time of {} has been improved of {} %'.format(query,ratio))
+                    print('Execution time of {} has been improved of {} %'.format(query, ratio))
                 else:
                     nbUnimprovedQueries += 1
 
@@ -79,7 +80,7 @@ def main():
         # collect datas about parallelized queries
         with open('../results/watDiv100/{}'.format(fileName), 'r', newline='') as csvfile:
             csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-            queries = [ row for row in csvreader if (row[0] in parallelizedQueries) ]
+            queries = [row for row in csvreader if (row[0] in parallelizedQueries)]
         # output them in corresponding file
         with open('../results/watDiv100Parallelized/{}'.format(fileName), 'w', newline='') as csvfile:
             csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)

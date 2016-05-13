@@ -6,6 +6,7 @@ import os
 import argparse
 import subprocess
 
+
 def main():
     parser = argparse.ArgumentParser(description='Download data from fragments of a dataset')
     parser.add_argument('-f', '--fragments-folder', type=str, required=True,
@@ -16,7 +17,7 @@ def main():
                         help='output folder for the results')
     args = parser.parse_args()
 
-    fragments = [ filename for filename in os.listdir(args.fragments_folder) ]
+    fragments = [filename for filename in os.listdir(args.fragments_folder)]
     for fragment in fragments:
         p = subprocess.Popen('ldf-client {} -f {}/{}'.format(args.endpoint, args.fragments_folder, fragment),
                              stdout=subprocess.PIPE, shell=True)

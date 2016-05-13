@@ -10,16 +10,18 @@ import subprocess
 
 FEDRA_ENDPOINTS_FILE = 'endpoints'
 
+
 def divideFragments(fragments, endpoints, threshold):
     """Associate N = threshold fragments to each endpoint
     """
-    bins = { key: list() for key in endpoints }
+    bins = {key: list() for key in endpoints}
     # put fragments in N endpoints
     for fragment in fragments:
         sample = random.sample(endpoints, threshold)
         for endpoint in sample:
             bins[endpoint].append(fragment)
-    return { fragment: [ endpoint for (endpoint, bin) in bins.items() if fragment in bin ] for fragment in fragments }
+    return {fragment: [endpoint for (endpoint, bin) in bins.items() if fragment in bin] for fragment in fragments}
+
 
 def createEndpointFile(filename, repartition, fragments):
     """Create the file used by Fedra which map each fragment to the endpoints which hold it
@@ -32,7 +34,8 @@ def createEndpointFile(filename, repartition, fragments):
                 writer.write(' http://172.16.9.3:{}/ds/sparql'.format(port))
             writer.write('\n')
 
-def dispatchFragments(fragment_folder, repartition,  output_folder):
+
+def dispatchFragments(fragment_folder, repartition, output_folder):
     """Fill the endpoints using a repartition of fragments
     """
     # process by each fragment
@@ -48,6 +51,7 @@ def dispatchFragments(fragment_folder, repartition,  output_folder):
             with open(outputFilename, 'a') as writer:
                 writer.write(answer)
 
+
 def main():
     parser = argparse.ArgumentParser(description='Create a new federation by dispatching fragments to endpoints')
     parser.add_argument('-f', '--fragments-folder', type=str, required=True,
@@ -58,9 +62,9 @@ def main():
                         help='output folder for the results')
     args = parser.parse_args()
 
-    endpoints = [ 'endpoint{}'.format(port) for port in range(3030, 3040) ]
-    fragments = [ filename.split('.')[0] for filename in os.listdir(args.fragments_folder) ]
-    repartition = divideFragments(fragments,endpoints, int(args.threshold))
+    endpoints = ['endpoint{}'.format(port) for port in range(3030, 3040)]
+    fragments = [filename.split('.')[0] for filename in os.listdir(args.fragments_folder)]
+    repartition = divideFragments(fragments, endpoints, int(args.threshold))
     createEndpointFile('{}/{}'.format(args.output_folder, FEDRA_ENDPOINTS_FILE), repartition, fragments)
     dispatchFragments(args.fragments_folder, repartition, args.output_folder)
 
