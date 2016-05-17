@@ -16,9 +16,9 @@ def main():
     """Main function
     """
     parser = argparse.ArgumentParser(description='Detect if parallelization occurs during request execution')
-    parser.add_argument('-f', '--fedra-file', type=str, required=True,
+    parser.add_argument('-r', '--reference-file', type=str, required=True,
                         help='folder which contains query patterns for parsing')
-    parser.add_argument('-h', '--hybrid-file', type=str, required=True,
+    parser.add_argument('-f', '--file', type=str, required=True,
                         help='file which contains queries to parse')
     parser.add_argument('-o', '--output', type=str, required=True,
                         help='output file')
@@ -36,7 +36,7 @@ def main():
     tuples = dict()
 
     # load the hotspots of the reference file
-    with open(fedra_file, 'r', newline='') as csvfile:
+    with open(args.reference_file, 'r', newline='') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         for row in csvreader:
             fedraHotspots[row[0]] = row[12:23]
@@ -45,14 +45,14 @@ def main():
             tuples[row[0]] = row[10]
 
     # load the hotspots of the file to compare with
-    with open(hybrid_file, 'r', newline='') as csvfile:
+    with open(args.file, 'r', newline='') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         for row in csvreader:
             hybridHotspots[row[0]] = row[12:23]
             hybridTimes[row[0]] = row[1]
 
     # compare the files & output the results
-    with open(output_file, 'w', newline='') as csvfile:
+    with open(args.output, 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         nbImprovedQueries = 0
         nbUnimprovedQueries = 0
@@ -74,7 +74,7 @@ def main():
 
     print('Number of queries with improved execution time : {} / {}'.format(nbImprovedQueries, len(fedraTimes)))
     print('Number of queries with unimproved execution time : {} / {}'.format(nbUnimprovedQueries, len(fedraTimes)))
-
+    '''
     # create files for the boxplot script
     for fileName in FEDERATION_FILES:
         # collect datas about parallelized queries
@@ -85,6 +85,6 @@ def main():
         with open('../results/watDiv100Parallelized/{}'.format(fileName), 'w', newline='') as csvfile:
             csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             csvwriter.writerows(queries)
-
+    '''
 if __name__ == '__main__':
     main()

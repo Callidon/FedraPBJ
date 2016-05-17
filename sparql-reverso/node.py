@@ -3,12 +3,12 @@ class Node:
     """A node in a SPARQL query
     author : Thomas Minier
     """
-    def __init__(self, uri, placeholder):
+    def __init__(self, uri, isBlank):
         self.uri = uri
-        self.placeholder = placeholder
+        self.isBlank = isBlank
 
     def __eq__(self, other):
-        return (self.placeholder and other.placeholder) or (self.uri == other.uri)
+        return (self.isBlank or other.isBlank) or (self.uri == other.uri)
 
     def __repr__(self):
         return self.uri
