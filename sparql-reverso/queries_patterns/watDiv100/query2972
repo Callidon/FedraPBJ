@@ -1,1 +1,0 @@
-SELECT DISTINCT ?v0 ?v1 ?v3 ?v4 ?v5 ?v6 WHERE { ?v0 <http://purl.org/dc/terms/Location> ?v1 . ?v0 <http://xmlns.com/foaf/age> %p% . ?v3 <http://purl.org/goodrelations/includes> ?v4 . ?v3 <http://purl.org/goodrelations/includes> ?v4 . ?v4 <http://schema.org/contentRating> ?v5 . ?v0 <http://schema.org/email> ?v6 . ?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/likes> ?v4 }

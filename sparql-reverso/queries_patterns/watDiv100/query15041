@@ -1,1 +1,0 @@
-SELECT DISTINCT ?v0 ?v1 ?v2 ?v3 ?v4 WHERE { ?v0 <http://purl.org/goodrelations/includes> ?v1 . ?v1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?v2 . ?v1 <http://schema.org/caption> ?v3 . ?v1 <http://schema.org/keywords> ?v4 . ?v1 <http://db.uwaterloo.ca/~galuc/wsdbm/hasGenre> %p% }

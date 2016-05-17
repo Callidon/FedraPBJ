@@ -3,7 +3,6 @@
 # they use in order to find similar queries
 # author : Thomas Minier
 
-import csv
 import random
 import os
 import argparse

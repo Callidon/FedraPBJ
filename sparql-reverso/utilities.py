@@ -1,4 +1,4 @@
-# Utilities functions for the sparq-reverso program
+# Utilities functions for the sparql-reverso program
 # Author : Thomas Minier
 import re
 import csv
@@ -9,12 +9,9 @@ from triplePattern import TriplePattern
 def loadBGP(query):
     """Extract a BGP as a list of triple patterns from a SPARQL query
     """
-    queryBGP = list()
-    query = re.sub(' +', ' ', query)  # remove multiples spaces
+    query = re.sub(' +', ' ', query)  # compact multiples spaces
     bgp = re.search('WHERE {(.*)}', query).group(1)
-    for triple in bgp.split(' . '):
-        queryBGP.append(TriplePattern.from_str(triple))
-    return queryBGP
+    return [TriplePattern.from_str(triple) for triple in bgp.split(' . ')]
 
 
 def findParallelQueries(referenceResults, queriesResults):
@@ -22,7 +19,6 @@ def findParallelQueries(referenceResults, queriesResults):
     """
     referenceHotspots = dict()
     queriesHotspots = dict()
-    parallelized = list()
 
     # load the hotspots of the reference file
     with open(referenceResults, 'r', newline='') as csvfile:
@@ -36,8 +32,5 @@ def findParallelQueries(referenceResults, queriesResults):
         for row in csvreader:
             queriesHotspots[row[0]] = row[12:23]
 
-    # find the parallelized queries
-    for query, hotspots in referenceHotspots.items():
-        if hotspots != queriesHotspots[query]:
-            parallelized.append(int(query[5:]))
-    return parallelized
+    # find & return the parallelized queries
+    return [int(query[5:]) for query, hotspots in referenceHotspots.items() if hotspots != queriesHotspots[query]]
