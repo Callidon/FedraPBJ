@@ -37,6 +37,7 @@ def main():
 
     # find the queries that have been parallelized
     parallelizedQueries = utilities.findParallelQueries(args.reference_file, args.comparaison_file)
+    print('INFO : Found {} parallelized queries'.format(len(parallelizedQueries)))
 
     # if used, load previously identified queries
     if args.identified_queries:
@@ -74,19 +75,21 @@ def main():
 
     # search for queries which use the same fragments
     for ind in range(len(allQueries)):
-        if (allQueries[ind] not in parallelizedQueries) and (allQueries[ind] not in results):
+        if (ind not in parallelizedQueries) and (allQueries[ind] not in results):
             for fragment in relevantFragments:
                 if fragment in allQueries[ind]:
                     results.append(ind)
 
+    print('INFO : Found {} queries with similar fragments'.format(len(results)))
+
     # output 100 random line numbers in output file
+    if(len(results) >= 100):
+        sample = random.sample(results, 100)
+    else:
+        # use sampling with replacement when we doesn't have engouh results
+        sample = results + random.sample(results, 100 - len(results))
+        random.shuffle(sample)
     with open(args.output, 'w') as writer:
-        if(len(results) >= 100):
-            sample = random.sample(results, 100)
-        else:
-            # use sampling with replacement when we doesn't have engouh results
-            sample = results + random.sample(results, 100 - len(results))
-            random.shuffle(sample)
         for result in sample:
             writer.write('{}\n'.format(result))
 
