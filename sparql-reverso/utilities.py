@@ -33,4 +33,6 @@ def findParallelQueries(referenceResults, queriesResults):
             queriesHotspots[row[0]] = row[12:23]
 
     # find & return the parallelized queries
-    return [int(query[5:]) for query, hotspots in referenceHotspots.items() if hotspots != queriesHotspots[query]]
+    parallelized = [int(query[5:]) for query, hotspots in referenceHotspots.items() if hotspots != queriesHotspots[query]]
+    classics = [int(query[5:]) for query, hotspots in referenceHotspots.items() if hotspots == queriesHotspots[query]]
+    return parallelized, classics
