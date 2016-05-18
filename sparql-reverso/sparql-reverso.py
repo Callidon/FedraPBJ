@@ -37,6 +37,7 @@ def main():
 
     # find the queries that have been parallelized
     parallelizedQueries = utilities.findParallelQueries(args.reference_file, args.comparaison_file)
+
     print('INFO : Found {} parallelized queries'.format(len(parallelizedQueries)))
 
     # if used, load previously identified queries
@@ -75,7 +76,7 @@ def main():
 
     # search for queries which use the same fragments
     for ind in range(len(allQueries)):
-        if (ind not in parallelizedQueries) and (allQueries[ind] not in results):
+        if ind not in parallelizedQueries:
             for fragment in relevantFragments:
                 if fragment in allQueries[ind]:
                     results.append(ind)
