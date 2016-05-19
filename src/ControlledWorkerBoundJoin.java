@@ -5,12 +5,12 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -208,7 +208,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                     partition.setSources(endpoints);
                     partition.setBindingsPage(bindingPages);
                     //partition.performPartition(partition.PARTITION_ALGORITHM.BRUTE_FORCE);
-                    partition.performPartition(BindingsPartition.PARTITION_ALGORITHM.LPT);
+                    partition.performPartition(BindingsPartition.PARTITION_ALGORITHM.FFD);
                     List<Pair<StatementSource, List<List<BindingSet>>>> groups = partition.getPartition();
 
                     for(Pair<StatementSource, List<List<BindingSet>>> pair : groups) {

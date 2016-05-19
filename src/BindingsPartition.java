@@ -43,8 +43,8 @@ public class BindingsPartition {
             case BRUTE_FORCE:
                 this.bruteForcePairs();
                 break;
-            case LPT:
-                this.LPTPairs();
+            case FFD:
+                this.FirstFitDecreasingPairs();
                 break;
             default:
                 this.bruteForcePairs();
@@ -104,10 +104,10 @@ public class BindingsPartition {
     }
 
     /**
-     * Perform the partition using a Longest Processing Time (LPT) heuristic
-     * @see <a href="http://www.serc.iisc.ernet.in/~simmhan/SE252-JAN2014/lectures/SE252.Jan2014.Lecture-17.pdf">reference lecture (p.12)</a>
+     * Perform the partition using a First Fit Decreasing algorithm
+     * @see <a href="https://en.wikipedia.org/wiki/Bin_packing_problem#Analysis_of_approximate_algorithms">reference lecture</a>
      */
-    private void LPTPairs() {
+    private void FirstFitDecreasingPairs() {
         List<Pair<StatementSource, List<List<BindingSet>>>> results = new ArrayList<>();
         ListIterator<StatementSource> current_source = sources.listIterator();
         List<List<List<BindingSet>>> bins = new ArrayList<>(sources.size());
@@ -120,7 +120,7 @@ public class BindingsPartition {
             bins.add(new ArrayList<List<BindingSet>>());
         }
 
-        // fill the bins with LPT algorithm
+        // fill the bins with FFD algorithm
         for(List<BindingSet> page : bindingsPages) {
             // find the bin with the smallest weight & assign the current page to it
             List<List<BindingSet>> min_bin = Collections.min(bins, new BinWeightComparator(false));
@@ -190,6 +190,6 @@ public class BindingsPartition {
      */
     public enum PARTITION_ALGORITHM {
         BRUTE_FORCE,
-        LPT
+        FFD
     }
 }

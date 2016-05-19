@@ -12,7 +12,9 @@ class TriplePattern:
         self.object = obj
 
     def __eq__(self, other):
-        if self.subject.isBlank or other.subject.isBlank:
+        if type(self) != type(other):
+            return False
+        elif self.subject.isBlank or other.subject.isBlank:
             return (self.predicate == other.predicate) and (self.object == other.object)
         elif self.predicate.isBlank or other.predicate.isBlank:
             return (self.subject == other.subject) and (self.object == other.object)
