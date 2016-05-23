@@ -13,12 +13,11 @@ RESULTS_FOLDER="${DATA_PATH}/results"
 # for each query
 while IFS='' read -r line || [[ -n "$line" ]]; do
   cd $DATA_PATH
-  # get query in temp file
-  queryFile=`mktemp`
-  sed "${line}q;d" $QUERIES_FILE > $queryFile
+  # get query to execute
+  query=`sed "${line}q;d" $QUERIES_FILE`
 
   # execute query
   cd $CLI_PATH
   # resultFile="${RESULTS_FOLDER}/query${line}"
-  java -Xmx1024m -cp bin:lib/* com.fluidops.fedx.CLI -c $CONFIG_FILE -d $FEDERATION_FILE -f JSON -folder $RESULTS_FOLDER @q $queryFile
+  ./cli.sh -c $CONFIG_FILE -d $FEDERATION_FILE -f JSON -folder $RESULTS_FOLDER @q "${query}"
 done < "${QUERIES_TO_EXECUTE_FILE}"
