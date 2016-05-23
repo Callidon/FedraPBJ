@@ -1,1 +1,12 @@
-SELECT DISTINCT ?v0 ?v1 ?v2 ?v3 ?v4 ?v5 ?v7 WHERE { ?v0 <http://xmlns.com/foaf/homepage> ?v1 . ?v0 <http://xmlns.com/foaf/homepage> ?v1 . ?v2 <http://purl.org/goodrelations/includes> ?v0 . ?v0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?v3 . ?v0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?v3 . ?v0 <http://schema.org/contentSize> ?v4 . ?v0 <http://schema.org/keywords> ?v5 . ?v1 <http://schema.org/language> <http://db.uwaterloo.ca/~galuc/wsdbm/Language22> . ?v7 <http://db.uwaterloo.ca/~galuc/wsdbm/subscribes> ?v1 }
+SELECT DISTINCT ?v0 ?v1 ?v2 ?v3 ?v4 ?v5 ?v7
+WHERE {
+  ?v0 <http://xmlns.com/foaf/homepage> ?v1 .
+  ?v0 <http://xmlns.com/foaf/homepage> ?v1 .
+  ?v2 <http://purl.org/goodrelations/includes> ?v0 .
+  ?v0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?v3 .
+  ?v0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?v3 .
+  ?v0 <http://schema.org/contentSize> ?v4 .
+  ?v0 <http://schema.org/keywords> ?v5 .
+  ?v1 <http://schema.org/language> <http://db.uwaterloo.ca/~galuc/wsdbm/Language22> .
+  ?v7 <http://db.uwaterloo.ca/~galuc/wsdbm/subscribes> ?v1
+}

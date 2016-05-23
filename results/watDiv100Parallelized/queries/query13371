@@ -1,1 +1,9 @@
-SELECT DISTINCT ?v0 ?v2 ?v3 ?v4 WHERE { ?v0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://db.uwaterloo.ca/~galuc/wsdbm/ProductCategory7> . ?v0 <http://purl.org/stuff/rev#hasReview> ?v2 . ?v0 <http://purl.org/stuff/rev#hasReview> ?v2 . ?v0 <http://purl.org/stuff/rev#hasReview> ?v2 . ?v2 <http://purl.org/stuff/rev#rating> ?v3 . ?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/hasGenre> ?v4 }
+SELECT DISTINCT ?v0 ?v2 ?v3 ?v4
+WHERE {
+  ?v0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://db.uwaterloo.ca/~galuc/wsdbm/ProductCategory7> .
+  ?v0 <http://purl.org/stuff/rev#hasReview> ?v2 .
+  ?v0 <http://purl.org/stuff/rev#hasReview> ?v2 .
+  ?v0 <http://purl.org/stuff/rev#hasReview> ?v2 .
+  ?v2 <http://purl.org/stuff/rev#rating> ?v3 .
+  ?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/hasGenre> ?v4
+}
