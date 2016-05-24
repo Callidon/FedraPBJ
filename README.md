@@ -25,3 +25,8 @@ cd FedraPBJ/
 ```
 
 * Compile FedX & use it as usual
+
+# References
+* Montoya, Gabriela and Skaf-Molli, Hala and Molli, Pascal and Vidal, Maria-Esther, [Federated SPARQL Queries Processing with Replicated Fragments](https://hal.inria.fr/hal-01169601/document). In International Semantic Web Conference Oct. 2015
+* Schwarte, Andreas and Haase, Peter and Hose, Katja and Schenkel, Ralf and Schmidt, Michael, [FedX: Optimization Techniques for Federated Query Processing on Linked Data](http://www2.informatik.uni-freiburg.de/~mschmidt/docs/iswc11_fedx.pdf). In International Semantic Web Conference Oct. 2011
+* G. Aluç, M. T. Ozsu, K. Daudjee and O. Hartig, [chameleon-db: a Workload-Aware robust rdf data management system](https://cs.uwaterloo.ca/~galuc/papers/chameleon-db-research.pdf). University of Waterloo, Tech. Rep. CS-2013-10. 2013

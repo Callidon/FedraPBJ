@@ -75,7 +75,7 @@ processTableWithMinTuples <- function(setupName, minTuples, value_ind, outputEng
         return(result)
 }
 
-# path to output files
+# path to results files
 
 # from Diseasome setup
 outputDiseasomeEngine <- "../results/diseasome/outputFedXengineFEDERATION10Client"
@@ -107,17 +107,26 @@ outputSWDFPBJPost <- "../results/swdf/outputFedXFedra-PBJ-postFEDERATION10Client
 outputSWDFPBJHybrid <- "../results/swdf/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
 # from watDiv setup
+# with the classic federation
 outputWatDivEngine <- "../results/watDiv/outputFedXengineFEDERATION10Client"
 outputWatDivFedra <- "../results/watDiv/outputFedXFedraFEDERATION10Client"
 outputWatDivPBJPre <- "../results/watDiv/outputFedXFedra-PBJ-preFEDERATION10Client"
 outputWatDivPBJPost <- "../results/watDiv/outputFedXFedra-PBJ-postFEDERATION10Client"
 outputWatDivPBJHybrid <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
-outputWatDivParallelizedEngine <- "../results/watDivParallelized/outputFedXengineFEDERATION10Client"
-outputWatDivParallelizedFedra <- "../results/watDivParallelized/outputFedXFedraFEDERATION10Client"
-outputWatDivParallelizedPBJPre <- "../results/watDivParallelized/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputWatDivParallelizedPBJPost <- "../results/watDivParallelized/outputFedXFedra-PBJ-postFEDERATION10Client"
-outputWatDivParallelizedPBJHybrid <- "../results/watDivParallelized/outputFedXFedra-PBJ-hybridFEDERATION10Client"
+# with a federation of 20 endpoints
+outputWatDiv20eEngine <- "../results/watDiv/outputFedXengineFEDERATION10Client"
+outputWatDiv20eFedra <- "../results/watDiv/outputFedXFedraFEDERATION20Client"
+outputWatDiv20ePBJPre <- "../results/watDiv/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputWatDiv20ePBJPost <- "../results/watDiv/outputFedXFedra-PBJ-postFEDERATION10Client"
+outputWatDiv20ePBJHybrid <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION20Client"
+
+# with a federation of 30 endpoints
+outputWatDiv30eEngine <- "../results/watDiv/outputFedXengineFEDERATION10Client"
+outputWatDiv30eFedra <- "../results/watDiv/outputFedXFedraFEDERATION30Client"
+outputWatDiv30ePBJPre <- "../results/watDiv/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputWatDiv30ePBJPost <- "../results/watDiv/outputFedXFedra-PBJ-postFEDERATION10Client"
+outputWatDiv30ePBJHybrid <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION30Client"
 
 # from watDiv100 setup
 outputWatDiv100Engine <- "../results/watDiv100/outputFedXengineFEDERATION10Client"
@@ -126,12 +135,6 @@ outputWatDiv100PBJPre <- "../results/watDiv100/outputFedXFedra-PBJ-preFEDERATION
 outputWatDiv100PBJPost <- "../results/watDiv100/outputFedXFedra-PBJ-postFEDERATION10Client"
 outputWatDiv100PBJHybrid <- "../results/watDiv100/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
-outputWatDiv100ParallelizedEngine <- "../results/watDiv100Parallelized/outputFedXengineFEDERATION10Client"
-outputWatDiv100ParallelizedFedra <- "../results/watDiv100Parallelized/outputFedXFedraFEDERATION10Client"
-outputWatDiv100ParallelizedPBJPre <- "../results/watDiv100Parallelized/outputFedXFedra-PBJ-preFEDERATION10Client"
-outputWatDiv100ParallelizedPBJPost <- "../results/watDiv100Parallelized/outputFedXFedra-PBJ-postFEDERATION10Client"
-outputWatDiv100ParallelizedPBJHybrid <- "../results/watDiv100Parallelized/outputFedXFedra-PBJ-hybridFEDERATION10Client"
-
 # For the execution time
 # Process the datas & merge them into one unique table
 diseasomeTable <- processTable(diseasomeSetupName, 2, outputDiseasomeEngine, outputDiseasomeFedra, outputDiseasomePBJPre, outputDiseasomePBJPost, outputDiseasomePBJHybrid)
@@ -139,9 +142,8 @@ linkedMDBTable <- processTable(linkedMDBSetupName, 2, outputLinkedMDBEngine, out
 geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 2, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
 SWDFTable <- processTable(swdfSetupName, 2, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
 watDivTable <- processTable(watDivSetupName, 2, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
-watDiv100Table <- processTable(watDiv100SetupName, 2, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
-watDivParallelizedTable <- processTable(watDivSetupName, 2, outputWatDivParallelizedEngine, outputWatDivParallelizedFedra, outputWatDivParallelizedPBJPre, outputWatDivParallelizedPBJPost, outputWatDivParallelizedPBJHybrid)
-watDiv100ParallelizedTable <- processTable(watDiv100SetupName, 2, outputWatDiv100ParallelizedEngine, outputWatDiv100ParallelizedFedra, outputWatDiv100ParallelizedPBJPre, outputWatDiv100ParallelizedPBJPost, outputWatDiv100ParallelizedPBJHybrid)
+watDiv20eTable <- processTable(watDivSetupName, 2, outputWatDiv20eEngine, outputWatDiv20eFedra, outputWatDiv20ePBJPre, outputWatDiv20ePBJPost, outputWatDiv20ePBJHybrid)
+watDiv30eTable <- processTable(watDivSetupName, 2, outputWatDiv30eEngine, outputWatDiv30eFedra, outputWatDiv30ePBJPre, outputWatDiv30ePBJPost, outputWatDiv30ePBJHybrid)
 timesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
 # set the colnames
@@ -158,14 +160,6 @@ colnames(timesTable) <- c("time", "dataset", "Strategy")
 # create the boxplots
 pdf("../results/execution_time.pdf", width=7, height=4)
 ggplot(data = timesTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
-dev.off()
-
-pdf("../results/watDivParallelized/execution_time.pdf", width=7, height=4)
-ggplot(data = watDivParallelizedTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
-dev.off()
-
-pdf("../results/watDiv100Parallelized/execution_time.pdf", width=7, height=4)
-ggplot(data = watDiv100ParallelizedTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
 dev.off()
 
 pdf("../results/diseasome/execution_time.pdf", width=7, height=4)
@@ -188,35 +182,15 @@ pdf("../results/watDiv/execution_time.pdf", width=7, height=4)
 ggplot(data = watDivTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
 dev.off()
 
+pdf("../results/watDiv/execution_time_20endpoints.pdf", width=7, height=4)
+ggplot(data = watDiv20eTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
+dev.off()
+
+pdf("../results/watDiv/execution_time_30endpoints.pdf", width=7, height=4)
+ggplot(data = watDiv30eTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
+dev.off()
 
 pdf("../results/watDiv100/execution_time.pdf", width=7, height=4)
-ggplot(data = watDiv100Table, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
-dev.off()
-
-# experiment using min number of tuple
-#diseasomeTable <- processTableWithMinTuples(diseasomeSetupName, minTuples, 2, outputDiseasomeEngine, outputDiseasomeFedra, outputDiseasomePBJPre, outputDiseasomePBJPost, outputDiseasomePBJHybrid)
-#linkedMDBTable <- processTableWithMinTuples(linkedMDBSetupName, minTuples, 2, outputLinkedMDBEngine, outputLinkedMDBFedra, outputLinkedMDBPBJPre, outputLinkedMDBPBJPost, outputLinkedMDBPBJHybrid)
-#geoCoordinatesTable <- processTableWithMinTuples(geoCoordinatesSetupName, minTuples, 2, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
-#SWDFTable <- processTableWithMinTuples(swdfSetupName, minTuples, 2, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
-watDivTable <- processTableWithMinTuples(watDivSetupName, 100, 2, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
-watDiv100Table <- processTableWithMinTuples(watDiv100SetupName, 1000, 2, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
-timesTable <- rbind(watDivTable, watDiv100Table) #rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
-
-# set the colnames
-#colnames(diseasomeTable) <- c("time", "dataset", "Strategy")
-#colnames(linkedMDBTable) <- c("time", "dataset", "Strategy")
-#colnames(geoCoordinatesTable) <- c("time", "dataset", "Strategy")
-#colnames(SWDFTable) <- c("time", "dataset", "Strategy")
-colnames(watDivTable) <- c("time", "dataset", "Strategy")
-colnames(watDiv100Table) <- c("time", "dataset", "Strategy")
-colnames(timesTable) <- c("time", "dataset", "Strategy")
-
-# create the boxplots
-pdf("../results/execution_time_100tuples.pdf", width=7, height=4)
-ggplot(data = watDivTable, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
-dev.off()
-
-pdf("../results/execution_time_1000tuples.pdf", width=7, height=4)
 ggplot(data = watDiv100Table, aes(x=dataset, y=time)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Execution time (s)") + xlab("Dataset")
 dev.off()
 
@@ -231,6 +205,8 @@ watDivTable <- processTable(watDivSetupName, 11, outputWatDivEngine, outputWatDi
 watDiv100Table <- processTable(watDiv100SetupName, 11, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
 watDivParallelizedTable <- processTable(watDivSetupName, 11, outputWatDivParallelizedEngine, outputWatDivParallelizedFedra, outputWatDivParallelizedPBJPre, outputWatDivParallelizedPBJPost, outputWatDivParallelizedPBJHybrid)
 watDiv100ParallelizedTable <- processTable(watDiv100SetupName, 11, outputWatDiv100ParallelizedEngine, outputWatDiv100ParallelizedFedra, outputWatDiv100ParallelizedPBJPre, outputWatDiv100ParallelizedPBJPost, outputWatDiv100ParallelizedPBJHybrid)
+watDiv20eTable <- processTable(watDivSetupName, 11, outputWatDiv20eEngine, outputWatDiv20eFedra, outputWatDiv20ePBJPre, outputWatDiv20ePBJPost, outputWatDiv20ePBJHybrid)
+watDiv30eTable <- processTable(watDivSetupName, 11, outputWatDiv30eEngine, outputWat30eDivFedra, outputWatDiv30ePBJPre, outputWatDiv30ePBJPost, outputWatDiv30ePBJHybrid)
 tuplesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
 # set the colnames
@@ -247,14 +223,6 @@ colnames(tuplesTable) <- c("tuples", "dataset", "Strategy")
 # create the boxplots
 pdf("../results/transferred_tuples.pdf", width=7, height=4)
 ggplot(data = tuplesTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
-dev.off()
-
-pdf("../results/watDivParallelized/transferred_tuples.pdf", width=7, height=4)
-ggplot(data = watDivParallelizedTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
-dev.off()
-
-pdf("../results/watDiv100Parallelized/transferred_tuples.pdf", width=7, height=4)
-ggplot(data = watDiv100ParallelizedTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
 dev.off()
 
 pdf("../results/diseasome/transferred_tuples.pdf", width=7, height=4)
@@ -277,6 +245,14 @@ pdf("../results/watDiv/transferred_tuples.pdf", width=7, height=4)
 ggplot(data = watDivTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
 dev.off()
 
+pdf("../results/watDiv/transferred_tuples_20endpoints.pdf", width=7, height=4)
+ggplot(data = watDiv20eTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
+dev.off()
+
+pdf("../results/watDiv/transferred_tuples_30endpoints.pdf", width=7, height=4)
+ggplot(data = watDiv30eTable, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
+dev.off()
+
 pdf("../results/watDiv100/transferred_tuples.pdf", width=7, height=4)
 ggplot(data = watDiv100Table, aes(x=dataset, y=tuples)) + scale_y_continuous(trans = log10_trans(), breaks = trans_breaks("log10", function(x) 100^x), labels = trans_format("log10", math_format(10^.x))) + geom_boxplot(aes(fill=Strategy)) + ylab("Number of transferred tuples") + xlab("Dataset")
 dev.off()
@@ -288,6 +264,8 @@ linkedMDBTable <- processTable(linkedMDBSetupName, 6, outputLinkedMDBEngine, out
 geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 6, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
 SWDFTable <- processTable(swdfSetupName, 6, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
 watDivTable <- processTable(watDivSetupName, 6, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
+watDiv20eTable <- processTable(watDivSetupName, 6, outputWatDiv20eEngine, outputWatDiv20eFedra, outputWatDiv20ePBJPre, outputWatDiv20ePBJPost, outputWatDiv20ePBJHybrid)
+watDiv30eTable <- processTable(watDivSetupName, 6, outputWatDiv30eEngine, outputWatDiv30eFedra, outputWatDiv30ePBJPre, outputWatDiv30ePBJPost, outputWatDiv30ePBJHybrid)
 watDiv100Table <- processTable(watDiv100SetupName, 6, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
 completnessTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
@@ -323,6 +301,14 @@ dev.off()
 
 pdf("../results/watDiv/completeness.pdf", width=7, height=4)
 ggplot(data = watDivTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Strategy)) + ylab("Completeness") + xlab("Dataset")
+dev.off()
+
+pdf("../results/watDiv/completeness_20endpoints.pdf", width=7, height=4)
+ggplot(data = watDiv20eTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Strategy)) + ylab("Completeness") + xlab("Dataset")
+dev.off()
+
+pdf("../results/watDiv/completeness_30endpoints.pdf", width=7, height=4)
+ggplot(data = watDiv30eTable, aes(x=dataset, y=completness)) + geom_boxplot(aes(fill=Strategy)) + ylab("Completeness") + xlab("Dataset")
 dev.off()
 
 pdf("../results/watDiv100/completeness.pdf", width=7, height=4)
