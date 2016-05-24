@@ -20,6 +20,8 @@ def main():
                         help='folder which contains query patterns for parsing')
     parser.add_argument('-f', '--file', type=str, required=True,
                         help='file which contains queries to parse')
+    parser.add_argument('-n', '--number-endpoints', type=str, required=True,
+                        help='number of endpoints in the federation')
     parser.add_argument('-o', '--output', type=str, required=True,
                         help='output file')
     args = parser.parse_args()
@@ -39,7 +41,7 @@ def main():
     with open(args.reference_file, 'r', newline='') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         for row in csvreader:
-            fedraHotspots[row[0]] = row[12:23]
+            fedraHotspots[row[0]] = row[12:13 + int(args.number_endpoints)]
             fedraTimes[row[0]] = row[1]
             shapes[row[0]] = row[9]
             tuples[row[0]] = row[10]
@@ -48,7 +50,7 @@ def main():
     with open(args.file, 'r', newline='') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         for row in csvreader:
-            hybridHotspots[row[0]] = row[12:23]
+            hybridHotspots[row[0]] = row[12:13 + int(args.number_endpoints)]
             hybridTimes[row[0]] = row[1]
 
     # compare the files & output the results

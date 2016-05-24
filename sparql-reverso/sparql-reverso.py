@@ -27,6 +27,8 @@ def main():
                         help='file which contains the queries to analyze')
     parser.add_argument('-f', '--fragments-folder', type=str, required=True,
                         help='folder whch contains the fragment defintions')
+    parser.add_argument('-n', '--number-endpoints', type=str, required=True,
+                        help='number of endpoints in the federation')
     parser.add_argument('-o', '--output', type=str, required=True,
                         help='output file for results')
     args = parser.parse_args()
@@ -36,7 +38,7 @@ def main():
     allFragments = dict()
 
     # find the queries that have been parallelized
-    parallelizedQueries, classicQueries = utilities.findParallelQueries(args.reference_file, args.comparaison_file)
+    parallelizedQueries, classicQueries = utilities.findParallelQueries(args.reference_file, args.comparaison_file, int(args.number_endpoints))
     print('INFO : Found {} parallelized queries'.format(len(parallelizedQueries)))
 
     # load queries already identified as parallelized

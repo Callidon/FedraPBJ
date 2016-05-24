@@ -10,7 +10,7 @@ if [ $# -eq 0 ]; then
 fi
 
 PROJECT_PATH=`pwd`
-FEDX_PATH="$1"
+FEDX_PATH=$1
 ALGEBRA_PATH="${FEDX_PATH}/src/com/fluidops/fedx/algebra"
 OPTIMIZER_PATH="${FEDX_PATH}/src/com/fluidops/fedx/optimizer"
 EVALUATION_PATH="${FEDX_PATH}/src/com/fluidops/fedx/evaluation/join"

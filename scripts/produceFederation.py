@@ -57,13 +57,15 @@ def main():
     parser = argparse.ArgumentParser(description='Create a new federation by dispatching fragments to endpoints')
     parser.add_argument('-f', '--fragments-folder', type=str, required=True,
                         help='folder containing the SPARQL construct requests which define the fragments')
+    parser.add_argument('-n', '--number-endpoints', type=str, required=True,
+                        help='number of endpoints in the federation')
     parser.add_argument('-t', '--threshold', type=str, required=True,
                         help='maximum number of fragment per endpoint')
     parser.add_argument('-o', '--output-folder', type=str, required=True,
                         help='output folder for the results')
     args = parser.parse_args()
 
-    endpoints = ['endpoint{}'.format(port) for port in range(3030, 3040)]
+    endpoints = ['endpoint{}'.format(port) for port in range(3030, 3030 + int(args.number_endpoints))]
     fragments = [filename.split('.')[0] for filename in os.listdir(args.fragments_folder)]
     repartition = divideFragments(fragments, endpoints, int(args.threshold))
     createEndpointFile('{}/{}'.format(args.output_folder, FEDRA_ENDPOINTS_FILE), repartition, fragments)

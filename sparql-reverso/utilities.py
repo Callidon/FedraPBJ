@@ -14,7 +14,7 @@ def loadBGP(query):
     return [TriplePattern.from_str(triple) for triple in bgp.split(' . ')]
 
 
-def findParallelQueries(referenceResults, queriesResults):
+def findParallelQueries(referenceResults, queriesResults, nbEndpoints):
     """Find line numbers of queries that have been parallelized
     """
     referenceHotspots = dict()
@@ -24,13 +24,13 @@ def findParallelQueries(referenceResults, queriesResults):
     with open(referenceResults, 'r', newline='') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         for row in csvreader:
-            referenceHotspots[row[0]] = row[12:23]
+            referenceHotspots[row[0]] = row[12:13 + nbEndpoints]
 
     # load the hotspots of the file to compare with
     with open(queriesResults, 'r', newline='') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         for row in csvreader:
-            queriesHotspots[row[0]] = row[12:23]
+            queriesHotspots[row[0]] = row[12:13 + nbEndpoints]
 
     # find & return the parallelized queries
     parallelized = [int(query[5:]) for query, hotspots in referenceHotspots.items() if hotspots != queriesHotspots[query]]
