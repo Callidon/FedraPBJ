@@ -5,12 +5,12 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -96,22 +96,16 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
             totalBindings++;
 			if (expr instanceof StatementTupleExpr) {
 				StatementTupleExpr stmt = (StatementTupleExpr)expr;
-                System.out.println("join#" + joinId + " a");
                 if (stmt.hasFreeVarsFor(firstBinding)) {
-                    System.out.println("join#" + joinId + " b");
                     if((stmt instanceof StatementSourcePattern) || (stmt instanceof ExclusiveStatement)) {
                         FedXStatementPattern source_pattern = (FedXStatementPattern) stmt;
 
                         // if we are using the Parallel Bound Join algorithm & this triple has multiples sources selected by Fedra
-                        System.out.println("join#" + joinId + " for statement " + stmt.getSignature() + " hasMultipleRelevantSources ? " + source_pattern.hasMultipleRelevantSources());
                         if(strategyIsPBJ && source_pattern.hasMultipleRelevantSources()) {
                             usePBJ = true;
                             // get the relevant sources & the associated StatementSourcePatterns
                             sourcesGroups = source_pattern.getRelevantSources();
                             sourcePatternGroups = source_pattern.getRelevantSourcePatterns();
-
-                            System.out.println("join#" + joinId + " sourceGroups : " + sourcesGroups);
-                            System.out.println("join#" + joinId + " sourcePatternGroups : " + sourcePatternGroups);
 
                             // register the task creators associated to each relevant source
                             for(Map.Entry<StatementSource, StatementSourcePattern> pair : sourcePatternGroups.entrySet()) {
@@ -143,15 +137,11 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 			}
             // send the first item in a non bound way using the correct statement
             if(stmtFirstSource == null) {
-                System.out.println("join#" + joinId + " doesn't use stmtFirstSource");
                 scheduler.schedule( new ParallelJoinTask(this, strategy, expr, firstBinding) );
             } else {
-                System.out.println("join#" + joinId + " use stmtFirstSource " + stmtFirstSource);
                 scheduler.schedule( new ParallelJoinTask(this, strategy, stmtFirstSource, firstBinding) );
             }
 		}
-
-        System.out.println("join#" + joinId + " parallelTaskCreators : " + parallelTaskCreators);
 
         // Collect all the bindings
         while (!closed && leftIter.hasNext()) {
@@ -188,23 +178,18 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
             }
             bindings.clear();
         }
-
-        System.out.println("join#" + joinId + " number of bindings " + bindingPages.size());
         // if we are using the Parallel Bound Join algorithm
         if(usePBJ) {
             // schedule the tasks using the Parallel Bound Join algorithm
-            System.out.println("join#" + joinId + " parallel bound join");
             for(List<StatementSource> endpoints : sourcesGroups) {
                 // if no parallelization is possible
                 if(endpoints.size() == 1) {
-                    System.out.println("join#" + joinId + " simple case");
                     // classic case for Bound Join
                     for(List<BindingSet> page : bindingPages) {
                         scheduler.schedule(parallelTaskCreators.get(endpoints.get(0)).getTask(page));
                     }
                 } else {
                     // if parallelization is possible, we apply the parallel bound join algorithm
-                    System.out.println("join#" + joinId + " parallel case");
                     partition.setSources(endpoints);
                     partition.setBindingsPage(bindingPages);
                     //partition.performPartition(partition.PARTITION_ALGORITHM.BRUTE_FORCE);
@@ -221,51 +206,11 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
             }
         } else {
             // classic case using FedX native Bound Join algorithm
-            System.out.println("join#" + joinId + " normal bound join");
             for(List<BindingSet> page : bindingPages) {
                 assert taskCreator != null;
                 scheduler.schedule(taskCreator.getTask(page));
             }
         }
-
-        /*
-        // classic case using FedX native Bound Join algorithm
-        int nBindings;
-        List<BindingSet> bindings = null;
-        while (!closed && leftIter.hasNext()) {*/
-
-        /*
-         * XXX idea:
-         *
-         * make nBindings dependent on the number of intermediate results of the left argument.
-         *
-         * If many intermediate results, increase the number of bindings. This will result in less
-         * remote SPARQL requests.
-         *
-         */
-
-        /*	if (totalBindings>10)
-                nBindings = nBindingsCfg;
-            else
-                nBindings = 3;
-
-            bindings = new ArrayList<>(nBindings);
-
-            int count = 0;
-            while (count < nBindings && leftIter.hasNext()) {
-                BindingSet binding = leftIter.next();
-                bindings.add(binding);
-                count++;
-            }
-
-            totalBindings += count;
-            if(taskCreator != null) {
-                scheduler.schedule(taskCreator.getTask(bindings));
-            }
-        }
-	    */
-
-        System.out.println("join#" + joinId + " number of tasks " + scheduler.getNumberOfTasks());
 
 		scheduler.informFinish(this);
 

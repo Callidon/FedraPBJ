@@ -38,7 +38,6 @@ public class BindingsPartition {
      * @param algorithm
      */
     public void performPartition(PARTITION_ALGORITHM algorithm) {
-        //System.out.println("bindings : " + bindingsPages);
         switch (algorithm) {
             case BRUTE_FORCE:
                 this.bruteForcePairs();
@@ -50,7 +49,6 @@ public class BindingsPartition {
                 this.bruteForcePairs();
                 break;
         }
-        this.printPartition();
     }
 
     /**
