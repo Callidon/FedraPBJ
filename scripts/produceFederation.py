@@ -56,7 +56,7 @@ def dispatchFragments(fragment_folder, repartition, output_folder):
 def main():
     parser = argparse.ArgumentParser(description='Create a new federation by dispatching fragments to endpoints')
     parser.add_argument('-f', '--fragments-folder', type=str, required=True,
-                        help='folder containing the SPARQL construct requests which define the fragments')
+                        help='folder wich contains fragments data')
     parser.add_argument('-n', '--number-endpoints', type=str, required=True,
                         help='number of endpoints in the federation')
     parser.add_argument('-t', '--threshold', type=str, required=True,
