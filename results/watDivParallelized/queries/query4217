@@ -1,5 +1,0 @@
-SELECT DISTINCT ?v0 ?v1
-WHERE {
-  ?v0 <http://schema.org/language> ?v1 .
-  ?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/hasGenre> <http://db.uwaterloo.ca/~galuc/wsdbm/SubGenre68>
-}

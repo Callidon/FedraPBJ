@@ -1,5 +1,0 @@
-SELECT DISTINCT ?v0 ?v1
-WHERE {
-  ?v0 <http://schema.org/email> ?v1 .
-  ?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/gender> <http://db.uwaterloo.ca/~galuc/wsdbm/Gender1>
-}

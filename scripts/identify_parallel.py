@@ -4,12 +4,13 @@
 
 import csv
 import argparse
-
+'''
 FEDERATION_FILES = ['outputFedXengineFEDERATION10Client',
                     'outputFedXFedra-PBJ-hybridFEDERATION10Client',
                     'outputFedXFedra-PBJ-postFEDERATION10Client',
                     'outputFedXFedra-PBJ-preFEDERATION10Client',
                     'outputFedXFedraFEDERATION10Client']
+'''
 
 
 def main():
@@ -36,6 +37,9 @@ def main():
     parallelizedQueries = list()
     shapes = dict()
     tuples = dict()
+
+    federation_files = ['outputFedXFedra-PBJ-hybridFEDERATION{}Client'.format(args.number_endpoints),
+                        'outputFedXFedraFEDERATION{}Client'.format(args.number_endpoints)]
 
     # load the hotspots of the reference file
     with open(args.reference_file, 'r', newline='') as csvfile:
@@ -76,17 +80,17 @@ def main():
 
     print('Number of queries with improved execution time : {} / {}'.format(nbImprovedQueries, len(fedraTimes)))
     print('Number of queries with unimproved execution time : {} / {}'.format(nbUnimprovedQueries, len(fedraTimes)))
-    '''
+
     # create files for the boxplot script
-    for fileName in FEDERATION_FILES:
+    for fileName in federation_files:
         # collect datas about parallelized queries
-        with open('../results/watDiv100/{}'.format(fileName), 'r', newline='') as csvfile:
+        with open('../results/watDiv/{}'.format(fileName), 'r', newline='') as csvfile:
             csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
             queries = [row for row in csvreader if (row[0] in parallelizedQueries)]
         # output them in corresponding file
-        with open('../results/watDiv100Parallelized/{}'.format(fileName), 'w', newline='') as csvfile:
+        with open('../results/watDiv/parallelized/{}'.format(fileName), 'w', newline='') as csvfile:
             csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             csvwriter.writerows(queries)
-    '''
+
 if __name__ == '__main__':
     main()
