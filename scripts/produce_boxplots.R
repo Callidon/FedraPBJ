@@ -144,6 +144,7 @@ SWDFTable <- processTable(swdfSetupName, 2, outputSWDFEngine, outputSWDFFedra, o
 watDivTable <- processTable(watDivSetupName, 2, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
 watDiv20eTable <- processTable(watDivSetupName, 2, outputWatDiv20eEngine, outputWatDiv20eFedra, outputWatDiv20ePBJPre, outputWatDiv20ePBJPost, outputWatDiv20ePBJHybrid)
 watDiv30eTable <- processTable(watDivSetupName, 2, outputWatDiv30eEngine, outputWatDiv30eFedra, outputWatDiv30ePBJPre, outputWatDiv30ePBJPost, outputWatDiv30ePBJHybrid)
+watDiv100Table <- processTable(watDiv100SetupName, 2, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
 timesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
 # set the colnames
@@ -152,9 +153,9 @@ colnames(linkedMDBTable) <- c("time", "dataset", "Strategy")
 colnames(geoCoordinatesTable) <- c("time", "dataset", "Strategy")
 colnames(SWDFTable) <- c("time", "dataset", "Strategy")
 colnames(watDivTable) <- c("time", "dataset", "Strategy")
+colnames(watDiv20eTable) <- c("time", "dataset", "Strategy")
+colnames(watDiv30eTable) <- c("time", "dataset", "Strategy")
 colnames(watDiv100Table) <- c("time", "dataset", "Strategy")
-colnames(watDivParallelizedTable) <- c("time", "dataset", "Strategy")
-colnames(watDiv100ParallelizedTable) <- c("time", "dataset", "Strategy")
 colnames(timesTable) <- c("time", "dataset", "Strategy")
 
 # create the boxplots
@@ -202,11 +203,9 @@ linkedMDBTable <- processTable(linkedMDBSetupName, 11, outputLinkedMDBEngine, ou
 geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 11, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
 SWDFTable <- processTable(swdfSetupName, 11, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
 watDivTable <- processTable(watDivSetupName, 11, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
-watDiv100Table <- processTable(watDiv100SetupName, 11, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
-watDivParallelizedTable <- processTable(watDivSetupName, 11, outputWatDivParallelizedEngine, outputWatDivParallelizedFedra, outputWatDivParallelizedPBJPre, outputWatDivParallelizedPBJPost, outputWatDivParallelizedPBJHybrid)
-watDiv100ParallelizedTable <- processTable(watDiv100SetupName, 11, outputWatDiv100ParallelizedEngine, outputWatDiv100ParallelizedFedra, outputWatDiv100ParallelizedPBJPre, outputWatDiv100ParallelizedPBJPost, outputWatDiv100ParallelizedPBJHybrid)
 watDiv20eTable <- processTable(watDivSetupName, 11, outputWatDiv20eEngine, outputWatDiv20eFedra, outputWatDiv20ePBJPre, outputWatDiv20ePBJPost, outputWatDiv20ePBJHybrid)
-watDiv30eTable <- processTable(watDivSetupName, 11, outputWatDiv30eEngine, outputWat30eDivFedra, outputWatDiv30ePBJPre, outputWatDiv30ePBJPost, outputWatDiv30ePBJHybrid)
+watDiv30eTable <- processTable(watDivSetupName, 11, outputWatDiv30eEngine, outputWatDiv30eFedra, outputWatDiv30ePBJPre, outputWatDiv30ePBJPost, outputWatDiv30ePBJHybrid)
+watDiv100Table <- processTable(watDiv100SetupName, 11, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
 tuplesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
 # set the colnames
@@ -215,9 +214,9 @@ colnames(linkedMDBTable) <- c("tuples", "dataset", "Strategy")
 colnames(geoCoordinatesTable) <- c("tuples", "dataset", "Strategy")
 colnames(SWDFTable) <- c("tuples", "dataset", "Strategy")
 colnames(watDivTable) <- c("tuples", "dataset", "Strategy")
+colnames(watDiv20eTable) <- c("tuples", "dataset", "Strategy")
+colnames(watDiv30eTable) <- c("tuples", "dataset", "Strategy")
 colnames(watDiv100Table) <- c("tuples", "dataset", "Strategy")
-colnames(watDivParallelizedTable) <- c("tuples", "dataset", "Strategy")
-colnames(watDiv100ParallelizedTable) <- c("tuples", "dataset", "Strategy")
 colnames(tuplesTable) <- c("tuples", "dataset", "Strategy")
 
 # create the boxplots
@@ -275,6 +274,8 @@ colnames(linkedMDBTable) <- c("completness", "dataset", "Strategy")
 colnames(geoCoordinatesTable) <- c("completness", "dataset", "Strategy")
 colnames(SWDFTable) <- c("completness", "dataset", "Strategy")
 colnames(watDivTable) <- c("completness", "dataset", "Strategy")
+colnames(watDiv20eTable) <- c("completness", "dataset", "Strategy")
+colnames(watDiv30eTable) <- c("completness", "dataset", "Strategy")
 colnames(watDiv100Table) <- c("completness", "dataset", "Strategy")
 colnames(completnessTable) <- c("completness", "dataset", "Strategy")
 
