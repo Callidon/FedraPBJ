@@ -193,7 +193,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                     partition.setSources(endpoints);
                     partition.setBindingsPage(bindingPages);
                     //partition.performPartition(partition.PARTITION_ALGORITHM.BRUTE_FORCE);
-                    partition.performPartition(BindingsPartition.PARTITION_ALGORITHM.FFD);
+                    partition.performPartition(BindingsPartition.PARTITION_ALGORITHM.RoundRobin);
                     List<Pair<StatementSource, List<List<BindingSet>>>> groups = partition.getPartition();
 
                     for(Pair<StatementSource, List<List<BindingSet>>> pair : groups) {

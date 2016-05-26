@@ -43,7 +43,10 @@ public class BindingsPartition {
                 this.bruteForcePairs();
                 break;
             case FFD:
-                this.FirstFitDecreasingPairs();
+                this.BestFitDecreasing();
+                break;
+            case RoundRobin:
+                this.RoundRobin();
                 break;
             default:
                 this.bruteForcePairs();
@@ -102,10 +105,10 @@ public class BindingsPartition {
     }
 
     /**
-     * Perform the partition using a First Fit Decreasing algorithm
+     * Perform the partition using a Best Fit Decreasing algorithm
      * @see <a href="https://en.wikipedia.org/wiki/Bin_packing_problem#Analysis_of_approximate_algorithms">reference lecture</a>
      */
-    private void FirstFitDecreasingPairs() {
+    private void BestFitDecreasing() {
         List<Pair<StatementSource, List<List<BindingSet>>>> results = new ArrayList<>();
         ListIterator<StatementSource> current_source = sources.listIterator();
         List<List<List<BindingSet>>> bins = new ArrayList<>(sources.size());
@@ -118,7 +121,7 @@ public class BindingsPartition {
             bins.add(new ArrayList<List<BindingSet>>());
         }
 
-        // fill the bins with FFD algorithm
+        // fill the bins with BFD algorithm
         for(List<BindingSet> page : bindingsPages) {
             // find the bin with the smallest weight & assign the current page to it
             List<List<BindingSet>> min_bin = Collections.min(bins, new BinWeightComparator(false));
@@ -134,7 +137,35 @@ public class BindingsPartition {
     }
 
     /**
-     * Comparator for the pages of bindings, used in the LTP algorithm, for sorting them by their size
+     * Perform the partition using the Round Robin algorithm
+     */
+    private void RoundRobin() {
+        List<Pair<StatementSource, List<List<BindingSet>>>> results = new ArrayList<>();
+        ListIterator<StatementSource> current_source = sources.listIterator();
+        List<List<List<BindingSet>>> bins = new ArrayList<>(sources.size());
+
+        // init the bins
+        for(int i = 0; i < sources.size(); i++) {
+            bins.add(new ArrayList<List<BindingSet>>());
+        }
+
+        // assign each page to a bin
+        int binInd = 0;
+        for(List<BindingSet> page : bindingsPages) {
+            bins.get(binInd).add(page);
+            binInd = (binInd + 1) % bins.size();
+        }
+
+        // assign the bins to source in order to make pairs
+        for(List<List<BindingSet>> bin : bins) {
+            Pair<StatementSource, List<List<BindingSet>>> pair = new Pair<StatementSource, List<List<BindingSet>>>(current_source.next(), new ArrayList<>(bin));
+            results.add(pair);
+        }
+        partition = results;
+    }
+
+    /**
+     * Comparator for the pages of bindings, used in the BFD algorithm, for sorting them by their size
      */
     private class BindingPageSizeComparator implements Comparator<List<BindingSet>> {
         private boolean reverse;
@@ -154,7 +185,7 @@ public class BindingsPartition {
     }
 
     /**
-     * Comparator for the bins, used in the LTP algorithm, for sorting them by their weight
+     * Comparator for the bins, used in the BFD algorithm, for sorting them by their weight
      */
     private class BinWeightComparator implements Comparator<List<List<BindingSet>>> {
         private boolean reverse;
@@ -188,6 +219,7 @@ public class BindingsPartition {
      */
     public enum PARTITION_ALGORITHM {
         BRUTE_FORCE,
-        FFD
+        FFD,
+        RoundRobin
     }
 }

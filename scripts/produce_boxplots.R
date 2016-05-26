@@ -149,13 +149,12 @@ linkedMDBTable <- processTable(linkedMDBSetupName, 2, outputLinkedMDBEngine, out
 geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 2, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
 SWDFTable <- processTable(swdfSetupName, 2, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
 watDivTable <- processTable(watDivSetupName, 2, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
-#watDiv20eTable <- processTable(watDivSetupName, 2, outputWatDiv20eEngine, outputWatDiv20eFedra, outputWatDiv20ePBJPre, outputWatDiv20ePBJPost, outputWatDiv20ePBJHybrid)
+watDiv20eTable <- processTable(watDivSetupName, 2, outputWatDiv20eEngine, outputWatDiv20eFedra, outputWatDiv20ePBJPre, outputWatDiv20ePBJPost, outputWatDiv20ePBJHybrid)
 #watDiv30eTable <- processTable(watDivSetupName, 2, outputWatDiv30eEngine, outputWatDiv30eFedra, outputWatDiv30ePBJPre, outputWatDiv30ePBJPost, outputWatDiv30ePBJHybrid)
 #watDivPll20eTable <- processTable(watDivSetupName, 2, outputWatDivPll20eEngine, outputWatDivPll20eFedra, outputWatDivPll20ePBJPre, outputWatDivPll20ePBJPost, outputWatDivPll20ePBJHybrid)
 #watDivPll30eTable <- processTable(watDivSetupName, 2, outputWatDivPll30eEngine, outputWatDivPll30eFedra, outputWatDivPll30ePBJPre, outputWatDivPll30ePBJPost, outputWatDivPll30ePBJHybrid)
 
 # TEMP - remove when all results are here
-watDiv20eTable <- processTable(watDivSetupName, 2, outputWatDivEngine, outputWatDiv20eFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDiv20ePBJHybrid)
 watDiv30eTable <- processTable(watDivSetupName, 2, outputWatDivEngine, outputWatDiv30eFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDiv30ePBJHybrid)
 watDivPll20eTable <- processTable(watDivSetupName, 2, outputWatDivEngine, outputWatDivPll20eFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPll20ePBJHybrid)
 watDivPll30eTable <- processTable(watDivSetupName, 2, outputWatDivEngine, outputWatDivPll30eFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPll30ePBJHybrid)
@@ -229,13 +228,12 @@ linkedMDBTable <- processTable(linkedMDBSetupName, 11, outputLinkedMDBEngine, ou
 geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 11, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
 SWDFTable <- processTable(swdfSetupName, 11, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
 watDivTable <- processTable(watDivSetupName, 11, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
-#watDiv20eTable <- processTable(watDivSetupName, 11, outputWatDiv20eEngine, outputWatDiv20eFedra, outputWatDiv20ePBJPre, outputWatDiv20ePBJPost, outputWatDiv20ePBJHybrid)
+watDiv20eTable <- processTable(watDivSetupName, 11, outputWatDiv20eEngine, outputWatDiv20eFedra, outputWatDiv20ePBJPre, outputWatDiv20ePBJPost, outputWatDiv20ePBJHybrid)
 #watDiv30eTable <- processTable(watDivSetupName, 11, outputWatDiv30eEngine, outputWatDiv30eFedra, outputWatDiv30ePBJPre, outputWatDiv30ePBJPost, outputWatDiv30ePBJHybrid)
 #watDivPll20eTable <- processTable(watDivSetupName, 11, outputWatDivPll20eEngine, outputWatDivPll20eFedra, outputWatDivPll20ePBJPre, outputWatDivPll20ePBJPost, outputWatDivPll20ePBJHybrid)
 #watDivPll30eTable <- processTable(watDivSetupName, 11, outputWatDivPll30eEngine, outputWatDivPll30eFedra, outputWatDivPll30ePBJPre, outputWatDivPll30ePBJPost, outputWatDivPll30ePBJHybrid)
 
 # TEMP - remove when all the results are here
-watDiv20eTable <- processTable(watDivSetupName, 11, outputWatDivEngine, outputWatDiv20eFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDiv20ePBJHybrid)
 watDiv30eTable <- processTable(watDivSetupName, 11, outputWatDivEngine, outputWatDiv30eFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDiv30ePBJHybrid)
 watDivPll20eTable <- processTable(watDivSetupName, 11, outputWatDivEngine, outputWatDivPll20eFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPll20ePBJHybrid)
 watDivPll30eTable <- processTable(watDivSetupName, 11, outputWatDivEngine, outputWatDivPll30eFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPll30ePBJHybrid)
@@ -309,13 +307,12 @@ linkedMDBTable <- processTable(linkedMDBSetupName, 6, outputLinkedMDBEngine, out
 geoCoordinatesTable <- processTable(geoCoordinatesSetupName, 6, outputGeoCoordinatesEngine, outputGeoCoordinatesFedra, outputGeoCoordinatesPBJPre, outputGeoCoordinatesPBJPost, outputGeoCoordinatesPBJHybrid)
 SWDFTable <- processTable(swdfSetupName, 6, outputSWDFEngine, outputSWDFFedra, outputSWDFPBJPre, outputSWDFPBJPost, outputSWDFPBJHybrid)
 watDivTable <- processTable(watDivSetupName, 6, outputWatDivEngine, outputWatDivFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPBJHybrid)
-#watDiv20eTable <- processTable(watDivSetupName, 6, outputWatDiv20eEngine, outputWatDiv20eFedra, outputWatDiv20ePBJPre, outputWatDiv20ePBJPost, outputWatDiv20ePBJHybrid)
+watDiv20eTable <- processTable(watDivSetupName, 6, outputWatDiv20eEngine, outputWatDiv20eFedra, outputWatDiv20ePBJPre, outputWatDiv20ePBJPost, outputWatDiv20ePBJHybrid)
 #watDiv30eTable <- processTable(watDivSetupName, 6, outputWatDiv30eEngine, outputWatDiv30eFedra, outputWatDiv30ePBJPre, outputWatDiv30ePBJPost, outputWatDiv30ePBJHybrid)
 #watDivPll20eTable <- processTable(watDivSetupName, 6, outputWatDivPll20eEngine, outputWatDivPll20eFedra, outputWatDivPll20ePBJPre, outputWatDivPll20ePBJPost, outputWatDivPll20ePBJHybrid)
 #watDivPll30eTable <- processTable(watDivSetupName, 6, outputWatDivPll30eEngine, outputWatDivPll30eFedra, outputWatDivPll30ePBJPre, outputWatDivPll30ePBJPost, outputWatDivPll30ePBJHybrid)
 
 # TEMP - remove when all the results are here
-watDiv20eTable <- processTable(watDivSetupName, 6, outputWatDivEngine, outputWatDiv20eFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDiv20ePBJHybrid)
 watDiv30eTable <- processTable(watDivSetupName, 6, outputWatDivEngine, outputWatDiv30eFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDiv30ePBJHybrid)
 watDivPll20eTable <- processTable(watDivSetupName, 6, outputWatDivEngine, outputWatDivPll20eFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPll20ePBJHybrid)
 watDivPll30eTable <- processTable(watDivSetupName, 6, outputWatDivEngine, outputWatDivPll30eFedra, outputWatDivPBJPre, outputWatDivPBJPost, outputWatDivPll30ePBJHybrid)

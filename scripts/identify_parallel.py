@@ -4,13 +4,6 @@
 
 import csv
 import argparse
-'''
-FEDERATION_FILES = ['outputFedXengineFEDERATION10Client',
-                    'outputFedXFedra-PBJ-hybridFEDERATION10Client',
-                    'outputFedXFedra-PBJ-postFEDERATION10Client',
-                    'outputFedXFedra-PBJ-preFEDERATION10Client',
-                    'outputFedXFedraFEDERATION10Client']
-'''
 
 
 def main():
@@ -39,7 +32,11 @@ def main():
     tuples = dict()
 
     federation_files = ['outputFedXFedra-PBJ-hybridFEDERATION{}Client'.format(args.number_endpoints),
-                        'outputFedXFedraFEDERATION{}Client'.format(args.number_endpoints)]
+                        'outputFedXFedraFEDERATION{}Client'.format(args.number_endpoints)
+                        'outputFedXengineFEDERATION{}Client'.format(args.number_endpoints),
+                        'outputFedXFedra-PBJ-hybridFEDERATION{}Client'.format(args.number_endpoints),
+                        'outputFedXFedra-PBJ-postFEDERATION{}Client'.format(args.number_endpoints),
+                        'outputFedXFedra-PBJ-preFEDERATION{}Client'.format(args.number_endpoints)]
 
     # load the hotspots of the reference file
     with open(args.reference_file, 'r', newline='') as csvfile:
