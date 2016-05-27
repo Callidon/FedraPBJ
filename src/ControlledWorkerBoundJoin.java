@@ -192,8 +192,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                     // if parallelization is possible, we apply the parallel bound join algorithm
                     partition.setSources(endpoints);
                     partition.setBindingsPage(bindingPages);
-                    //partition.performPartition(partition.PARTITION_ALGORITHM.BRUTE_FORCE);
-                    partition.performPartition(BindingsPartition.PARTITION_ALGORITHM.RoundRobin);
+                    partition.performPartition(BindingsPartition.PARTITION_ALGORITHM.BEST_FIT);
                     List<Pair<StatementSource, List<List<BindingSet>>>> groups = partition.getPartition();
 
                     for(Pair<StatementSource, List<List<BindingSet>>> pair : groups) {

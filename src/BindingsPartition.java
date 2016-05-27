@@ -42,10 +42,10 @@ public class BindingsPartition {
             case BRUTE_FORCE:
                 this.bruteForcePairs();
                 break;
-            case FFD:
+            case BEST_FIT:
                 this.BestFitDecreasing();
                 break;
-            case RoundRobin:
+            case ROUND_ROBIN:
                 this.RoundRobin();
                 break;
             default:
@@ -121,7 +121,7 @@ public class BindingsPartition {
             bins.add(new ArrayList<List<BindingSet>>());
         }
 
-        // fill the bins with BFD algorithm
+        // fill the bins with BEST_FIT algorithm
         for(List<BindingSet> page : bindingsPages) {
             // find the bin with the smallest weight & assign the current page to it
             List<List<BindingSet>> min_bin = Collections.min(bins, new BinWeightComparator(false));
@@ -165,7 +165,7 @@ public class BindingsPartition {
     }
 
     /**
-     * Comparator for the pages of bindings, used in the BFD algorithm, for sorting them by their size
+     * Comparator for the pages of bindings, used in the BEST_FIT algorithm, for sorting them by their size
      */
     private class BindingPageSizeComparator implements Comparator<List<BindingSet>> {
         private boolean reverse;
@@ -185,7 +185,7 @@ public class BindingsPartition {
     }
 
     /**
-     * Comparator for the bins, used in the BFD algorithm, for sorting them by their weight
+     * Comparator for the bins, used in the BEST_FIT algorithm, for sorting them by their weight
      */
     private class BinWeightComparator implements Comparator<List<List<BindingSet>>> {
         private boolean reverse;
@@ -219,7 +219,7 @@ public class BindingsPartition {
      */
     public enum PARTITION_ALGORITHM {
         BRUTE_FORCE,
-        FFD,
-        RoundRobin
+        BEST_FIT,
+        ROUND_ROBIN
     }
 }

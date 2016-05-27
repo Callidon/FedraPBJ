@@ -32,7 +32,7 @@ def main():
     tuples = dict()
 
     federation_files = ['outputFedXFedra-PBJ-hybridFEDERATION{}Client'.format(args.number_endpoints),
-                        'outputFedXFedraFEDERATION{}Client'.format(args.number_endpoints)
+                        'outputFedXFedraFEDERATION{}Client'.format(args.number_endpoints),
                         'outputFedXengineFEDERATION{}Client'.format(args.number_endpoints),
                         'outputFedXFedra-PBJ-hybridFEDERATION{}Client'.format(args.number_endpoints),
                         'outputFedXFedra-PBJ-postFEDERATION{}Client'.format(args.number_endpoints),
