@@ -30,13 +30,15 @@ def main():
     parallelizedQueries = list()
     shapes = dict()
     tuples = dict()
-
+    '''
     federation_files = ['outputFedXFedra-PBJ-hybridFEDERATION{}Client'.format(args.number_endpoints),
                         'outputFedXFedraFEDERATION{}Client'.format(args.number_endpoints),
                         'outputFedXengineFEDERATION{}Client'.format(args.number_endpoints),
-                        'outputFedXFedra-PBJ-hybridFEDERATION{}Client'.format(args.number_endpoints),
                         'outputFedXFedra-PBJ-postFEDERATION{}Client'.format(args.number_endpoints),
                         'outputFedXFedra-PBJ-preFEDERATION{}Client'.format(args.number_endpoints)]
+    '''
+    federation_files = ['outputFedXFedra-PBJ-hybridFEDERATION{}Client'.format(args.number_endpoints),
+                        'outputFedXFedraFEDERATION{}Client'.format(args.number_endpoints)]
 
     # load the hotspots of the reference file
     with open(args.reference_file, 'r', newline='') as csvfile:
