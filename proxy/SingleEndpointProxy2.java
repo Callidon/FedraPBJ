@@ -41,6 +41,20 @@ public class SingleEndpointProxy2 extends Thread {
     this.graph = g;
   }
 
+  /**
+   * Sleep during a random time to simulate network latency (between 60-90ms)
+   */
+  private synchronized void simulateLatency() {
+    int minTime = 60;
+    int maxTime = 90;
+    int sleepingTime = ThreadLocalRandom.current().nextInt(minTime, maxTime + 1);
+    try {
+      Thread.sleep(60);
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   public synchronized void increaseNC() {
     nc++;
   }
@@ -116,6 +130,7 @@ public class SingleEndpointProxy2 extends Thread {
 
         HashMap<String, String> map = new HashMap<String, String>();
         String postQuery = read(inFromClient, map);
+        this.simulateLatency();
         //inFromClient.close();
         //System.out.println("postQuery: "+postQuery);
         //httpQueryString = httpQueryString.substring(6);
@@ -139,12 +154,6 @@ public class SingleEndpointProxy2 extends Thread {
         } else {
           sendResponse(404, "<b>The Requested resource not found ....", outToClient);
         }
-
-        // simulate network latency (between 60-100 ms)
-        int min = 60;
-        int max = 100;
-        int sleepingTime = ThreadLocalRandom.current().nextInt(min, max + 1);
-        Thread.sleep(sleepingTime);
 
         write(rsp, outToClient, "\r\n");
         rsp.close();
