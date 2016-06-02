@@ -109,31 +109,31 @@ outputWatDivPBJHybrid <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION
 
 # with a federation of 20 endpoints
 outputWatDiv20eEngine <- "../results/watDiv/outputFedXengineFEDERATION20Client"
-outputWatDiv20eFedra <- "../results/watDiv/outputFedXFedraFEDERATION20Client"
+outputWatDiv20eFedra <- "../results/watDivMore/outputFedXFedraFEDERATION20Client"
 outputWatDiv20ePBJPre <- "../results/watDiv/outputFedXFedra-PBJ-preFEDERATION20Client"
 outputWatDiv20ePBJPost <- "../results/watDiv/outputFedXFedra-PBJ-postFEDERATION20Client"
-outputWatDiv20ePBJHybrid <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION20Client"
+outputWatDiv20ePBJHybrid <- "../results/watDivMore/outputFedXFedra-PBJ-hybridFEDERATION20Client"
 
 # with only the parallelized queries
 outputWatDivPll20eEngine <- "../results/watDiv/parallelized/outputFedXengineFEDERATION20Client"
-outputWatDivPll20eFedra <- "../results/watDiv/parallelized/outputFedXFedraFEDERATION20Client"
+outputWatDivPll20eFedra <- "../results/watDivMore/parallelized/outputFedXFedraFEDERATION20Client"
 outputWatDivPll20ePBJPre <- "../results/watDiv/parallelized/outputFedXFedra-PBJ-preFEDERATION20Client"
 outputWatDivPll20ePBJPost <- "../results/watDiv/parallelized/outputFedXFedra-PBJ-postFEDERATION20Client"
-outputWatDivPll20ePBJHybrid <- "../results/watDiv/parallelized/outputFedXFedra-PBJ-hybridFEDERATION20Client"
+outputWatDivPll20ePBJHybrid <- "../results/watDivMore/parallelized/outputFedXFedra-PBJ-hybridFEDERATION20Client"
 
 # with a federation of 30 endpoints
 outputWatDiv30eEngine <- "../results/watDiv/outputFedXengineFEDERATION30Client"
-outputWatDiv30eFedra <- "../results/watDiv/outputFedXFedraFEDERATION30Client"
+outputWatDiv30eFedra <- "../results/watDivMore/outputFedXFedraFEDERATION30Client"
 outputWatDiv30ePBJPre <- "../results/watDiv/outputFedXFedra-PBJ-preFEDERATION30Client"
 outputWatDiv30ePBJPost <- "../results/watDiv/outputFedXFedra-PBJ-postFEDERATION30Client"
-outputWatDiv30ePBJHybrid <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION30Client"
+outputWatDiv30ePBJHybrid <- "../results/watDivMore/outputFedXFedra-PBJ-hybridFEDERATION30Client"
 
 # with only the parallelized queries
 outputWatDivPll30eEngine <- "../results/watDiv/parallelized/outputFedXengineFEDERATION30Client"
-outputWatDivPll30eFedra <- "../results/watDiv/parallelized/outputFedXFedraFEDERATION30Client"
+outputWatDivPll30eFedra <- "../results/watDivMore/parallelized/outputFedXFedraFEDERATION30Client"
 outputWatDivPll30ePBJPre <- "../results/watDiv/parallelized/outputFedXFedra-PBJ-preFEDERATION30Client"
 outputWatDivPll30ePBJPost <- "../results/watDiv/parallelized/outputFedXFedra-PBJ-postFEDERATION30Client"
-outputWatDivPll30ePBJHybrid <- "../results/watDiv/parallelized/outputFedXFedra-PBJ-hybridFEDERATION30Client"
+outputWatDivPll30ePBJHybrid <- "../results/watDivMore/parallelized/outputFedXFedra-PBJ-hybridFEDERATION30Client"
 
 # from watDiv100 setup
 outputWatDiv100Engine <- "../results/watDiv100/outputFedXengineFEDERATION10Client"
@@ -200,19 +200,19 @@ pdf("../results/watDiv/execution_time.pdf", width=7, height=4)
 bootstrap_ggplot(ggplot(data = watDivTable, aes(x=Strategy, y=time)), strategyLabel, execTimelabel)
 dev.off()
 
-pdf("../results/watDiv/execution_time_20endpoints.pdf", width=7, height=4)
+pdf("../results/watDivMore/execution_time_20endpoints.pdf", width=7, height=4)
 bootstrap_ggplot(ggplot(data = watDiv20eTable, aes(x=Strategy, y=time)), strategyLabel, execTimelabel)
 dev.off()
 
-pdf("../results/watDiv/execution_time_30endpoints.pdf", width=7, height=4)
+pdf("../results/watDivMore/execution_time_30endpoints.pdf", width=7, height=4)
 bootstrap_ggplot(ggplot(data = watDiv30eTable, aes(x=Strategy, y=time)), strategyLabel, execTimelabel)
 dev.off()
 
-pdf("../results/watDiv/parallelized/execution_time_20endpoints.pdf", width=7, height=4)
+pdf("../results/watDivMore/parallelized/execution_time_20endpoints.pdf", width=7, height=4)
 bootstrap_ggplot(ggplot(data = watDivPll20eTable, aes(x=Strategy, y=time)), strategyLabel, execTimelabel)
 dev.off()
 
-pdf("../results/watDiv/parallelized/execution_time_30endpoints.pdf", width=7, height=4)
+pdf("../results/watDivMore/parallelized/execution_time_30endpoints.pdf", width=7, height=4)
 bootstrap_ggplot(ggplot(data = watDivPll30eTable, aes(x=Strategy, y=time)), strategyLabel, execTimelabel)
 dev.off()
 

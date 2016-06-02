@@ -65,9 +65,9 @@ def main():
         # search for non equal hotspot lists
         for query in fedraHotspots.keys():
             if fedraHotspots[query] != hybridHotspots[query]:
-                parallelizedQueries.append(query)
                 ratio = 100.0 - ((float(hybridTimes[query]) / float(fedraTimes[query])) * 100.0)
                 if ratio > 0.0:
+                    parallelizedQueries.append(query)
                     nbImprovedQueries += 1
                     print('Execution time of {} has been improved of {} %'.format(query, ratio))
                 else:
@@ -83,11 +83,11 @@ def main():
     # create files for the boxplot script
     for fileName in federation_files:
         # collect datas about parallelized queries
-        with open('../results/watDiv/{}'.format(fileName), 'r', newline='') as csvfile:
+        with open('../results/watDivMore/{}'.format(fileName), 'r', newline='') as csvfile:
             csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
             queries = [row for row in csvreader if (row[0] in parallelizedQueries)]
         # output them in corresponding file
-        with open('../results/watDiv/parallelized/{}'.format(fileName), 'w', newline='') as csvfile:
+        with open('../results/watDivMore/parallelized/{}'.format(fileName), 'w', newline='') as csvfile:
             csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             csvwriter.writerows(queries)
 
