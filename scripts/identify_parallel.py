@@ -66,8 +66,8 @@ def main():
         for query in fedraHotspots.keys():
             if fedraHotspots[query] != hybridHotspots[query]:
                 ratio = 100.0 - ((float(hybridTimes[query]) / float(fedraTimes[query])) * 100.0)
+                parallelizedQueries.append(query)
                 if ratio > 0.0:
-                    parallelizedQueries.append(query)
                     nbImprovedQueries += 1
                     print('Execution time of {} has been improved of {} %'.format(query, ratio))
                 else:
