@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# Script to produce boxplots for the results of the load balancing by federation
+# Script to produce barplots for the results of the load balancing by federation
 # author : Thomas Minier
 
 # path to results files
@@ -44,51 +44,51 @@ colnames(watDivHybridCalls20eTable) <- 1:20
 watDivHybridCalls30eTable <- read.table(outputWatDiv30ePBJHybrid)[44:73]
 colnames(watDivHybridCalls30eTable) <- 1:30
 
-# output the boxplots
+# output the barplots
 pdf("../results/watDivMore/load_balancing/transferred_tuples/watDivFedra.pdf")
-boxplot(watDivFedraTuplesTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y", xlim=c(0,11))
+barplot(colSums(watDivFedraTuplesTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y")
 dev.off()
 
 pdf("../results/watDivMore/load_balancing/transferred_tuples/watDiv20eFedra.pdf")
-boxplot(watDivFedraTuples20eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y", xlim=c(0,21))
+barplot(colSums(watDivFedraTuples20eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y")
 dev.off()
 
 pdf("../results/watDivMore/load_balancing/transferred_tuples/watDiv30eFedra.pdf")
-boxplot(watDivFedraTuples30eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y", xlim=c(0,31))
+barplot(colSums(watDivFedraTuples30eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y")
 dev.off()
 
 pdf("../results/watDivMore/load_balancing/transferred_tuples/watDivHybrid.pdf")
-boxplot(watDivHybridTuplesTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y", xlim=c(0,11))
+barplot(colSums(watDivHybridTuplesTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y")
 dev.off()
 
 pdf("../results/watDivMore/load_balancing/transferred_tuples/watDiv20eHybrid.pdf")
-boxplot(watDivHybridTuples20eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y", xlim=c(0,21))
+barplot(colSums(watDivHybridTuples20eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y")
 dev.off()
 
 pdf("../results/watDivMore/load_balancing/transferred_tuples/watDiv30eHybrid.pdf")
-boxplot(watDivHybridTuples30eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y", xlim=c(0,31))
+barplot(colSums(watDivHybridTuples30eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y")
 dev.off()
 
 pdf("../results/watDivMore/load_balancing/calls/watDivFedra.pdf")
-boxplot(watDivFedraCallsTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y", xlim=c(0,11))
+barplot(colSums(watDivFedraCallsTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y")
 dev.off()
 
 pdf("../results/watDivMore/load_balancing/calls/watDiv20eFedra.pdf")
-boxplot(watDivFedraCalls20eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y", xlim=c(0,21))
+barplot(colSums(watDivFedraCalls20eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y")
 dev.off()
 
 pdf("../results/watDivMore/load_balancing/calls/watDiv30eFedra.pdf")
-boxplot(watDivFedraCalls30eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y", xlim=c(0,31))
+barplot(colSums(watDivFedraCalls30eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y")
 dev.off()
 
 pdf("../results/watDivMore/load_balancing/calls/watDivHybrid.pdf")
-boxplot(watDivHybridCallsTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y", xlim=c(0,11))
+barplot(colSums(watDivHybridCallsTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y")
 dev.off()
 
 pdf("../results/watDivMore/load_balancing/calls/watDiv20eHybrid.pdf")
-boxplot(watDivHybridCalls20eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y", xlim=c(0,21))
+barplot(colSums(watDivHybridCalls20eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y")
 dev.off()
 
 pdf("../results/watDivMore/load_balancing/calls/watDiv30eHybrid.pdf")
-boxplot(watDivHybridCalls30eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y", xlim=c(0,31))
+barplot(colSums(watDivHybridCalls30eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y")
 dev.off()
