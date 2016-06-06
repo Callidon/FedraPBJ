@@ -16,41 +16,79 @@ outputWatDiv30eFedra <- "../results/watDivMore/outputFedXFedraFEDERATION30Client
 outputWatDiv30ePBJHybrid <- "../results/watDivMore/outputFedXFedra-PBJ-hybridFEDERATION30Client"
 
 # set the data frames
-watDivFedraTable <- read.table(outputWatDivFedra)[13:22]
-colnames(watDivFedraTable) <- 1:10
-watDivFedra20eTable <- read.table(outputWatDiv20eFedra)[13:32]
-colnames(watDivFedra20eTable) <- 1:20
-watDivFedra30eTable <- read.table(outputWatDiv30eFedra)[13:42]
-colnames(watDivFedra30eTable) <- 1:30
+watDivFedraTuplesTable <- read.table(outputWatDivFedra)[13:22]
+colnames(watDivFedraTuplesTable) <- 1:10
+watDivFedraTuples20eTable <- read.table(outputWatDiv20eFedra)[13:32]
+colnames(watDivFedraTuples20eTable) <- 1:20
+watDivFedraTuples30eTable <- read.table(outputWatDiv30eFedra)[13:42]
+colnames(watDivFedraTuples30eTable) <- 1:30
 
-watDivHybridTable <- read.table(outputWatDivPBJHybrid)[13:22]
-colnames(watDivHybridTable) <- 1:10
-watDivHybrid20eTable <- read.table(outputWatDiv20ePBJHybrid)[13:32]
-colnames(watDivHybrid20eTable) <- 1:20
-watDivHybrid30eTable <- read.table(outputWatDiv30ePBJHybrid)[13:42]
-colnames(watDivHybrid30eTable) <- 1:30
+watDivFedraCallsTable <- read.table(outputWatDivFedra)[24:33]
+colnames(watDivFedraCallsTable) <- 1:10
+watDivFedraCalls20eTable <- read.table(outputWatDiv20eFedra)[34:53]
+colnames(watDivFedraCalls20eTable) <- 1:20
+watDivFedraCalls30eTable <- read.table(outputWatDiv30eFedra)[44:73]
+colnames(watDivFedraCalls30eTable) <- 1:30
+
+watDivHybridTuplesTable <- read.table(outputWatDivPBJHybrid)[13:22]
+colnames(watDivHybridTuplesTable) <- 1:10
+watDivHybridTuples20eTable <- read.table(outputWatDiv20ePBJHybrid)[13:32]
+colnames(watDivHybridTuples20eTable) <- 1:20
+watDivHybridTuples30eTable <- read.table(outputWatDiv30ePBJHybrid)[13:42]
+colnames(watDivHybridTuples30eTable) <- 1:30
+
+watDivHybridCallsTable <- read.table(outputWatDivPBJHybrid)[24:33]
+colnames(watDivHybridCallsTable) <- 1:10
+watDivHybridCalls20eTable <- read.table(outputWatDiv20ePBJHybrid)[34:53]
+colnames(watDivHybridCalls20eTable) <- 1:20
+watDivHybridCalls30eTable <- read.table(outputWatDiv30ePBJHybrid)[44:73]
+colnames(watDivHybridCalls30eTable) <- 1:30
 
 # output the boxplots
-pdf("../results/watDivMore/load_balancing/watDivFedra.pdf")
-boxplot(watDivFedraTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y")
+pdf("../results/watDivMore/load_balancing/transferred_tuples/watDivFedra.pdf")
+boxplot(watDivFedraTuplesTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y", xlim=c(0,11))
 dev.off()
 
-pdf("../results/watDivMore/load_balancing/watDiv20eFedra.pdf")
-boxplot(watDivFedra20eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y")
+pdf("../results/watDivMore/load_balancing/transferred_tuples/watDiv20eFedra.pdf")
+boxplot(watDivFedraTuples20eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y", xlim=c(0,21))
 dev.off()
 
-pdf("../results/watDivMore/load_balancing/watDiv30eFedra.pdf")
-boxplot(watDivFedra30eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y")
+pdf("../results/watDivMore/load_balancing/transferred_tuples/watDiv30eFedra.pdf")
+boxplot(watDivFedraTuples30eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y", xlim=c(0,31))
 dev.off()
 
-pdf("../results/watDivMore/load_balancing/watDivHybrid.pdf")
-boxplot(watDivHybridTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y")
+pdf("../results/watDivMore/load_balancing/transferred_tuples/watDivHybrid.pdf")
+boxplot(watDivHybridTuplesTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y", xlim=c(0,11))
 dev.off()
 
-pdf("../results/watDivMore/load_balancing/watDiv20eHybrid.pdf")
-boxplot(watDivHybrid20eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y")
+pdf("../results/watDivMore/load_balancing/transferred_tuples/watDiv20eHybrid.pdf")
+boxplot(watDivHybridTuples20eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y", xlim=c(0,21))
 dev.off()
 
-pdf("../results/watDivMore/load_balancing/watDiv30eHybrid.pdf")
-boxplot(watDivHybrid30eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y")
+pdf("../results/watDivMore/load_balancing/transferred_tuples/watDiv30eHybrid.pdf")
+boxplot(watDivHybridTuples30eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y", xlim=c(0,31))
+dev.off()
+
+pdf("../results/watDivMore/load_balancing/calls/watDivFedra.pdf")
+boxplot(watDivFedraCallsTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y", xlim=c(0,11))
+dev.off()
+
+pdf("../results/watDivMore/load_balancing/calls/watDiv20eFedra.pdf")
+boxplot(watDivFedraCalls20eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y", xlim=c(0,21))
+dev.off()
+
+pdf("../results/watDivMore/load_balancing/calls/watDiv30eFedra.pdf")
+boxplot(watDivFedraCalls30eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y", xlim=c(0,31))
+dev.off()
+
+pdf("../results/watDivMore/load_balancing/calls/watDivHybrid.pdf")
+boxplot(watDivHybridCallsTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y", xlim=c(0,11))
+dev.off()
+
+pdf("../results/watDivMore/load_balancing/calls/watDiv20eHybrid.pdf")
+boxplot(watDivHybridCalls20eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y", xlim=c(0,21))
+dev.off()
+
+pdf("../results/watDivMore/load_balancing/calls/watDiv30eHybrid.pdf")
+boxplot(watDivHybridCalls30eTable, ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y", xlim=c(0,31))
 dev.off()
