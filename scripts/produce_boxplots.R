@@ -134,10 +134,10 @@ outputSWDFPBJHybrid <- "../results/swdf/outputFedXFedra-PBJ-hybridFEDERATION10Cl
 # from watDiv setup
 # with the classic federation
 outputWatDivEngine <- "../results/watDiv/outputFedXengineFEDERATION10Client"
-outputWatDivFedra <- "../results/watDiv/outputFedXFedraFEDERATION10Client"
+outputWatDivFedra <- "../results/watDivMore/outputFedXFedraFEDERATION10Client"
 outputWatDivPBJPre <- "../results/watDiv/outputFedXFedra-PBJ-preFEDERATION10Client"
 outputWatDivPBJPost <- "../results/watDiv/outputFedXFedra-PBJ-postFEDERATION10Client"
-outputWatDivPBJHybrid <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION10Client"
+outputWatDivPBJHybrid <- "../results/watDivMore/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
 # with a federation of 20 endpoints
 outputWatDiv20eEngine <- "../results/watDiv/outputFedXengineFEDERATION20Client"

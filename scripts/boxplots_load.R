@@ -4,8 +4,8 @@
 
 # path to results files
 # with the classic federation
-outputWatDivFedra <- "../results/watDiv/outputFedXFedraFEDERATION10Client"
-outputWatDivPBJHybrid <- "../results/watDiv/outputFedXFedra-PBJ-hybridFEDERATION10Client"
+outputWatDivFedra <- "../results/watDivMore/outputFedXFedraFEDERATION10Client"
+outputWatDivPBJHybrid <- "../results/watDivMore/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
 # with a federation of 20 endpoints
 outputWatDiv20eFedra <- "../results/watDivMore/outputFedXFedraFEDERATION20Client"
@@ -45,50 +45,39 @@ watDivHybridCalls30eTable <- read.table(outputWatDiv30ePBJHybrid)[44:73]
 colnames(watDivHybridCalls30eTable) <- 1:30
 
 # output the barplots
-pdf("../results/watDivMore/load_balancing/transferred_tuples/watDivFedra.pdf")
-barplot(colSums(watDivFedraTuplesTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y")
+
+watDivTuplesTable <- t(cbind(colSums(watDivFedraTuplesTable), colSums(watDivHybridTuplesTable)))
+rownames(watDivTuplesTable) <- c("FedX + Fedra", "PBJ Hybrid")
+pdf("../results/watDivMore/load_balancing/watDiv10Tuples.pdf")
+barplot(watDivTuplesTable, ylab="Number of transferred tuples", xlab="Endpoint", col=c("cornflowerblue", "firebrick"), legend=rownames(watDivTuplesTable), beside=TRUE)
 dev.off()
 
-pdf("../results/watDivMore/load_balancing/transferred_tuples/watDiv20eFedra.pdf")
-barplot(colSums(watDivFedraTuples20eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y")
+watDiv20eTuplesTable <- t(cbind(colSums(watDivFedraTuples20eTable), colSums(watDivHybridTuples20eTable)))
+rownames(watDiv20eTuplesTable) <- c("FedX + Fedra", "PBJ Hybrid")
+pdf("../results/watDivMore/load_balancing/watDiv20Tuples.pdf")
+barplot(watDiv20eTuplesTable, ylab="Number of transferred tuples", xlab="Endpoint", col=c("cornflowerblue", "firebrick"), legend=rownames(watDivTuplesTable), beside=TRUE)
 dev.off()
 
-pdf("../results/watDivMore/load_balancing/transferred_tuples/watDiv30eFedra.pdf")
-barplot(colSums(watDivFedraTuples30eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y")
+watDiv30eTuplesTable <- t(cbind(colSums(watDivFedraTuples30eTable), colSums(watDivHybridTuples30eTable)))
+rownames(watDiv30eTuplesTable) <- c("FedX + Fedra", "PBJ Hybrid")
+pdf("../results/watDivMore/load_balancing/watDiv30Tuples.pdf")
+barplot(watDiv30eTuplesTable, ylab="Number of transferred tuples", xlab="Endpoint", col=c("cornflowerblue", "firebrick"), legend=rownames(watDivTuplesTable), beside=TRUE)
 dev.off()
 
-pdf("../results/watDivMore/load_balancing/transferred_tuples/watDivHybrid.pdf")
-barplot(colSums(watDivHybridTuplesTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y")
+watDivCallsTable <- t(cbind(colSums(watDivFedraCallsTable), colSums(watDivHybridCallsTable)))
+rownames(watDivCallsTable) <- c("FedX + Fedra", "PBJ Hybrid")
+pdf("../results/watDivMore/load_balancing/watDiv10Calls.pdf")
+barplot(watDivCallsTable, ylab="Number of calls", xlab="Endpoint", col=c("cornflowerblue", "firebrick"), legend=rownames(watDivCallsTable), beside=TRUE)
 dev.off()
 
-pdf("../results/watDivMore/load_balancing/transferred_tuples/watDiv20eHybrid.pdf")
-barplot(colSums(watDivHybridTuples20eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y")
+watDiv20eCallsTable <- t(cbind(colSums(watDivFedraCalls20eTable), colSums(watDivHybridCalls20eTable)))
+rownames(watDiv20eCallsTable) <- c("FedX + Fedra", "PBJ Hybrid")
+pdf("../results/watDivMore/load_balancing/watDiv20Calls.pdf")
+barplot(watDiv20eCallsTable, ylab="Number of calls", xlab="Endpoint", col=c("cornflowerblue", "firebrick"), legend=rownames(watDiv20eCallsTable), beside=TRUE)
 dev.off()
 
-pdf("../results/watDivMore/load_balancing/transferred_tuples/watDiv30eHybrid.pdf")
-barplot(colSums(watDivHybridTuples30eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y")
-dev.off()
-
-pdf("../results/watDivMore/load_balancing/calls/watDivFedra.pdf")
-barplot(colSums(watDivFedraCallsTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y")
-dev.off()
-
-pdf("../results/watDivMore/load_balancing/calls/watDiv20eFedra.pdf")
-barplot(colSums(watDivFedraCalls20eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y")
-dev.off()
-
-pdf("../results/watDivMore/load_balancing/calls/watDiv30eFedra.pdf")
-barplot(colSums(watDivFedraCalls30eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y")
-dev.off()
-
-pdf("../results/watDivMore/load_balancing/calls/watDivHybrid.pdf")
-barplot(colSums(watDivHybridCallsTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(10), log="y")
-dev.off()
-
-pdf("../results/watDivMore/load_balancing/calls/watDiv20eHybrid.pdf")
-barplot(colSums(watDivHybridCalls20eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(20), log="y")
-dev.off()
-
-pdf("../results/watDivMore/load_balancing/calls/watDiv30eHybrid.pdf")
-barplot(colSums(watDivHybridCalls30eTable), ylab="Number of transferred tuples", xlab="Endpoint", col=rainbow(30), log="y")
+watDiv30eCallsTable <- t(cbind(colSums(watDivFedraCalls30eTable), colSums(watDivHybridCalls30eTable)))
+rownames(watDiv30eCallsTable) <- c("FedX + Fedra", "PBJ Hybrid")
+pdf("../results/watDivMore/load_balancing/watDiv30Calls.pdf")
+barplot(watDiv30eCallsTable, ylab="Number of calls", xlab="Endpoint", col=c("cornflowerblue", "firebrick"), legend=rownames(watDiv30eCallsTable), beside=TRUE)
 dev.off()
