@@ -1,5 +1,6 @@
 #!/bin/bash
 # generate jetty config for endpoints in a federation
+# author : Thomas Minier
 
 FEDERATION_SIZE=$1
 MAX_ENDPOINT=$((3030 + $FEDERATION_SIZE - 1))

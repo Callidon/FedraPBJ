@@ -103,7 +103,6 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                         // if we are using the Parallel Bound Join algorithm & this triple has multiples sources selected by Fedra
                         if(strategyIsPBJ && source_pattern.hasMultipleRelevantSources()) {
                             usePBJ = true;
-                            System.out.println("Statement pattern evaluated using PBJ algorithm : \n" + source_pattern);
                             // get the relevant sources & the associated StatementSourcePatterns
                             sourcesGroups = source_pattern.getRelevantSources();
                             sourcePatternGroups = source_pattern.getRelevantSourcePatterns();
