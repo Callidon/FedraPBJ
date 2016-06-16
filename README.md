@@ -1,12 +1,12 @@
-# Parallel Bound Join - Parallelizing Federated SPARQL query using Replicated Fragments
+# Parallel Nested Loop - Parallelizing Federated SPARQL query using Replicated Fragments
 
-Implementation of the Parallel Bound Join Algorithm in Fedra + FedX.
+Implementation of the Parallel Nested Loop Algorithm in Fedra + FedX.
 
 # Motivation
 
 Federated query engines allow to consume linked data from SPARQL endpoints. Replication of data fragments allow consumers to re-organize data to better fit their needs. However, current federated SPARQl query engines poorly support replication. Source selection techniques are offered to solve part of these problems, but no use of replication is done to increase the parallelization of queries.
 
-We propose an algorithm to take advantage of the replicated fragments in order to parallelize the execution of the Bound Join operator offered by [FedX](https://www.fluidops.com/downloads/documents/pubeswc2011fedx.pdf), using the source selection technique offered by [Fedra](https://hal.inria.fr/hal-01169601/document).
+We propose an algorithm to take advantage of the replicated fragments in order to parallelize the execution of the Nested Loop algorithm. We implement it in the Bound Join operator proposed by [FedX](https://www.fluidops.com/downloads/documents/pubeswc2011fedx.pdf), using the source selection technique offered by [Fedra](https://hal.inria.fr/hal-01169601/document).
 
 # Requirements
 You must have installed the FedX query engine with [Fedra](https://github.com/gmontoya/fedra). Please follow the [instructions](https://github.com/gmontoya/fedra#requirements) for installing FedX + Fedra before installing this algorithm.
