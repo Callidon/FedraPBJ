@@ -52,8 +52,10 @@ if (args.csv) Logger.setMode('CSV');
 
 // Reduce fragment selection to eliminate replicates
 if(startFragments.length > 1) {
-    startFragments = ldf.SourceSelection(startFragments, config);
-    console.log("ss : " + startFragments);
+    startFragments = ldf.SourceSelection.performSourceSelection(startFragments, config);
+    config._sourceSelection = startFragments;
+    config._replicates = ldf.SourceSelection.groupReplicates(startFragments, config);
+    config._buildReplicates = true;
 }
 
 // Execute the query and output its results

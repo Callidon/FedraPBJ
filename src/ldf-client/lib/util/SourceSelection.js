@@ -5,7 +5,7 @@ var _ = require('lodash');
 
 // Perform a source selection using a greedy set covering heuristic
 // Heuristic reference : https://en.wikipedia.org/wiki/Set_cover_problem#Greedy_algorithm
-function SourceSelection(fragments, config) {
+function performSourceSelection(fragments, config) {
     var uncoveredElements = [];
     var selection = [];
     var allFragments = _.uniq(fragments);
@@ -41,4 +41,23 @@ function SourceSelection(fragments, config) {
     return selection;
 }
 
-module.exports = SourceSelection;
+// Given a source selection, regroup the endpoints which contain the same fragments
+function groupReplicates(sourceSelection, options) {
+    var replicates = {};
+    // determine which replicates we can use with this source selection
+    _.forEach(sourceSelection, function(source) {
+        replicates[source] = {
+            'endpoints' : [],
+            'nextEndpoint' : 0
+        };
+        _.forEach(options.replicates, function(value, key) {
+            if(_.intersection(value, options.replicates[source]).length > 0) {
+                replicates[source].endpoints.push(key);
+            }
+        });
+    });
+    return replicates;
+}
+
+module.exports.performSourceSelection = performSourceSelection;
+module.exports.groupReplicates = groupReplicates;
