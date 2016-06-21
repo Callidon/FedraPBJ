@@ -16,9 +16,11 @@
     "schema":      "http://schema.org/"
 },
     "replicates" : {
-        "f1" : [
-            "http://localhost:3030/watDiv",
-            "http://localhost:3031/watDiv"
+        "http://localhost:3030/watDiv" : [
+            "f1"
+        ],
+        "http://localhost:3031/watDiv" : [
+            "f1"
         ]
     }
 }

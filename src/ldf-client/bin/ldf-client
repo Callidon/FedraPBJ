@@ -51,7 +51,10 @@ Logger.setLevel(args.l || 'warning');
 if (args.csv) Logger.setMode('CSV');
 
 // Reduce fragment selection to eliminate replicates
-startFragments = ldf.SourceSelection(startFragments, config);
+if(startFragments.length > 1) {
+    startFragments = ldf.SourceSelection(startFragments, config);
+    console.log("ss : " + startFragments);
+}
 
 // Execute the query and output its results
 config.fragmentsClient = new ldf.FragmentsClient(startFragments, config);
