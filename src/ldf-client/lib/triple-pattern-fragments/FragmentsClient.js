@@ -8,6 +8,7 @@ var HttpClient = require('../util/HttpClient'),
     CompositeExtractor = require('../extractors/CompositeExtractor'),
     CountExtractor = require('../extractors/CountExtractor'),
     ControlsExtractor = require('../extractors/ControlsExtractor'),
+    fwd = require('fwd'),
     _ = require('lodash');
 
 // Prefer quad-based serialization formats (which allow a strict data/metadata separation),
@@ -43,30 +44,39 @@ function FragmentsClient(startFragment, options) {
       startFragment = new Fragment(this);
       startFragment.loadFromUrl(startFragmentUrl);
 
-      // Extract the replicate's metadatas and controls if the info is available
+      // Extract the replicate's metadatas and controls if we are not building a replicate fragment
       if(options._buildReplicates) {
           var replicates = options._replicates[startFragmentUrl];
-          var newOptions = options;
-          newOptions._buildReplicates = false;
-          startFragment.replicates = [];
-          startFragment.nextReplicate = 0;
           if(replicates !== undefined) {
+              var newOptions = options;
+              newOptions._buildReplicates = false;
+              startFragment.replicates = [];
+              startFragment.nextReplicate = 0;
+               // load each replicates of the current fragment as standalone fragments
               _.forEach(replicates, function(e) {
-                  if(e !== startFragmentUrl) {
-                      var fragment = new Fragment(new FragmentsClient(e, newOptions));
-                      fragment.loadFromUrl(e);
-                      startFragment.replicates.push(fragment);
-                  }
+                  var fragment = new Fragment(new FragmentsClient(e, newOptions));
+                  fragment.loadFromUrl(e);
+                  fragment.setMaxListeners(100);
+                  fragment.once('error', function (error) {
+                      cache.reset(); // disable caching if the start fragments fails (would be errors anyway)
+                      fragment.error = error; // store the error to return it on all accesses
+                  });
+                  // If the controls load, no (relevant) errors can occur anymore
+                  fragment.getProperty('controls', function () {
+                    fragment.error = null;
+                    fragment.removeAllListeners('error');
+                  });
+                  startFragment.replicates.push(fragment);
               });
           }
       }
     }
-    this._startFragment = startFragment;
     // If the start fragment errors, we cannot fetch any subsequent fragments
     startFragment.setMaxListeners(100); // several error listeners might be attached temporarily
+    this._startFragment = startFragment;
     startFragment.once('error', function (error) {
-      cache.reset(); // disable caching if the start fragments fails (would be errors anyway)
-      startFragment.error = error; // store the error to return it on all accesses
+        cache.reset(); // disable caching if the start fragments fails (would be errors anyway)
+        startFragment.error = error; // store the error to return it on all accesses
     });
     // If the controls load, no (relevant) errors can occur anymore
     startFragment.getProperty('controls', function () {
@@ -84,8 +94,9 @@ FragmentsClient.prototype.getFragmentByPattern = function (pattern) {
     return cache.get(key).clone();
   // Create a dummy iterator until the fragment is loaded
   var fragment = new Fragment(this, pattern);
-  var startFragment;
-  if(this._startFragment.nextReplicate === 0) {
+  var startFragment = this._startFragment.replicates[this._startFragment.nextReplicate];
+  this._startFragment.nextReplicate = (this._startFragment.nextReplicate + 1) % this._startFragment.replicates.length;
+  if(this._startFragment.nextReplicate >= 0) {
       console.log("normal");
       startFragment = this._startFragment;
       this._startFragment.nextReplicate++;
@@ -118,6 +129,7 @@ FragmentsClient.prototype.getFragmentByPattern = function (pattern) {
     fragment.loadFromUrl(controls.getFragmentUrl(pattern));
   });
   cache.set(key, fragment);
+  //console.log(fragment);
   return fragment.clone();
 };
 
