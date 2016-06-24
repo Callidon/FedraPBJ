@@ -59,25 +59,25 @@ processFederationTables <- function(value_ind, outputFedraPath, outputPBJHybridP
 	# read datas from the files
 	outputFedra <- read.table(outputFedraPath)[value_ind]
 	outputPBJHybrid <- read.table(outputPBJHybridPath)[value_ind]
-    outputFedra20e <- read.table(outputFedra20ePath)[value_ind]
+  outputFedra20e <- read.table(outputFedra20ePath)[value_ind]
 	outputPBJHybrid20e <- read.table(outputPBJHybrid20ePath)[value_ind]
     outputFedra30e <- read.table(outputFedra30ePath)[value_ind]
 	outputPBJHybrid30e <- read.table(outputPBJHybrid30ePath)[value_ind]
 
 	# set setup name column
-    outputFedra$endpoints <- "10"
+  outputFedra$endpoints <- "10"
 	outputPBJHybrid$endpoints <- "10"
-    outputFedra20e$endpoints <- "20"
+  outputFedra20e$endpoints <- "20"
 	outputPBJHybrid20e$endpoints <- "20"
-    outputFedra30e$endpoints <- "30"
+  outputFedra30e$endpoints <- "30"
 	outputPBJHybrid30e$endpoints <- "30"
 
 	# set approach column
 	outputFedra$approach <- approachFedxFedraName
 	outputPBJHybrid$approach <- approachPBJHybridName
-    outputFedra20e$approach <- approachFedxFedraName
+  outputFedra20e$approach <- approachFedxFedraName
 	outputPBJHybrid20e$approach <- approachPBJHybridName
-    outputFedra30e$approach <- approachFedxFedraName
+  outputFedra30e$approach <- approachFedxFedraName
 	outputPBJHybrid30e$approach <- approachPBJHybridName
 
 	# concat the tables and return it

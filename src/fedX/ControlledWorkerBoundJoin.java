@@ -193,6 +193,8 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                 } else {
                     // classic case : save the binding page for later
                     bindingPages.add(new ArrayList<>(bindings));
+					assert taskCreator != null;
+					scheduler.schedule(taskCreator.getTask(new ArrayList<>(bindings)));
                 }
             }
             bindings.clear();
@@ -224,10 +226,10 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
             }*/
         } else {
             // classic case using FedX native Bound Join algorithm
-            for(List<BindingSet> page : bindingPages) {
+            /*for(List<BindingSet> page : bindingPages) {
                 assert taskCreator != null;
                 scheduler.schedule(taskCreator.getTask(page));
-            }
+            }*/
         }
 
 		scheduler.informFinish(this);
