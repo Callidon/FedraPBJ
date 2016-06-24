@@ -103,6 +103,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                         // if we are using the Parallel Bound Join algorithm & this triple has multiples sources selected by Fedra
                         if(strategyIsPBJ && source_pattern.hasMultipleRelevantSources()) {
                             usePBJ = true;
+                            System.out.println("Statement pattern evaluated using PBJ algorithm : \n" + source_pattern);
                             // get the relevant sources & the associated StatementSourcePatterns
                             sourcesGroups = source_pattern.getRelevantSources();
                             sourcePatternGroups = source_pattern.getRelevantSourcePatterns();
@@ -118,7 +119,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                                 }
                             }
 						} else {
-							// classic case in FedX Bound Join algorithm
+                            // classic case in FedX Bound Join algorithm
 							taskCreator = new BoundJoinTaskCreator(this, strategy, stmt);
 						}
 					} else {
@@ -142,6 +143,8 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                 scheduler.schedule( new ParallelJoinTask(this, strategy, stmtFirstSource, firstBinding) );
             }
 		}
+
+        int iterations = 0;
 
         // Collect all the bindings
         while (!closed && leftIter.hasNext()) {
@@ -174,14 +177,30 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 
             // add the bindings page only if it contains at least one elt
             if(bindings.size() > 0) {
-                bindingPages.add(new ArrayList<>(bindings));
+				// PBJ algorithm : send the new binding page to the next endpoint
+                if(usePBJ) {
+                    for(List<StatementSource> endpoints : sourcesGroups) {
+                        // if no parallelization is possible
+                        if(endpoints.size() == 1) {
+                            // classic case for Bound Join
+                            scheduler.schedule(parallelTaskCreators.get(endpoints.get(0)).getTask(new ArrayList<>(bindings)));
+                        } else {
+                            // if parallelization is possible, we apply send the binding page to the next endpoint
+                            scheduler.schedule(parallelTaskCreators.get(endpoints.get(iterations)).getTask(new ArrayList<>(bindings)));
+                            iterations = (iterations + 1) % endpoints.size();
+                        }
+                    }
+                } else {
+                    // classic case : save the binding page for later
+                    bindingPages.add(new ArrayList<>(bindings));
+                }
             }
             bindings.clear();
         }
         // if we are using the Parallel Bound Join algorithm
         if(usePBJ) {
             // schedule the tasks using the Parallel Bound Join algorithm
-            for(List<StatementSource> endpoints : sourcesGroups) {
+            /*for(List<StatementSource> endpoints : sourcesGroups) {
                 // if no parallelization is possible
                 if(endpoints.size() == 1) {
                     // classic case for Bound Join
@@ -202,7 +221,7 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                         }
                     }
                 }
-            }
+            }*/
         } else {
             // classic case using FedX native Bound Join algorithm
             for(List<BindingSet> page : bindingPages) {
@@ -213,16 +232,17 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
 
 		scheduler.informFinish(this);
 
-		// wait until all tasks are executed
-		synchronized (this) {
-			try {
-				// check to avoid deadlock
-				if (scheduler.isRunning(this))
-					this.wait();
-			} catch (InterruptedException e) {
-				;	// no-op
-			}
-		}
+
+        // wait until all tasks are executed
+        synchronized (this) {
+            try {
+                // check to avoid deadlock
+                if (scheduler.isRunning(this))
+                    this.wait();
+            } catch (InterruptedException e) {
+                ;	// no-op
+            }
+        }
 	}
 
 	/**
