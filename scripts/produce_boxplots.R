@@ -61,7 +61,7 @@ processFederationTables <- function(value_ind, outputFedraPath, outputPBJHybridP
 	outputPBJHybrid <- read.table(outputPBJHybridPath)[value_ind]
   outputFedra20e <- read.table(outputFedra20ePath)[value_ind]
 	outputPBJHybrid20e <- read.table(outputPBJHybrid20ePath)[value_ind]
-    outputFedra30e <- read.table(outputFedra30ePath)[value_ind]
+  outputFedra30e <- read.table(outputFedra30ePath)[value_ind]
 	outputPBJHybrid30e <- read.table(outputPBJHybrid30ePath)[value_ind]
 
 	# set setup name column
