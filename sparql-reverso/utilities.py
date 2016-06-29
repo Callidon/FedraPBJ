@@ -14,6 +14,16 @@ def loadBGP(query):
     return [TriplePattern.from_str(triple) for triple in bgp.split(' . ')]
 
 
+def loadQuery(query):
+    """In a query, extract its BGP as a list of triple patterns from a SPARQL query
+    and return the list alongside the other parts of the request
+    """
+    query = re.sub(' +', ' ', query)  # compact multiples spaces
+    parsedQuery = re.search('(.*)WHERE {(.*)}(.*)', query)
+    header, bgp, end = parsedQuery.group(1) + "WHERE { ", parsedQuery.group(2), " }" + parsedQuery.group(3)
+    return (header, [TriplePattern.from_str(triple) for triple in bgp.split(' . ')], end)
+
+
 def findParallelQueries(referenceResults, queriesResults, nbEndpoints):
     """Find line numbers of queries that have been parallelized
     """

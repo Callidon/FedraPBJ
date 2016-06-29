@@ -26,6 +26,9 @@ class TriplePattern:
     def __repr__(self):
         return '<Triple pattern : {} {} {}>'.format(self.subject, self.predicate, self.object)
 
+    def __str__(self):
+        return self.subject.uri + ' ' + self.predicate.uri + ' ' + self.object.uri
+
     def from_str(triple):
         """Create a triple pattern from its str representation
         """
