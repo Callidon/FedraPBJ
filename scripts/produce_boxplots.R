@@ -132,12 +132,19 @@ outputSWDFPBJPost <- "../results/swdf/outputFedXFedra-PBJ-postFEDERATION10Client
 outputSWDFPBJHybrid <- "../results/swdf/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
 # from watDiv setup
-# with the classic federation
+# with a federation of 10 endpoints
 outputWatDivEngine <- "../results/watDiv/outputFedXengineFEDERATION10Client"
 outputWatDivFedra <- "../results/watDivMore/outputFedXFedraFEDERATION10Client"
 outputWatDivPBJPre <- "../results/watDiv/outputFedXFedra-PBJ-preFEDERATION10Client"
 outputWatDivPBJPost <- "../results/watDiv/outputFedXFedra-PBJ-postFEDERATION10Client"
 outputWatDivPBJHybrid <- "../results/watDivMore/outputFedXFedra-PBJ-hybridFEDERATION10Client"
+
+# with only the parallelized queries
+outputWatDivPll10eEngine <- "../results/watDiv/parallelized/outputFedXengineFEDERATION10Client"
+outputWatDivPll10eFedra <- "../results/watDivMore/parallelized/outputFedXFedraFEDERATION10Client"
+outputWatDivPll10ePBJPre <- "../results/watDiv/parallelized/outputFedXFedra-PBJ-preFEDERATION10Client"
+outputWatDivPll10ePBJPost <- "../results/watDiv/parallelized/outputFedXFedra-PBJ-postFEDERATION10Client"
+outputWatDivPll10ePBJHybrid <- "../results/watDivMore/parallelized/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
 # with a federation of 20 endpoints
 outputWatDiv20eEngine <- "../results/watDiv/outputFedXengineFEDERATION20Client"
@@ -184,7 +191,7 @@ watDivTable <- processTable(watDivSetupName, 2, outputWatDivEngine, outputWatDiv
 watDiv100Table <- processTable(watDiv100SetupName, 2, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
 
 watDivMoreTable <- processFederationTables(2, outputWatDivFedra, outputWatDivPBJHybrid, outputWatDiv20eFedra, outputWatDiv20ePBJHybrid, outputWatDiv30eFedra, outputWatDiv30ePBJHybrid)
-watDivMorePllTable <- processFederationTables(2, outputWatDivFedra, outputWatDivPBJHybrid, outputWatDivPll20eFedra, outputWatDivPll20ePBJHybrid, outputWatDivPll30eFedra, outputWatDivPll30ePBJHybrid)
+watDivMorePllTable <- processFederationTables(2, outputWatDivPll10eFedra, outputWatDivPll10ePBJHybrid, outputWatDivPll20eFedra, outputWatDivPll20ePBJHybrid, outputWatDivPll30eFedra, outputWatDivPll30ePBJHybrid)
 
 timesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
@@ -247,7 +254,7 @@ watDivTable <- processTable(watDivSetupName, 11, outputWatDivEngine, outputWatDi
 watDiv100Table <- processTable(watDiv100SetupName, 11, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
 
 watDivMoreTable <- processFederationTables(11, outputWatDivFedra, outputWatDivPBJHybrid, outputWatDiv20eFedra, outputWatDiv20ePBJHybrid, outputWatDiv30eFedra, outputWatDiv30ePBJHybrid)
-watDivMorePllTable <- processFederationTables(11, outputWatDivFedra, outputWatDivPBJHybrid, outputWatDivPll20eFedra, outputWatDivPll20ePBJHybrid, outputWatDivPll30eFedra, outputWatDivPll30ePBJHybrid)
+watDivMorePllTable <- processFederationTables(11, outputWatDivPll10eFedra, outputWatDivPll10ePBJHybrid, outputWatDivPll20eFedra, outputWatDivPll20ePBJHybrid, outputWatDivPll30eFedra, outputWatDivPll30ePBJHybrid)
 
 tuplesTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
@@ -310,7 +317,7 @@ watDivTable <- processTable(watDivSetupName, 6, outputWatDivEngine, outputWatDiv
 watDiv100Table <- processTable(watDiv100SetupName, 6, outputWatDiv100Engine, outputWatDiv100Fedra, outputWatDiv100PBJPre, outputWatDiv100PBJPost, outputWatDiv100PBJHybrid)
 
 watDivMoreTable <- processFederationTables(6, outputWatDivFedra, outputWatDivPBJHybrid, outputWatDiv20eFedra, outputWatDiv20ePBJHybrid, outputWatDiv30eFedra, outputWatDiv30ePBJHybrid)
-watDivMorePllTable <- processFederationTables(6, outputWatDivFedra, outputWatDivPBJHybrid, outputWatDivPll20eFedra, outputWatDivPll20ePBJHybrid, outputWatDivPll30eFedra, outputWatDivPll30ePBJHybrid)
+watDivMorePllTable <- processFederationTables(6, outputWatDivPll10eFedra, outputWatDivPll10ePBJHybrid, outputWatDivPll20eFedra, outputWatDivPll20ePBJHybrid, outputWatDivPll30eFedra, outputWatDivPll30ePBJHybrid)
 
 completnessTable <- rbind(diseasomeTable, linkedMDBTable, geoCoordinatesTable, SWDFTable, watDivTable, watDiv100Table)
 
