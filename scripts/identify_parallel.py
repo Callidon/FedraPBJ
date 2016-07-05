@@ -4,6 +4,7 @@
 
 import csv
 import argparse
+import os.path
 
 
 def main():
@@ -14,10 +15,12 @@ def main():
                         help='folder which contains query patterns for parsing')
     parser.add_argument('-f', '--file', type=str, required=True,
                         help='file which contains queries to parse')
+    parser.add_argument('-e', '--engine-file', type=str, required=False,
+                        help='file which contains the results for the engine strategy')
     parser.add_argument('-n', '--number-endpoints', type=str, required=True,
                         help='number of endpoints in the federation')
     parser.add_argument('-o', '--output', type=str, required=True,
-                        help='output file')
+                        help='output folder')
     args = parser.parse_args()
 
     fedraHotspots = dict()
@@ -30,15 +33,9 @@ def main():
     parallelizedQueries = list()
     shapes = dict()
     tuples = dict()
-    '''
-    federation_files = ['outputFedXFedra-PBJ-hybridFEDERATION{}Client'.format(args.number_endpoints),
-                        'outputFedXFedraFEDERATION{}Client'.format(args.number_endpoints),
-                        'outputFedXengineFEDERATION{}Client'.format(args.number_endpoints),
-                        'outputFedXFedra-PBJ-postFEDERATION{}Client'.format(args.number_endpoints),
-                        'outputFedXFedra-PBJ-preFEDERATION{}Client'.format(args.number_endpoints)]
-    '''
-    federation_files = ['outputFedXFedra-PBJ-hybridFEDERATION{}Client'.format(args.number_endpoints),
-                        'outputFedXFedraFEDERATION{}Client'.format(args.number_endpoints)]
+    federation_files = [args.reference_file, args.file]
+    if args.engine_file:
+        federation_files.append(args.engine_file)
 
     # load the hotspots of the reference file
     with open(args.reference_file, 'r', newline='') as csvfile:
@@ -56,26 +53,18 @@ def main():
             hybridHotspots[row[0]] = row[12:13 + int(args.number_endpoints)]
             hybridTimes[row[0]] = row[1]
 
-    # compare the files & output the results
-    with open(args.output, 'w', newline='') as csvfile:
-        csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        nbImprovedQueries = 0
-        nbUnimprovedQueries = 0
-
-        # search for non equal hotspot lists
-        for query in fedraHotspots.keys():
-            if fedraHotspots[query] != hybridHotspots[query]:
-                ratio = 100.0 - ((float(hybridTimes[query]) / float(fedraTimes[query])) * 100.0)
-                parallelizedQueries.append(query)
-                if ratio > 0.0:
-                    nbImprovedQueries += 1
-                    print('Execution time of {} has been improved of {} %'.format(query, ratio))
-                else:
-                    nbUnimprovedQueries += 1
-
-                # print in file : query name, shape of the query, #transferred tuples, pourcentage of reduction,
-                #                 execution time with fedra, hotspots with fedra, 'vs', execution time with fedra and hotspots with fedra
-                csvwriter.writerow([query, shapes[query], tuples[query], ratio, fedraTimes[query]] + fedraHotspots[query] + ['vs', hybridTimes[query]] + hybridHotspots[query])
+    # search for non equal hotspot lists
+    nbImprovedQueries = 0
+    nbUnimprovedQueries = 0
+    for query in fedraHotspots.keys():
+        if fedraHotspots[query] != hybridHotspots[query]:
+            ratio = 100.0 - ((float(hybridTimes[query]) / float(fedraTimes[query])) * 100.0)
+            parallelizedQueries.append(query)
+            if ratio > 0.0:
+                nbImprovedQueries += 1
+                print('Execution time of {} has been improved of {} %'.format(query, ratio))
+            else:
+                nbUnimprovedQueries += 1
 
     print('Number of queries with improved execution time : {} / {}'.format(nbImprovedQueries, len(fedraTimes)))
     print('Number of queries with unimproved execution time : {} / {}'.format(nbUnimprovedQueries, len(fedraTimes)))
@@ -83,11 +72,11 @@ def main():
     # create files for the boxplot script
     for fileName in federation_files:
         # collect datas about parallelized queries
-        with open('../results/watDivMore/{}'.format(fileName), 'r', newline='') as csvfile:
+        with open(fileName, 'r', newline='') as csvfile:
             csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
             queries = [row for row in csvreader if (row[0] in parallelizedQueries)]
         # output them in corresponding file
-        with open('../results/watDivMore/parallelized/{}'.format(fileName), 'w', newline='') as csvfile:
+        with open('{}/{}'.format(args.output, os.path.basename(fileName)), 'w', newline='') as csvfile:
             csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             csvwriter.writerows(queries)
 
