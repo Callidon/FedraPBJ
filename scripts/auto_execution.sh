@@ -12,7 +12,7 @@ FEDXFEDRA_FILE="outputFedXFedraFEDERATION${FED_SIZE}Client"
 PBJ_FILE="outputFedXFedra-PBJ-hybridFEDERATION${FED_SIZE}Client"
 FED_DIR="/home/fedra/fedra/federations/fed${FED_SIZE}e/"
 OUTPUT_DIR="/home/fedra/fedra/output/"
-NB_EXEC=1
+NB_EXEC=3
 
 for num in `seq 1 ${NB_EXEC}`; do
   # create results folder
@@ -41,8 +41,8 @@ for num in `seq 1 ${NB_EXEC}`; do
   cp $PBJ_FILE $RES_FOLDER
 
   # generate results for parallelized queries
-  cd $PNL_SCRIPTS
-  ./identify_parallel.py -n $FED_SIZE -e $RES_FOLDER/$ENGINE_FILE -r $RES_FOLDER/$FEDXFEDRA_FILE -f $RES_FOLDER/$PBJ_FILE -o $RES_FOLDER/parallelized/ > $RES_FOLDER/parallel.log
+  #cd $PNL_SCRIPTS
+  #./identify_parallel.py -n $FED_SIZE -e $RES_FOLDER/$ENGINE_FILE -r $RES_FOLDER/$FEDXFEDRA_FILE -f $RES_FOLDER/$PBJ_FILE -o $RES_FOLDER/parallelized/ > $RES_FOLDER/parallel.log
 done
 
 # compute mean of each execution
