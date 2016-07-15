@@ -17,22 +17,22 @@
 
 package com.fluidops.fedx.evaluation.join;
 
+import com.fluidops.fedx.Config;
 import com.fluidops.fedx.algebra.*;
-import com.fluidops.fedx.optimizer.Pair;
+import com.fluidops.fedx.evaluation.FederationEvalStrategy;
+import com.fluidops.fedx.evaluation.concurrent.ControlledWorkerScheduler;
+import com.fluidops.fedx.evaluation.concurrent.ParallelTask;
+import com.fluidops.fedx.structures.QueryInfo;
 import info.aduna.iteration.CloseableIteration;
-
-import java.util.*;
-
 import org.apache.log4j.Logger;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.algebra.TupleExpr;
 
-import com.fluidops.fedx.Config;
-import com.fluidops.fedx.evaluation.FederationEvalStrategy;
-import com.fluidops.fedx.evaluation.concurrent.ControlledWorkerScheduler;
-import com.fluidops.fedx.evaluation.concurrent.ParallelTask;
-import com.fluidops.fedx.structures.QueryInfo;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -87,7 +87,6 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
         // variables for binding collection
         int nBindings, count;
         List<BindingSet> bindings = new ArrayList<>();
-        List<List<BindingSet>> bindingPages = new ArrayList<>();
 
         // first item is always sent in a non-bound way
         if (!closed && leftIter.hasNext()) {
@@ -164,8 +163,6 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                 nBindings = 3;
             }
 
-            //bindings = new ArrayList<>(nBindings);
-
             count = bindings.size();
             while (count < nBindings && leftIter.hasNext()) {
                 BindingSet binding = leftIter.next();
@@ -192,48 +189,13 @@ public class ControlledWorkerBoundJoin extends ControlledWorkerJoin {
                     }
                 } else {
                     // classic case : save the binding page for later
-                    bindingPages.add(new ArrayList<>(bindings));
 					assert taskCreator != null;
 					scheduler.schedule(taskCreator.getTask(new ArrayList<>(bindings)));
                 }
             }
             bindings.clear();
         }
-        // if we are using the Parallel Bound Join algorithm
-        if(usePBJ) {
-            // schedule the tasks using the Parallel Bound Join algorithm
-            /*for(List<StatementSource> endpoints : sourcesGroups) {
-                // if no parallelization is possible
-                if(endpoints.size() == 1) {
-                    // classic case for Bound Join
-                    for(List<BindingSet> page : bindingPages) {
-                        scheduler.schedule(parallelTaskCreators.get(endpoints.get(0)).getTask(page));
-                    }
-                } else {
-                    // if parallelization is possible, we apply the parallel bound join algorithm
-                    partition.setSources(endpoints);
-                    partition.setBindingsPage(bindingPages);
-                    partition.performPartition(BindingsPartition.PARTITION_ALGORITHM.BEST_FIT);
-                    List<Pair<StatementSource, List<List<BindingSet>>>> groups = partition.getPartition();
-
-                    for(Pair<StatementSource, List<List<BindingSet>>> pair : groups) {
-                        // for each pair assigned to this source, schedule a task
-                        for(List<BindingSet> page : pair.getSecond()) {
-                            scheduler.schedule(parallelTaskCreators.get(pair.getFirst()).getTask(page));
-                        }
-                    }
-                }
-            }*/
-        } else {
-            // classic case using FedX native Bound Join algorithm
-            /*for(List<BindingSet> page : bindingPages) {
-                assert taskCreator != null;
-                scheduler.schedule(taskCreator.getTask(page));
-            }*/
-        }
-
 		scheduler.informFinish(this);
-
 
         // wait until all tasks are executed
         synchronized (this) {
