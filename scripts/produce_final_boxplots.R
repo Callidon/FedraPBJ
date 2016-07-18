@@ -83,9 +83,9 @@ outputWatDivFedra <- "../results/definitive/fed10e/federation1/outputFedXFedraFE
 outputWatDivPeneloop <- "../results/definitive/fed10e/federation1/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
 # with only the parallelized queries
-# outputWatDivPll10eEngine <- "../results/definitive/parallelized/outputFedXengineFEDERATION10Client"
-# outputWatDivPll10eFedra <- "../results/definitive/parallelized/outputFedXFedraFEDERATION10Client"
-# outputWatDivPll10ePeneloop <- "../results/definitive/parallelized/outputFedXFedra-PBJ-hybridFEDERATION10Client"
+outputWatDivPll10eEngine <- "../results/definitive/fed10e/federation1/parallelized/outputFedXengineFEDERATION10Client"
+outputWatDivPll10eFedra <- "../results/definitive/fed10e/federation1/parallelized/outputFedXFedraFEDERATION10Client"
+outputWatDivPll10ePeneloop <- "../results/definitive/fed10e/federation1/parallelized/outputFedXFedra-PBJ-hybridFEDERATION10Client"
 
 # with a federation of 20 endpoints
 outputWatDiv20eEngine <- "../results/definitive/fed20e/federation1/outputFedXengineFEDERATION20Client"
@@ -93,9 +93,9 @@ outputWatDiv20eFedra <- "../results/definitive/fed20e/federation1/outputFedXFedr
 outputWatDiv20ePeneloop <- "../results/definitive/fed20e/federation1/outputFedXFedra-PBJ-hybridFEDERATION20Client"
 
 # with only the parallelized queries
-# outputWatDivPll20eEngine <- "../results/definitive/parallelized/outputFedXengineFEDERATION20Client"
-# outputWatDivPll20eFedra <- "../results/definitive/parallelized/outputFedXFedraFEDERATION20Client"
-# outputWatDivPll20ePeneloop <- "../results/definitive/parallelized/outputFedXFedra-PBJ-hybridFEDERATION20Client"
+outputWatDivPll20eEngine <- "../results/definitive/fed20e/federation1/parallelized/outputFedXengineFEDERATION20Client"
+outputWatDivPll20eFedra <- "../results/definitive/fed20e/federation1/parallelized/outputFedXFedraFEDERATION20Client"
+outputWatDivPll20ePeneloop <- "../results/definitive/fed20e/federation1/parallelized/outputFedXFedra-PBJ-hybridFEDERATION20Client"
 
 # with a federation of 30 endpoints
 outputWatDiv30eEngine <- "../results/definitive/fed30e/federation1/outputFedXengineFEDERATION30Client"
@@ -103,55 +103,55 @@ outputWatDiv30eFedra <- "../results/definitive/fed30e/federation1/outputFedXFedr
 outputWatDiv30ePeneloop <- "../results/definitive/fed30e/federation1/outputFedXFedra-PBJ-hybridFEDERATION30Client"
 
 # with only the parallelized queries
-# outputWatDivPll30eEngine <- "../results/definitive/parallelized/outputFedXengineFEDERATION30Client"
-# outputWatDivPll30eFedra <- "../results/definitive/parallelized/outputFedXFedraFEDERATION30Client"
-# outputWatDivPll30ePeneloop <- "../results/definitive/parallelized/outputFedXFedra-PBJ-hybridFEDERATION30Client"
+outputWatDivPll30eEngine <- "../results/definitive/fed30e/federation1/parallelized/outputFedXengineFEDERATION30Client"
+outputWatDivPll30eFedra <- "../results/definitive/fed30e/federation1/parallelized/outputFedXFedraFEDERATION30Client"
+outputWatDivPll30ePeneloop <- "../results/definitive/fed30e/federation1/parallelized/outputFedXFedra-PBJ-hybridFEDERATION30Client"
 
 # For the execution time
 # Process the datas & merge them into one unique table
 definitiveTable <- processFederationTables(2, outputWatDivEngine, outputWatDivFedra, outputWatDivPeneloop, outputWatDiv20eEngine, outputWatDiv20eFedra, outputWatDiv20ePeneloop, outputWatDiv30eEngine, outputWatDiv30eFedra, outputWatDiv30ePeneloop)
-# definitivePllTable <- processFederationTables(2, outputWatDivPll10eFedra, outputWatDivPll10ePeneloop, outputWatDivPll20eFedra, outputWatDivPll20ePeneloop, outputWatDivPll30eFedra, outputWatDivPll30ePeneloop)
+definitivePllTable <- processFederationTables(2, outputWatDivPll10eEngine, outputWatDivPll10eFedra, outputWatDivPll10ePeneloop, outputWatDivPll20eEngine, outputWatDivPll20eFedra, outputWatDivPll20ePeneloop, outputWatDivPll30eEngine, outputWatDivPll30eFedra, outputWatDivPll30ePeneloop)
 
 # set the colnames
 colnames(definitiveTable) <- c("time", "endpoints", "Strategy")
-# colnames(definitivePllTable) <- c("time", "endpoints", "Strategy")
+colnames(definitivePllTable) <- c("time", "endpoints", "Strategy")
 
 # create the boxplots
 pdf("../results/definitive/fed1_execution_time.pdf", width=7, height=4)
 bootstrap_ggplot(ggplot(data = definitiveTable, aes(x=endpoints, y=time)), endpointsLabel, execTimelabel, aes(fill=Strategy))
 dev.off()
 
-# pdf("../results/definitive/parallelized/execution_time.pdf", width=7, height=4)
-# bootstrap_ggplot(ggplot(data = definitivePllTable, aes(x=endpoints, y=time)), endpointsLabel, execTimelabel, aes(fill=Strategy))
-# dev.off()
+pdf("../results/definitive/fed1_pll_execution_time.pdf", width=7, height=4)
+bootstrap_ggplot(ggplot(data = definitivePllTable, aes(x=endpoints, y=time)), endpointsLabel, execTimelabel, aes(fill=Strategy))
+dev.off()
 
 
 # For the number of transfered tuples
 # Process the datas & merge them into one unique table
 definitiveTable <- processFederationTables(11, outputWatDivEngine, outputWatDivFedra, outputWatDivPeneloop, outputWatDiv20eEngine, outputWatDiv20eFedra, outputWatDiv20ePeneloop, outputWatDiv30eEngine, outputWatDiv30eFedra, outputWatDiv30ePeneloop)
-# definitivePllTable <- processFederationTables(11, outputWatDivPll10eFedra, outputWatDivPll10ePeneloop, outputWatDivPll20eFedra, outputWatDivPll20ePeneloop, outputWatDivPll30eFedra, outputWatDivPll30ePeneloop)
+definitivePllTable <- processFederationTables(11, outputWatDivPll10eEngine, outputWatDivPll10eFedra, outputWatDivPll10ePeneloop, outputWatDivPll20eEngine, outputWatDivPll20eFedra, outputWatDivPll20ePeneloop, outputWatDivPll30eEngine, outputWatDivPll30eFedra, outputWatDivPll30ePeneloop)
 
 # set the colnames
 colnames(definitiveTable) <- c("tuples", "endpoints", "Strategy")
-# colnames(definitivePllTable) <- c("tuples", "endpoints", "Strategy")
+colnames(definitivePllTable) <- c("tuples", "endpoints", "Strategy")
 
 # create the boxplots
 pdf("../results/definitive/fed1_transferred_tuples.pdf", width=7, height=4)
 bootstrap_ggplot(ggplot(data = definitiveTable, aes(x=endpoints, y=tuples)), endpointsLabel, tuplesLabel, aes(fill=Strategy))
 dev.off()
 
-# pdf("../results/definitive/parallelized/transferred_tuples.pdf", width=7, height=4)
-# bootstrap_ggplot(ggplot(data = definitivePllTable, aes(x=endpoints, y=tuples)), endpointsLabel, tuplesLabel, aes(fill=Strategy))
-# dev.off()
+pdf("../results/definitive/fed1_pll_transferred_tuples.pdf", width=7, height=4)
+bootstrap_ggplot(ggplot(data = definitivePllTable, aes(x=endpoints, y=tuples)), endpointsLabel, tuplesLabel, aes(fill=Strategy))
+dev.off()
 
 # For the completness
 # Process the datas & merge them into one unique table
 definitiveTable <- processFederationTables(6, outputWatDivEngine, outputWatDivFedra, outputWatDivPeneloop, outputWatDiv20eEngine, outputWatDiv20eFedra, outputWatDiv20ePeneloop, outputWatDiv30eEngine, outputWatDiv30eFedra, outputWatDiv30ePeneloop)
-# definitivePllTable <- processFederationTables(6, outputWatDivPll10eFedra, outputWatDivPll10ePeneloop, outputWatDivPll20eFedra, outputWatDivPll20ePeneloop, outputWatDivPll30eFedra, outputWatDivPll30ePeneloop)
+definitivePllTable <- processFederationTables(6, outputWatDivPll10eEngine, outputWatDivPll10eFedra, outputWatDivPll10ePeneloop, outputWatDivPll20eEngine, outputWatDivPll20eFedra, outputWatDivPll20ePeneloop, outputWatDivPll30eEngine, outputWatDivPll30eFedra, outputWatDivPll30ePeneloop)
 
 # set the colnames
 colnames(definitiveTable) <- c("completness", "endpoints", "Strategy")
-# colnames(definitivePllTable) <- c("completness", "endpoints", "Strategy")
+colnames(definitivePllTable) <- c("completness", "endpoints", "Strategy")
 
 # create the boxplots
 
@@ -159,6 +159,6 @@ pdf("../results/definitive/fed1_completeness.pdf", width=7, height=4)
 bootstrap_ggplot(ggplot(data = definitiveTable, aes(x=endpoints, y=completness)), endpointsLabel, completenessLabel, aes(fill=Strategy), TRUE)
 dev.off()
 
-# pdf("../results/definitive/parallelized/completeness.pdf", width=7, height=4)
-# bootstrap_ggplot(ggplot(data = definitivePllTable, aes(x=endpoints, y=completness)), endpointsLabel, completenessLabel, aes(fill=Strategy), TRUE)
-# dev.off()
+pdf("../results/definitive/fed1_pll_completeness.pdf", width=7, height=4)
+bootstrap_ggplot(ggplot(data = definitivePllTable, aes(x=endpoints, y=completness)), endpointsLabel, completenessLabel, aes(fill=Strategy), TRUE)
+dev.off()
