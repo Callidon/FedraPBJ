@@ -1,0 +1,63 @@
+\begin{figure}[t]
+    \centering
+    \subfloat[Query executed on federation $E1,E2,E3,E4$]{
+        \lstinputlisting[basicstyle=\scriptsize\sffamily,language=sparql,numbers=none,frame=none,columns=fixed,extendedchars=true,breaklines=true,showstringspaces=false]{sparql/queryExample.txt}
+         \label{query:movies_pbj}
+    }
+    % Set the overall layout of the tree
+    \tikzstyle{level 1}=[level distance=1.5cm, sibling distance=3cm]
+    \subfloat[Join between $tp1$ and $tp2$ with relevant sources]{
+        \label{query:join_plan}
+        \begin{tikzpicture}
+            \node[bag] {$\bowtie$}
+                child {
+                    node[label=below:{$\{ \{ E4 \} \}$},bag] {$tp1$}
+                    edge from parent 
+                }
+                child {
+                    node[label=below:{$\{ \{ E1,E2 \}, \{ E3 \} \}$},bag] {$tp2$}
+                    edge from parent
+                };
+        \end{tikzpicture}
+    }
+    % Set the overall layout of the tree
+    \tikzstyle{level 1}=[level distance=3.5cm, sibling distance=3.5cm]
+    \tikzstyle{level 1}=[level distance=3.5cm, sibling distance=3.5cm]
+    \tikzstyle{level 3}=[level distance=2cm, sibling distance=2cm]
+    \captionsetup{position=bottom}
+    \subfloat[Distribution of bindings from sources of $tp1$ between sources of $tp2$]{
+        \label{fig:pbj_schema}
+        \begin{tikzpicture}[grow=right, sloped, edge from parent/.style={draw,-latex}]
+            \node[bag] {$E4$}
+                child {
+                    node[bag] {$\{E1, E2\}$}        
+                        child {
+                            node[end, label=right:
+                                {$E1$}] {}
+                            edge from parent
+                            node[below] {$\{b1,b2\}$}
+                        }
+                        child {
+                            node[end, label=right:
+                                {$E2$}] {}
+                            edge from parent
+                            node[above] {$\{b3,b4\}$}
+                        }
+                        edge from parent 
+                        node[below] {$\{b1,b2,b3,b4\}$}
+                }
+                child {
+                    node[bag] {$E3$}        
+                    %child {
+                    %        node[end, label=right:
+                    %            {$E3$}] {}
+                    %        edge from parent
+                    %        node[above] {$\{b1,b2,b3,b4\}$}
+                    %    }
+                    edge from parent     
+                    node[above] {$\{b1,b2,b3,b4\}$}
+                };
+        \end{tikzpicture}
+    }
+    \caption{Distribution of bindings when operating a join with replicated sources}
+\end{figure}

@@ -1,0 +1,5 @@
+select distinct
+?director ?nat ?film where {
+?director dbo:nationality ?nat . (tp1)
+?film dbo:director ?director . (tp2)
+}

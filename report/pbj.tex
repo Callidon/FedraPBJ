@@ -1,0 +1,20 @@
+\begin{algorithm}[h]
+    \caption{Parallel Nested Loop algorithm: approach 1}\label{algo:pbj}
+    \begin{algorithmic}[1]
+        \Require \textit{left} : triple pattern; \textit{right} : triple pattern; \textit{sources} : set of Endpoint
+        \Ensure \textit{results} : set of Binding
+        \Function{ParallelBoundJoin}{\textit{left},\textit{sources}}
+            \State \textit{results} $\gets$ empty set of Binding
+            \State \textit{bindings} $\gets$ \Call{GetBindings}{\textit{left}}
+            \State \textit{groups} $\gets$ \Call{Partition}{\textit{sources},\textit{left}}\Comment{Split relevant sources in equals groups}
+            \For{\textit{endpoint},\textit{subset} \textbf{in} \textit{groups}}
+                % add something to indicate that this is launched in parallel
+                \State \textit{data} $\gets$ \Call{SendBindings}{right, \textit{endpoint}, \textit{subset}}\Comment{Get new bindings in parallel}
+                \State \textit{results} $\gets$ \textit{results} $\cup$ \textit{data}
+            \EndFor
+            
+            \State \emph{wait for all processes to finish}
+            \State \textbf{return} \textit{results}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}

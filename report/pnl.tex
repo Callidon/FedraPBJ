@@ -1,0 +1,20 @@
+\begin{algorithm}[h]
+    \caption{Parallel Nested Loop algorithm: approach 2}\label{algo:pnl}
+    \begin{algorithmic}[1]
+        \Require \textit{left} : triple pattern; \textit{right} : triple pattern; \textit{sources} : set of Endpoint
+        \Ensure \textit{results} : set of Binding
+        \Function{ParallelNestedLoop}{\textit{left}, \textit{sources}}
+            \State \textit{results} $\gets$ empty set of Binding
+            \State \textit{next} $\gets 0$
+
+            \For{\textit{bindings} \textbf{in} \Call{Execute}{\textit{left}}} \Comment{For each bindings of the outer loop}
+                \State \textit{data} $\gets$ \Call{SendBindings}{\textit{right}, \textit{bindings}, \textit{sources$[\textit{next}]$}}
+                \State \textit{results} $\gets$ \textit{results} $\cup$ \textit{data}
+                \State \textit{next} $\gets (\textit{next} + 1)$ mod \Call{size}{\textit{sources}}
+            \EndFor
+
+            \State \emph{wait for all processes to finish}
+            \State \textbf{return} \textit{results}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}

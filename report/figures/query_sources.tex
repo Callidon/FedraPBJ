@@ -1,0 +1,25 @@
+\begin{figure}[h]
+    \centering
+    \subfloat[Requête exécutée sur la fédération $E1,E2,E3,E4$]{
+        \lstinputlisting[basicstyle=\scriptsize\sffamily,language=sparql,numbers=none,frame=none,columns=fixed,extendedchars=true,breaklines=true,showstringspaces=false]{sparql/queryExample.txt}
+         \label{query:movies}
+     }
+    \subfloat[Fragments (F) \& Sélection de source par \fedra]{
+    \label{fig:source_selection_movies}
+        \begin{scriptsize}
+            \begin{tabular}{|c|c|c|c|} \hline
+                Triple pattern & F & Endpoints & Sélection de sources \\
+                \hline
+                tp1 & f3 & E4 & $\{ \{ E4 \} \}$ \\
+                \hline
+                & f1 & E1 &  \\
+                \cline{3-3}
+                tp2 &  & E2 & $\{\{ E1,E2 \} , E3 \}$ \\
+                 \cline{2-3}
+                 & f2 & E3 &  \\
+                \hline
+            \end{tabular}
+        \end{scriptsize}
+    }
+    \caption{Exemple de sélection de sources effectuée par \fedra pour une requête SPARQL fédérée}
+\end{figure}
