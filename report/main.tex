@@ -11,17 +11,25 @@
 \usepackage{algorithm}
 \usepackage{amsmath,amssymb, amsthm}
 \usepackage{xspace}
-\usepackage{subfig, tikz}
-\usetikzlibrary{trees}
+\usepackage{subfig, tikz, calc}
+\usetikzlibrary{trees, arrows, positioning, shapes}
 
 % Define styles for bags and leafs
 \tikzstyle{bag} = [text width=4em, text centered]
 \tikzstyle{end} = [minimum width=3pt]
+\tikzset{
+    orangenode/.style={rectangle,draw=black, top color=orange!40, bottom color=orange!40,very thick, inner sep=1em, minimum size=3em, text centered},
+    bluenode/.style={rectangle,draw=black, top color=blue!40, bottom color=blue!40,very thick, inner sep=1em, minimum size=3em, text centered},
+    myarrow/.style={->, >=latex', shorten >=1pt, thick},
+    mylabel/.style={text width=7em, text centered},
+    mydot/.style={draw, shape=circle, fill=black}
+}
 
 \def\fedra{\textsc{Fedra}\xspace}
 \def\fedx{\textsc{FedX}\xspace}
 \def\fexOpt{\textsc{FedXOpt}\xspace}
 \def\peneloop{\textsc{PeNeLoop}\xspace}
+\newcommand{\parallelLink}[1]{Version avec requêtes parallélisées \href{#1}{disponible ici}.}
 
 \newtheorem{hypo}{Hypothèse}
 
@@ -32,7 +40,7 @@
 }
 
 \title{\peneloop : Parallelizing federated SPARQl query using replicated fragments\\Rapport de travail}
-\author{Thomas Minier}
+\author{Thomas \textsc{Minier}}
 \date{Mai-Juillet 2016}
 
 \begin{document}
@@ -115,7 +123,11 @@ Nous aurions pu aussi choisir Anapsid \cite{acosta2011anapsid} comme support d'i
 
 Dans cette approche, nous proposons d'aborder le problème de la parallélisation de l'inner loop comme un problème de Bin Packing. Il consiste à trouver la manière optimale pour ranger $n$ objets, chacun doté d'un poids, dans un nombre minimum de boîtes. Nous considérons ici une variante du problème, où le nombre de boîte est fixe et où les objets doivent être répartis dans les boîtes de manière à minimiser le poids de chaque boîte. Le poids d'une boîte correspond à la somme des poids des objets qu'elle contient. Dans notre contexte, les objets correspondent à des bindings, leur poids est donc constant à 1, et les boîtes aux répliques auxquelles nous devons envoyer les requêtes.
 
-Notre algorithme (cf algorithme \ref{algo:pbj}) se déroulera donc de la manière suivante. Nous commençons par récupérer tous les bindings provenant de l'outer loop, puis, connaissant le nombre de répliques, nous appliquons une heuristique pour résoudre notre problème de Bin Packing. L'heurisitque choisi est l'algorithme du \textit{Best Fit Decreasing}, qui garantit une solution non optimale en $O(\log n)$. Il produit une partition composée d'un ensemble de couples $(R, E)$, où $R$ est une réplique et $E$ un ensemble des bindings. Ensuite, pour chaque élément de la partition, nous effectuons la requête de l'inner loop à destination de $R$ avec les bindings de $S$. Chaque requête est exécutée en parallèle, et nous effectuons l'union des résultats au fur et à mesure qu'ils sont disponibles.
+Notre algorithme (cf algorithme \ref{algo:pbj}) se déroulera donc de la manière suivante. Nous commençons par récupérer tous les bindings provenant de l'outer loop, puis, connaissant le nombre de répliques, nous appliquons une heuristique pour résoudre notre problème de Bin Packing. L'heuristique choisie est l'algorithme du \textit{Best Fit Decreasing}, qui garantit une solution non optimale en $O(\log n)$. Il produit une partition composée d'un ensemble de couples $(R, E)$, où $R$ est une réplique et $E$ un ensemble des bindings. Ensuite, pour chaque élément de la partition, nous effectuons la requête de l'inner loop à destination de $R$ avec les bindings de $S$. Chaque requête est exécutée en parallèle, et nous effectuons l'union des résultats au fur et à mesure qu'ils sont disponibles.
+
+La figure \ref{fig:binpacking} schématise un exemple de répartition des bindings pour une jointure $tp_1 \bowtie tp_2$ selon cette approche.
+
+\input{figures/fig_binpack.tex}
 
 % algorithm figure
 \input{pbj.tex}
@@ -144,6 +156,10 @@ Cette approche nous permet de valider certaines hypothèses faites lors de notre
 
 Dans cette approche, nous décidons d'appliquer l'algorithme (cf algorithme \ref{algo:pnl}) dans le cadre d'une architecture pipeline. Le principe est que dès qu'un binding a été produit par l'outer loop, il est immédiatement utilisé par l'inner loop et envoyé à une réplique pour récupérer de nouveaux bindings. L'exécution des deux boucles imbriquées se fait donc complètement en parallèle. Pour choisir quelle source utiliser parmi les répliques à chaque fois qu'un binding arrive, nous utilisons une approche Round Robin : le binding $i$ est envoyé à la source $i$ mod $N$, où $N$ est le nombre total de sources.
 
+La figure \ref{fig:pipeline} schématise un exemple de répartition des bindings pour une jointure $tp_1 \bowtie tp_2$ selon cette approche.
+
+\input{figures/fig_pipeline.tex}
+
 % algorithm figure
 \input{pnl.tex}
 
@@ -156,35 +172,35 @@ Contrairement à la première approche, celle-ci monte une nette réduction du t
 
 Les résultats pour le nombre de résultats intermédiaires et la completeness sont identiques à ceux de la première approche, et montre que nous validons toujours l'hypothèse \ref{hypo:stableTuples} et que les réponses aux requêtes restent inaltérées.
 
-Les figures \ref{fig:fed1_time}, \ref{fig:fed2_time} et \ref{fig:fed2_time} présentent les temps d'exécutions mesurés pendant l'étude, les figures \ref{fig:fed1_tuples}, \ref{fig:fed2_tuples} et \ref{fig:fed3_tuples} présentent le nombre de tuples transférés et les figures \ref{fig:fed1_compl}, \ref{fig:fed2_compl} et \ref{fig:fed3_compl} présentent la completeness des requêtes.
+Les figures \ref{fig:fed1_time}, \ref{fig:fed2_time} et \ref{fig:fed2_time} présentent les temps d'exécutions mesurés pendant l'étude, les figures \ref{fig:fed1_tuples}, \ref{fig:fed2_tuples} et \ref{fig:fed3_tuples} présentent le nombre de tuples transférés et les figures \ref{fig:fed1_compl}, \ref{fig:fed2_compl} et \ref{fig:fed3_compl} présentent la completeness des requêtes. Les figures \ref{fig:avg_time}, \ref{fig:avg_tuples} et \ref{fig:avg_compl} présentent respectivement les moyennes des résultats pour nos trois métriques.
 
 La table \ref{table:stats_pipeline} présente différentes statistiques sur les requêtes en fonction des fédération étudiées.
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{|c|c|c|c|c|c|}
+    \begin{tabular}{|c|c|c|c|c|c|c|}
     \hline
-    Taille de la fédération & Tirage & \multicolumn{2}{c|}{Nb de requêtes parallélisées} & Nb de requêtes & Nb total de \\
+    Taille de la fédération & Tirage & \multicolumn{2}{c|}{Nb de requêtes parallélisées} & Nb de requêtes & Nb total de & \% moyen de temps \\
     \cline{3-4}
-     & & Améliorées & $\neg$ améliorées & $\neg$ parallélisées & requêtes \\
+     & & Améliorées & $\neg$ améliorées & $\neg$ parallélisées & requêtes & d'exécution gagné\\
     \hline
-     & 1 & 28 & 3 & 66 & 97 \\
-    \cline{2-6}
-    10 endpoints & 2 & 37 & 7 & 53 & 97 \\
-    \cline{2-6}
-     & 3 & 31 & 4 & 60 & 95 \\
+     & 1 & 28 & 3 & 66 & 97 & \\
+    \cline{2-7}
+    10 endpoints & 2 & 37 & 7 & 53 & 97 & \\
+    \cline{2-7}
+     & 3 & 31 & 4 & 60 & 95 & \\
     \hline
-     & 1 & 63 & 3 & 32 & 98\\
-    \cline{2-6}
-    20 endpoints & 2 & 59 & 11 & 28 & 98 \\
-    \cline{2-6}
-     & 3 & 58 & 2 & 37 & 97 \\
+     & 1 & 63 & 3 & 32 & 98 & \\
+    \cline{2-7}
+    20 endpoints & 2 & 59 & 11 & 28 & 98 & \\
+    \cline{2-7}
+     & 3 & 58 & 2 & 37 & 97 & \\
     \hline
-     & 1 & 39 & 3 & 51 & 93 \\
-    \cline{2-6}
-    30 endpoints & 2 & 49 & 5 & 42 & 96 \\
-    \cline{2-6}
-     & 3 & 59 & 10 & 27 & 96 \\
+     & 1 & 39 & 3 & 51 & 93 & \\
+    \cline{2-7}
+    30 endpoints & 2 & 49 & 5 & 42 & 96 & \\
+    \cline{2-7}
+     & 3 & 59 & 10 & 27 & 96 & \\
     \hline
     \end{tabular}
     \caption{Statistiques sur les requêtes en fonction des fédération étudiées}
@@ -219,66 +235,89 @@ Enfin, nous avons modifié les proxys utilisé dans l'expérience de \fedra afin
 
 \section{Annexes}
 
+\textbf{Attention :} les figures ci-contre ont été tracées avec l'ensemble des requêtes. Merci de vous référer à la description de chaque figure pour accéder à la version où seules les requêtes parallélisées ont été utilisées.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics{boxplots/avg_execution_time.pdf}
+    \caption{Moyenne des temps d'exécution avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline.}
+    \label{fig:avg_time}
+\end{figure}
+
 \begin{figure}[h]
     \centering
     \includegraphics{boxplots/fed1_execution_time.pdf}
-    \caption{Temps d'exécution pour le tirage 1 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline}
+    \caption{Temps d'exécution pour le tirage 1 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline. \parallelLink{https://github.com/Callidon/ParallelNestedLoop/blob/master/results/definitive/fed1_pll_execution_time.pdf}}
     \label{fig:fed1_time}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics{boxplots/fed2_execution_time.pdf}
-    \caption{Temps d'exécution pour le tirage 2 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline}
+    \caption{Temps d'exécution pour le tirage 2 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline. \parallelLink{https://github.com/Callidon/ParallelNestedLoop/blob/master/results/definitive/fed2_pll_execution_time.pdf}}
     \label{fig:fed2_time}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics{boxplots/fed3_execution_time.pdf}
-    \caption{Temps d'exécution pour le tirage 3 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline}
+    \caption{Temps d'exécution pour le tirage 3 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline. \parallelLink{https://github.com/Callidon/ParallelNestedLoop/blob/master/results/definitive/fed3_pll_execution_time.pdf}}
     \label{fig:fed3_time}
 \end{figure}
 
 \begin{figure}[h]
     \centering
+    \includegraphics{boxplots/avg_transferred_tuples.pdf}
+    \caption{Moyenne du nombre de tuples transférés avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline.}
+    \label{fig:avg_tuples}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
     \includegraphics{boxplots/fed1_transferred_tuples.pdf}
-    \caption{Nombre de tuples transférés pour le tirage 1 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline}
+    \caption{Nombre de tuples transférés pour le tirage 1 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline. \parallelLink{https://github.com/Callidon/ParallelNestedLoop/blob/master/results/definitive/fed1_pll_transferred_tuples.pdf}}
     \label{fig:fed1_tuples}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics{boxplots/fed2_transferred_tuples.pdf}
-    \caption{Nombre de tuples transférés pour le tirage 2 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline}
+    \caption{Nombre de tuples transférés pour le tirage 2 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline. \parallelLink{https://github.com/Callidon/ParallelNestedLoop/blob/master/results/definitive/fed2_pll_transferred_tuples.pdf}}
     \label{fig:fed2_tuples}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics{boxplots/fed3_transferred_tuples.pdf}
-    \caption{Nombre de tuples transférés pour le tirage 3 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline}
+    \caption{Nombre de tuples transférés pour le tirage 3 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline. \parallelLink{https://github.com/Callidon/ParallelNestedLoop/blob/master/results/definitive/fed3_pll_transferred_tuples.pdf}}
     \label{fig:fed3_tuples}
 \end{figure}
 
 \begin{figure}[h]
     \centering
+    \includegraphics{boxplots/avg_completeness.pdf}
+    \caption{Moyenne de la complétude des requêtes pour le tirage 1 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline.}
+    \label{fig:avg_compl}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
     \includegraphics{boxplots/fed1_completeness.pdf}
-    \caption{Complétude des requêtes pour le tirage 1 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline}
+    \caption{Complétude des requêtes pour le tirage 1 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline. \parallelLink{https://github.com/Callidon/ParallelNestedLoop/blob/master/results/definitive/fed1_pll_completeness.pdf}}
     \label{fig:fed1_compl}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics{boxplots/fed2_completeness.pdf}
-    \caption{Complétude des requêtes pour le tirage 2 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline}
+    \caption{Complétude des requêtes pour le tirage 2 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline. \parallelLink{https://github.com/Callidon/ParallelNestedLoop/blob/master/results/definitive/fed2_pll_completeness.pdf}}
     \label{fig:fed2_compl}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics{boxplots/fed3_completeness.pdf}
-    \caption{Complétude des requêtes pour le tirage 3 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline}
+    \caption{Complétude des requêtes pour le tirage 3 des fédérations avec \fedx, \fedx + \fedra et \fedx + \fedra + \peneloop en approche pipeline. \parallelLink{https://github.com/Callidon/ParallelNestedLoop/blob/master/results/definitive/fed3_pll_completeness.pdf}}
     \label{fig:fed3_compl}
 \end{figure}
 
