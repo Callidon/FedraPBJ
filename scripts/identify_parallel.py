@@ -33,6 +33,7 @@ def main():
     parallelizedQueries = list()
     shapes = dict()
     tuples = dict()
+    ratios = list()
     federation_files = [args.reference_file, args.file]
     if args.engine_file:
         federation_files.append(args.engine_file)
@@ -62,12 +63,16 @@ def main():
             parallelizedQueries.append(query)
             if ratio > 0.0:
                 nbImprovedQueries += 1
+                ratios.append(ratio)
                 print('Execution time of {} has been improved of {} %'.format(query, ratio))
             else:
                 nbUnimprovedQueries += 1
 
     print('Number of queries with improved execution time : {} / {}'.format(nbImprovedQueries, len(fedraTimes)))
     print('Number of queries with unimproved execution time : {} / {}'.format(nbUnimprovedQueries, len(fedraTimes)))
+    print('Average query execution time improvement : {}%'.format(sum(ratios) / len(ratios)))
+    print('Maximum query execution time improvement : {}%'.format(max(ratios)))
+    print('Minimum query execution time improvement : {}%'.format(min(ratios)))
 
     # create files for the boxplot script
     for fileName in federation_files:

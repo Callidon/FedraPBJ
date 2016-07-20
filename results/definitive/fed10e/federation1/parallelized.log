@@ -1,30 +1,33 @@
-Execution time of query84 has been improved of 39.56204379562044 %
-Execution time of query54 has been improved of 1.25 %
-Execution time of query71 has been improved of 50.29154518950437 %
-Execution time of query75 has been improved of 0.9740259740259773 %
+Execution time of query16 has been improved of 47.79244644325161 %
+Execution time of query56 has been improved of 41.16899618805591 %
 Execution time of query68 has been improved of 16.20111731843575 %
+Execution time of query52 has been improved of 47.33944954128441 %
+Execution time of query59 has been improved of 48.51817763460654 %
+Execution time of query84 has been improved of 39.56204379562044 %
+Execution time of query93 has been improved of 20.491803278688522 %
+Execution time of query75 has been improved of 0.9740259740259773 %
+Execution time of query88 has been improved of 6.293706293706279 %
+Execution time of query71 has been improved of 50.29154518950437 %
+Execution time of query8 has been improved of 39.83983983983984 %
+Execution time of query97 has been improved of 34.94983277591973 %
+Execution time of query35 has been improved of 40.51490514905149 %
+Execution time of query26 has been improved of 17.02127659574468 %
+Execution time of query36 has been improved of 50.25197984161267 %
+Execution time of query2 has been improved of 53.08441558441558 %
+Execution time of query53 has been improved of 15.649867374005296 %
+Execution time of query22 has been improved of 41.654571843251084 %
+Execution time of query81 has been improved of 12.951807228915655 %
+Execution time of query70 has been improved of 48.03370786516854 %
+Execution time of query7 has been improved of 46.30192502532928 %
+Execution time of query21 has been improved of 20.364741641337375 %
+Execution time of query3 has been improved of 29.126213592233015 %
+Execution time of query54 has been improved of 1.25 %
 Execution time of query78 has been improved of 27.751937984496124 %
 Execution time of query73 has been improved of 22.972972972972954 %
-Execution time of query26 has been improved of 17.02127659574468 %
-Execution time of query45 has been improved of 0.9740259740259773 %
-Execution time of query7 has been improved of 46.30192502532928 %
-Execution time of query8 has been improved of 39.83983983983984 %
-Execution time of query53 has been improved of 15.649867374005296 %
-Execution time of query3 has been improved of 29.126213592233015 %
-Execution time of query16 has been improved of 47.79244644325161 %
-Execution time of query59 has been improved of 48.51817763460654 %
-Execution time of query70 has been improved of 48.03370786516854 %
 Execution time of query4 has been improved of 48.402425036867115 %
-Execution time of query81 has been improved of 12.951807228915655 %
-Execution time of query93 has been improved of 20.491803278688522 %
-Execution time of query2 has been improved of 53.08441558441558 %
-Execution time of query56 has been improved of 41.16899618805591 %
-Execution time of query35 has been improved of 40.51490514905149 %
-Execution time of query52 has been improved of 47.33944954128441 %
-Execution time of query88 has been improved of 6.293706293706279 %
-Execution time of query22 has been improved of 41.654571843251084 %
-Execution time of query36 has been improved of 50.25197984161267 %
-Execution time of query21 has been improved of 20.364741641337375 %
-Execution time of query97 has been improved of 34.94983277591973 %
+Execution time of query45 has been improved of 0.9740259740259773 %
 Number of queries with improved execution time : 28 / 97
 Number of queries with unimproved execution time : 3 / 97
+Average query execution time improvement : 31.061777070798794%
+Maximum query execution time improvement : 53.08441558441558%
+Minimum query execution time improvement : 0.9740259740259773%
