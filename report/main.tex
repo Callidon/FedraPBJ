@@ -58,18 +58,18 @@
 
 Dans le domaine des bases de données distribuées, une pratique courante pour accroître la disponibilité des données est de les répliquer. Elle consiste à diviser le schéma de stockage des données en plusieurs sous-schémas, appelés \textit{fragments}, puis à répartir de multiples copies de chacun de ses fragments sur différents serveurs, appelés \textit{répliques}. Chaque fragment est ainsi disponible à plusieurs endroits et si l'un des serveurs venait à être inaccessible, les données seraient toujours disponibles auprès des autres répliques.
 
-Cependant, les moteurs de requêtes \sparql fédérées actuels \cite{schwarte2011fedx,acosta2011anapsid} gèrent très mal la réplication des données. Ils ne sont pas capables de sélectionner les sources pertinentes d'une requête en détectant lesquels sont des répliques afin de les éliminer de la sélection. Ils effectuent donc les mêmes requêtes sur des serveurs qui contiennent les mêmes données et, par conséquent, transfèrent des données dupliquées superflues qui ralentissent les performances générales du moteur de requête. \fedra \cite{montoya2014fedra} propose un algorithme de sélection de sources capable de résoudre ces problèmes. En regroupant les répliques entre elles, il est capable de sélectionner l'ensemble minimal de sources nécessaire pour répondre à une requête. Cela permet une nette amélioration du temps d'exécution et du nombre de résultats transférés lors de l'exécution de requêtes \sparql fédérées dans un contexte où les données sont répliquées. La figure \ref{fig:source_selection_movies} montre un exemple de sélection de sources effectuée par \fedra pour la requête de la figure \ref{query:movies}.
+Cependant, les moteurs de requêtes \sparql fédérées actuels \cite{schwarte2011fedx,acosta2011anapsid} gèrent très mal la réplication des données. Ils ne sont pas capables de sélectionner les sources pertinentes d'une requête en détectant lesquels sont des répliques afin de les éliminer de la sélection. Ils effectuent donc les mêmes requêtes sur des serveurs qui contiennent les mêmes données et, par conséquent, transfèrent des données dupliquées superflues qui ralentissent les performances générales du moteur de requête. \fedra \cite{montoya2014fedra} propose un algorithme de sélection de sources capable de résoudre ces problèmes. En regroupant les répliques entre elles, il est capable de sélectionner l'ensemble minimal de sources nécessaire pour répondre à une requête. Cela permet une nette amélioration du temps d'exécution et du nombre de résultats transférés lors de l'exécution de requêtes \sparql fédérées dans un contexte où les données sont répliquées. La figure \ref{fig:source_selection_movies} montre un exemple de sélection de sources effectuée par \fedra pour la requête de la figure \ref{query:movies} exécutée sur une fédération de serveurs $E_1, E_2, E_3, E_4$.
 
 \input{figures/query_sources.tex}
 
-Néanmoins, \fedra ne tire pas parti des informations qu'il récupère concernant les répliques parmi les sources qu'il sélectionne. En les utilisant, il est possible d'améliorer de manière plus poussée l'exécution des requêtes grâce à la parallélisation. En effet, si pour une source donnée, on connaît les autres sources qui contiennent les mêmes fragments de données, on peut distribuer l'exécution des requêtes effectuées sur cette source à l'échelle de toutes les répliques. Ce faisant, nous pouvons améliorer le temps d'exécution des requêtes et la répartition de la charge sur les différentes sources de la fédération.
+Néanmoins, \fedra ne sélectionne qu'une seule source à utiliser parmi les répliques qu'il identifie. Ce faisant, il élimine des sources potentielles qui peuvent être utilisées pour exécuter les requêtes en parallèle. En effet, si pour une source donnée, on connaît les autres sources qui contiennent les mêmes fragments de données, on peut distribuer l'exécution des requêtes effectuées sur cette source à l'échelle de toutes les répliques. Ce faisant, nous pouvons améliorer le temps d'exécution des requêtes et la répartition de la charge sur les différentes sources de la fédération.
 
 %--------------------------
 \subsection{Contribution}
 
-Notre problématique est donc de trouver une approche pour paralléliser l'exécution des requêtes \sparql fédérées dans un contexte de données répliquées. Pour ce faire, nous proposons \peneloop, un algorithme pour tirer parti des informations sur les répliques collectées par \fedra et améliorer les performances des requêtes \sparql fédérées en présence de données répliquées. Nous concentrerons notre travail sur la parallélisation de l'opérateur de jointure. Des algorithmes pour effectuer des jointures parallélisées dans un contexte de réplication ont déjà été évoqués dans la littérature \cite{ozsu2011principles}. Nous nous baserons sur l'algorithme du \textit{Parallel Nested Loop Join} pour notre travail, car il peut être appliqué sans connaître d'informations particulières sur la cardinalité des triples patterns impliqués dans une jointure. Or, dans notre contexte, nous nous basons sur \fedra pour récupérer les données sur la sélection des sources, et ce dernier travaille sans aucune informations sur la cardinalité des triples patterns évalués.
+Notre problématique est donc de trouver une approche pour paralléliser l'exécution des requêtes \sparql fédérées dans un contexte de données répliquées. Pour ce faire, nous proposons \peneloop, un algorithme pour tirer parti des informations sur les répliques collectées par \fedra et améliorer les performances des requêtes \sparql fédérées en présence de données répliquées. Nous concentrerons notre travail sur la parallélisation de l'opérateur de jointure, car les autres peuvent être parallélisés de manière similiaire. Des algorithmes pour effectuer des jointures parallélisées dans un contexte de réplication ont déjà été évoqués dans la littérature \cite{ozsu2011principles}. Nous nous baserons sur l'algorithme du \textit{Parallel Nested Loop Join} pour notre travail, car il peut être appliqué sans connaître d'informations particulières sur la cardinalité des triples patterns impliqués dans une jointure. Or, dans notre contexte, nous nous basons sur \fedra pour récupérer les données sur la sélection des sources, et ce dernier travaille sans aucune informations sur la cardinalité des triples patterns évalués.
 
-Nous présenterons d'abord le principe du Parallel Nested Loop Join dans le cadre d'une requête \sparql, puis nous étudierons deux approches pour le paralléliser. La première sera modélisée comme un problème de Bin Packing où l'on parallélise l'exécution des jointures elles-mêmes. La deuxième poussera la parallélisation plus loin, en se plaçant dans une architecture de type pipeline, où les jointures seront exécutées en parallèle entre elles. Pour chaque approche, nous étudierons d'abord l'aspect algorithmique, puis nous mènerons une étude expérimentale pour évaluer son efficacité. Nous présenterons également la configuration expéirmentale utilisée pour nos expérimentations. Enfin, nous conclurons pour déterminer quelle approche est la plus intéressante et la plus efficace pour répondre à notre problématique.
+Nous présenterons d'abord le principe du Parallel Nested Loop Join dans le cadre d'une requête \sparql, puis nous étudierons deux approches pour le paralléliser. La première sera modélisée comme un problème de Bin Packing \cite{kantorovich1960mathematical} où l'on effectuera une parallélisation intra-opérateur. La deuxième poussera la parallélisation plus loin, en se plaçant dans une architecture de type pipeline, en effectuant une parallélisation intra et inter-opérateur. Pour chaque approche, nous étudierons d'abord l'aspect algorithmique, puis nous mènerons une étude expérimentale pour évaluer son efficacité. Nous présenterons également la configuration expérimentale utilisée pour nos expérimentations. Enfin, nous conclurons pour déterminer quelle approche est la plus intéressante et la plus efficace pour répondre à notre problématique.
 
 %--------------------------
 \section{Hypothèses}
@@ -95,19 +95,19 @@ Soit une requête $R$ contenant une jointure entre deux triples patterns $tp_1, 
 
 \subsection{Principes de base}
 
-Considérons une jointure entre deux triples patterns $tp_1$ et $tp_2$ effectuée selon l'algorithme Parallel Nested Loop Join, et les sources $s_1$ et $s_2$ qui contiennent respectivement les données correspondant à $tp_1$ et à $tp_2$. L'algorithme va commencer par exécuter une première boucle sur les données de $s_1$ appelée \textbf{l'outer loop}. Pour chaque binding $b_n$ trouvé dans $s_1$ qui satisfait le pattern $tp_1$, l'algorithme va effectuer une autre boucle sur les données de $s_2$, imbriquée dans la première, appelée \textbf{l'inner loop}. Cette dernière va alors chercher les bindings qui satisfont le pattern $tp_2$, complété des données du binding $b_n$. Les bindings récupérés par l'\textit{inner loop} seront ceux qui seront retournés par l'algorithme comme solutions de la jointure.
+Considérons une jointure entre deux triples patterns $tp_1$ et $tp_2$ effectuée selon l'algorithme Nested Loop Join, et les sources $s_1$ et $s_2$ qui contiennent respectivement les données correspondant à $tp_1$ et à $tp_2$. L'algorithme va commencer par exécuter une première boucle sur les données de $s_1$ appelée \textbf{l'outer loop}. Pour chaque binding $b_n$ trouvé dans $s_1$ qui satisfait le pattern $tp_1$, l'algorithme va effectuer une autre boucle sur les données de $s_2$, imbriquée dans la première, appelée \textbf{l'inner loop}. Cette dernière va alors chercher les bindings qui satisfont le pattern $tp_2$, complété des données du binding $b_n$. Les bindings récupérés par l'\textit{inner loop} seront ceux qui seront retournés par l'algorithme comme solutions de la jointure.
 
 Prenons comme exemple la requête précédente de la figure \ref{query:movies}. Nous avons donc une jointure entre $tp_1$ et $tp_2$, avec comme variable commune $?director$. L'outer loop va itérer sur la source de $tp_1$ et récupérer le binding $b_1 = \{ ?director = "John", ?nat = "french" \}$ à l'issue de la première itération. L'inner loop va alors itérer sur la source de $tp_2$ et rechercher les bindings qui satisfont le pattern $tp_2$ où $?director = "John"$. Une fois tous les bindings récupérés, l'algorithme continue alors avec les itérations suivantes de l'outer loop, jusqu'à épuiser tous les bindings qui satisfont le premier triple pattern. A la fin, tous les bindings récupérés par l'inner loop seront retournés par l'algorithme.
 
 \subsection{Adaptation dans un contexte de réplication des données}
 
-Comme nous l'avons déjà vu, il est possible de paralléliser l'exécution des requêtes pour récupérer les données correspondant à un triple pattern en les distribuant à l'échelle de toutes les répliques contenant les mêmes fragments de données. Dans le cadre du Parallel Nested Loop Join, nous pouvons donc paralléliser l'exécution de l'outer loop et de l'inner loop à l'aide de ces répliques.
+Il est possible de paralléliser l'exécution des requêtes pour récupérer les données correspondant à un triple pattern en les distribuant à l'échelle de toutes les répliques contenant les mêmes fragments de données. Dans le cadre du Parallel Nested Loop Join, nous pouvons donc paralléliser l'exécution de l'outer loop et de l'inner loop à l'aide de ces répliques.
 
-Pour effectuer la première parallélisation, il nous faut diviser l'ensemble des données à récupérer en sous-ensembles, puis récupérer chacun d'entre eux auprès d'une réplique différente. Par exemple, soit l'ensemble des données $E = \{ b1, b2, \dots, b15 \}$ récupérées par l'outer loop, contenant 15 bindings. Si nous connaissons 3 répliques $R1, R2, R3$ qui contiennent chacune $E$, alors nous pouvons demander à récupérer, en parallèle, $E_1 = \{ b1, \dots, b5 \}$ auprès de $R1$, $E_2 = \{ b6, \dots, b10 \}$ auprès de $R2$ et $E_3 = \{ b11, \dots, b15 \}$ auprès de $R3$. Néanmoins, pour effectuer ceci, il nous faudrait connaître à l'avance la cardinalité des données, ce qui n'est pas possible dans le contexte de \fedra. 
+Pour paralléliser l'outer loop, il nous faut diviser l'ensemble des données à récupérer en sous-ensembles, puis récupérer chacun d'entre eux auprès d'une réplique différente. Par exemple, soit l'ensemble des données $E = \{ b1, b2, \dots, b15 \}$ récupérées par l'outer loop, contenant 15 bindings. Si nous connaissons 3 répliques $R1, R2, R3$ qui contiennent chacune $E$, alors nous pouvons demander à récupérer, en parallèle, $E_1 = \{ b1, \dots, b5 \}$ auprès de $R1$, $E_2 = \{ b6, \dots, b10 \}$ auprès de $R2$ et $E_3 = \{ b11, \dots, b15 \}$ auprès de $R3$. Néanmoins, pour effectuer ceci, il nous faudrait connaître à l'avance la cardinalité des données, ce qui n'est pas possible dans le contexte de \fedra. 
 
 De plus, il nous faudrait nous assurer que l'opération nécessaire pour récupérer un sous-ensemble de bindings (à l'aide des mots clés \textsc{LIMIT} et \textsc{OFFSET} de \sparql) se fasse en coût constant côté serveur. Or, mis à part dans certaines implémentions \cite{gimenez2015hdt}, ce n'est actuellement pas le cas. Nous ne pouvons donc pas effectuer la parallélisation de l'outer loop en l'état.
 
-Pour effectuer la deuxième parallélisation, il nous faut, pour chaque binding provenant de l'outer loop, paralléliser les requêtes générées par l'inner loop entre les différentes répliques qui contiennent les données du deuxième triple pattern. Pour ce faire, plusieurs approches sont possibles, que nous allons détailler dans les sections suivantes.
+Pour paralléliser l'inner loop, il nous faut, pour chaque binding provenant de l'outer loop, paralléliser les requêtes entre les différentes répliques qui contiennent les données du deuxième triple pattern. Pour ce faire, plusieurs approches sont possibles, que nous allons détailler dans les sections suivantes.
 
 %--------------------------
 \section{Approche 1 : \peneloop vu en Bin Packing}
@@ -115,25 +115,24 @@ Pour effectuer la deuxième parallélisation, il nous faut, pour chaque binding 
 %--------------------------
 \subsection{Approche algorithmique}
 
-Dans cette approche, nous proposons d'aborder le problème de la parallélisation de l'inner loop comme un problème de Bin Packing. Il consiste à trouver la manière optimale pour ranger $n$ objets, chacun doté d'un poids, dans un nombre minimum de boîtes. Nous considérons ici une variante du problème, où le nombre de boîtes est fixe et où les objets doivent être répartis dans les boîtes de manière à minimiser le poids de chaque boîte. Le poids d'une boîte correspond à la somme des poids des objets qu'elle contient. Dans notre contexte, les objets correspondent à des bindings, leur poids est donc constant à 1, et les boîtes aux répliques auxquelles nous devons envoyer les requêtes.
+Dans cette approche, nous proposons d'aborder le problème de la parallélisation de l'inner loop comme un problème de Bin Packing \cite{kantorovich1960mathematical}. Il consiste à trouver la manière optimale pour ranger $n$ objets, chacun doté d'un poids, dans un nombre minimum de boîtes. Nous considérons ici une variante du problème, où le nombre de boîtes est fixe et où les objets doivent être répartis dans les boîtes de manière à minimiser le poids de chaque boîte. Le poids d'une boîte correspond à la somme des poids des objets qu'elle contient. Dans notre contexte, les objets correspondent à des ensembles de bindings, aussi appelés \textit{buckets}, leur poids étant égal au nombre de bindings qu'ils contiennent, et les boîtes aux répliques auxquelles nous devons envoyer les requêtes. Nous utilisons ici des buckets de bindings afin de réduire le coût en communication induit par la parallélisation. En effet, il est moins coûteux d'envoyer des ensembles de bindings à un serveur que d'envoyer les bindings un par un.
 
-Notre algorithme (cf algorithme \ref{algo:pbj}) se base donc sur ce problème afin de paralléliser l'exéuction de l'inner loop. Nous commençons par récupérer tous les bindings provenant de l'outer loop, puis, connaissant le nombre de répliques, nous appliquons une heuristique pour résoudre notre problème de Bin Packing. L'heuristique choisie est l'algorithme \textit{Best Fit Decreasing}, qui garantit une solution non optimale en $O(\log n)$. Il produit une partition composée d'un ensemble de couples $(R, E)$, où $R$ est une réplique et $E$ un ensemble des bindings. Ensuite, pour chaque élément de la partition, nous effectuons la requête de l'inner loop à destination de $R$ avec les bindings de $S$. Chaque requête est exécutée en parallèle, et nous effectuons l'union des résultats au fur et à mesure qu'ils sont disponibles.
+Notre algorithme (cf algorithme \ref{algo:pbj}) se base donc sur ce problème afin de paralléliser l'exécution de l'inner loop. Nous commençons par récupérer tous les bindings provenant de l'outer loop afin de former des buckets, puis, connaissant le nombre de répliques, nous appliquons une heuristique pour résoudre notre problème de Bin Packing. L'heuristique choisie est l'algorithme \textit{Best Fit Decreasing} \cite{johnson1973near}, qui garantit une solution non optimale en $O(\log n)$, où $n$ est le nombre de buckets. Il produit une partition composée d'un ensemble de couples $(R, E)$, où $R$ est une réplique et $E$ un ensemble des buckets. Notons que l'algorithme choisi pour la partition est indépendant de \peneloop et peut varier. Ensuite, pour chaque élément de la partition, nous effectuons la requête de l'inner loop à destination de $R$ avec les éléments de $E$. Chaque requête est exécutée en parallèle, et nous effectuons l'union des résultats au fur et à mesure qu'ils sont disponibles.
 
 La figure \ref{fig:binpacking} schématise un exemple de répartition des bindings pour une jointure $tp_1 \bowtie tp_2$ selon cette approche.
 
 \input{figures/fig_binpack.tex}
 
-% algorithm figure
 \input{algorithms/algo_approach1.tex}
 
 %--------------------------
 \subsection{Étude expérimentale}\label{sec:expPBJ}
 
-Nous avons mené une étude expérimentale pour étudier les performances de cette approche. La configuration expérimentale utilisée est décrite dans la section \ref{sec:setup}. Nous comparons les performances de l'exécution de \fedx seul et \fedra + \fedx avec l'exécution de \fedra + \fedx + \peneloop. Nos métriques sont le temps d'exécution, le nombre de résultats intermédiaires et la completeness des requêtes.
+Nous avons mené une étude expérimentale pour étudier les performances de cette approche. La configuration expérimentale utilisée est décrite dans la section \ref{sec:setup}. Nous comparons les performances de l'exécution de \fedx seul et \fedx + \fedra avec l'exécution de \fedx + \fedra + \peneloop. Nos métriques sont le temps d'exécution, le nombre de résultats intermédiaires et la completeness des requêtes.
 
-Notre étude ne montre pas une amélioration significative du temps d'exécution des requêtes. Pour nos 100 requêtes, les médianes de \fedra + \fedx et \fedra + \fedx + \peneloop ne sont pas très éloignées, même si la dernière est souvent légèrement en dessous de la première. Les maximums sont les mêmes, ce qui montrent que dans tous les cas, nous ne dégradons pas le temps d'exécution de référence avec notre approche.
+Notre étude ne montre pas une amélioration significative du temps d'exécution des requêtes. Pour nos 100 requêtes, les médianes de \fedx + \fedra et \fedx + \fedra + \peneloop ne sont pas très éloignées, même si la dernière est souvent légèrement en dessous de la première. Les maximums sont les mêmes, ce qui montrent que dans tous les cas, nous ne dégradons pas le temps d'exécution de référence avec notre approche.
 
-Au niveau du nombre de résultats intermédiaires, il est identique entre \fedra + \fedx et \fedra + \fedx + \peneloop. Cela confirme notre hypothèse \ref{hypo:stableTuples}. Même chose pour la completeness, qui reste à 1.00 dans les deux cas, ce qui montre que notre approche n'altère pas les réponses aux requêtes.
+Au niveau du nombre de résultats intermédiaires, il est identique entre \fedx + \fedra et \fedx + \fedra + \peneloop. Cela confirme notre hypothèse \ref{hypo:stableTuples}. Même chose pour la completeness, qui reste à 1.0 dans les deux cas, ce qui montre que notre approche n'altère pas les réponses aux requêtes.
 
 Nous constatons également que le nombre de requêtes parallélisées croit avec la taille de la fédération. Le nombre de triples patterns localisés diminuent pareillement. En effet, plus il y a de serveurs dans la fédération sur lesquels répartir les fragments, moins il y a de fragments par serveur, et donc moins il y a de chance que les triples patterns des requêtes effectuées sur la fédération soient localisés. Ils ont donc plus de chance d'être parallélisés. Cela valide l'hypothèse \ref{hypo:localityVSparallel}.
 
@@ -142,59 +141,81 @@ Nous constatons également que le nombre de requêtes parallélisées croit avec
 
 Cette approche nous permet de valider certaines hypothèses faites lors de notre travail, mais ne permet pas de répondre efficacement à la problématique, les temps d'exécution étant trop faiblement améliorées. Nous conjecturons que ce faible gain est du au fait que les jointures d'une requêtes sont effectuées en séquence. Le temps d'exécution de la plus longue jointure domine donc les temps des autres, et cela peut fortement impacter les performances. Il nous faut donc tester une autre approche, où les jointures sont effectuées en parallèle, pour valider notre conjecture.
 
+De plus, cette approche nous oblige à stocker en mémoire tous les bindings produits par l'outer loop afin de pouvoir effectuer la partition. L'empreinte mémoire de l'algorithme est donc plus importante et risque d'affecter les performances dans le cas de requêtes avec un grand nombre de résultats intermédiaires.
+
 %--------------------------
 \section{Approche 2 : \peneloop vu en architecture Pipeline}
 
 %--------------------------
 \subsection{Approche algorithmique}
 
-Dans cette approche, nous décidons d'appliquer l'algorithme (cf algorithme \ref{algo:pnl}) dans le cadre d'une architecture pipeline. Le principe est que dès qu'un binding a été produit par l'outer loop, il est immédiatement utilisé par l'inner loop et envoyé à une réplique pour récupérer de nouveaux bindings. L'exécution des deux boucles imbriquées se fait donc complètement en parallèle. Pour choisir quelle source utiliser parmi les répliques à chaque fois qu'un binding arrive, nous utilisons une approche Round Robin : le binding $i$ est envoyé à la source $i$ mod $N$, où $N$ est le nombre total de sources.
+Dans cette approche, nous décidons d'appliquer l'algorithme (cf algorithme \ref{algo:pnl}) dans le cadre d'une architecture pipeline. Le principe est que dès qu'un binding a été produit par l'outer loop, il est accumulé dans un bucket. Une fois que le bucket est rempli, il est immédiatement utilisé par l'inner loop et envoyé à une réplique pour récupérer de nouveaux bindings, puis le bucket est vidé afin d'accueillir les bindings suivants. Pour choisir quelle source utiliser parmi les répliques à chaque envoi, nous utilisons une approche Round Robin : le binding $i$ est envoyé à la source $i$ mod $N$, où $N$ est le nombre total de sources. L'exécution des deux boucles imbriquées se fait donc complètement en parallèle et cette architecture permet une parallélisation iter-opérateur, les bindings naviguant en continu dans le pipeline d'opérateur en opérateur.
 
 La figure \ref{fig:pipeline} schématise un exemple de répartition des bindings pour une jointure $tp_1 \bowtie tp_2$ selon cette approche.
 
 \input{figures/fig_pipeline.tex}
 
-% algorithm figure
 \input{algorithms/algo_approach2.tex}
 
 %--------------------------
 \subsection{Étude expérimentale}
 
-Nous réitérons la même étude expérimentale que celle menée dans la section \ref{sec:expPBJ}, en comparant les performances de l'exécution de \fedx seul et \fedra + \fedx avec l'exécution de \fedra + \fedx + \peneloop. Nos métriques restent les mêmes.
+Nous réitérons la même étude expérimentale que celle menée dans la section \ref{sec:expPBJ}, en comparant les performances de l'exécution de \fedx seul et \fedx + \fedra avec l'exécution de \fedx + \fedra + \peneloop. Nos métriques restent les mêmes.
 
-Contrairement à la première approche, celle-ci monte une nette réduction du temps d'exécution des requêtes parallélisées avec \peneloop. De plus, le temps d'exécution maximum de \fedra + \fedx + \peneloop ne dépasse jamais celui de \fedra + \fedx, ce qui montre que notre approche nous ne dégrade pas les temps d'exécution de référence. Nous observons aussi que la qualité de l'amélioration est proportionnelle à la taille de la fédération, conformément à notre hypothèse \ref{hypo:localityVSparallel}.
+Contrairement à la première approche, celle-ci monte une nette réduction du temps d'exécution des requêtes parallélisées avec \peneloop. De plus, le temps d'exécution maximum de \fedx + \fedra + \peneloop ne dépasse jamais celui de \fedx + \fedra, ce qui montre que notre approche nous ne dégrade pas les temps d'exécution de référence. Nous observons aussi que la qualité de l'amélioration est proportionnelle à la taille de la fédération, conformément à notre hypothèse \ref{hypo:localityVSparallel}.
 
 Les résultats pour le nombre de résultats intermédiaires et la completeness sont identiques à ceux de la première approche, et montre que nous validons toujours l'hypothèse \ref{hypo:stableTuples} et que les réponses aux requêtes restent inaltérées.
 
 Les figures \ref{fig:fed1_time}, \ref{fig:fed2_time} et \ref{fig:fed2_time} présentent les temps d'exécutions mesurés pendant l'étude, les figures \ref{fig:fed1_tuples}, \ref{fig:fed2_tuples} et \ref{fig:fed3_tuples} présentent le nombre de tuples transférés et les figures \ref{fig:fed1_compl}, \ref{fig:fed2_compl} et \ref{fig:fed3_compl} présentent la completeness des requêtes. Les figures \ref{fig:avg_time}, \ref{fig:avg_tuples} et \ref{fig:avg_compl} présentent respectivement les moyennes des résultats pour nos trois métriques.
 
-La table \ref{table:stats_pipeline} présente différentes statistiques sur les requêtes en fonction des fédération étudiées.
+Nous effectuons également le test signé des rangs de Wilcoxon \cite{wilcoxon1992individual} entre les résultats de \fedx + \fedra et \fedx + \fedra + \peneloop pour le temps d'exécution des requêtes. Nous définissons un indice de confiance de $0.90$ et faisons l'hypothèse alternative suivante : les résultats obtenus pour le temps d'exécution des requêtes avec \fedx + \fedra + \peneloop sont inférieurs à ceux obtenus avec \fedx + \fedra. La table \ref{table:wilcoxon} présente les valeurs ainsi calculées pour chaque tirage par taille de fédération, ainsi que pour la moyenne des différents tirages. Les faibles valeurs ainsi obtenus montrent que les deux ensembles de résultats ne sont pas les mêmes.
 
-\begin{table}[h]
+Enfin, la table \ref{table:stats_pipeline} présente différentes statistiques sur les requêtes en fonction des fédération étudiées.
+
+\begin{table}[t]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+        \cline{2-5}
+        \multicolumn{1}{c|}{ } & Moyenne des &  \multicolumn{3}{c|}{Tirage} \\
+        \cline{1-1}\cline{3-5}
+        Taille de la fédération & tirages & 1 & 2 & 3 \\
+        \hline
+        10 endpoints & $0.1756$ & $1.639e^{-4}$ & $5.245e^{-5}$ & $2.571e^{-5}$ \\
+        \hline
+        20 endpoints & $0.1012$ & $2.028e^{-15}$ & $6.596e^{-12}$ & $3.883e^{-13}$ \\
+        \hline
+        30 endpoints & $0.0635$ & $1.007e^{-13}$ & $4.285e^{-11}$ & $2.311e^{-11}$ \\
+        \hline
+    \end{tabular}
+    \caption{\textit{p-values} calculées par le test signé des rangs de Wilcoxon entre les résultats de \fedx + \fedra (F + F) et \fedx + \fedra + \peneloop (\peneloop) pour le temps d'exécution des requêtes avec un indice de confiance de $0.90$.}
+    \label{table:wilcoxon}
+\end{table}
+
+\begin{table}[t]
     \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
-    \hline
-    Taille de & Tirage & \multicolumn{2}{c|}{Nb de requêtes parallélisées} & Nb de requêtes & Nb total de & \multicolumn{3}{c|}{Gain de temps} \\
-    \cline{3-4}\cline{7-9}
-     la fédération & & Améliorées & $\neg$ améliorées & $\neg$ parallélisées & requêtes & Moyen & Max & Min \\
-    \hline
-     & 1 & 28 & 3 & 66 & 97 & 31.06\% & 53.08\% & 0.97\% \\
-    \cline{2-9}
-    10 endpoints & 2 & 37 & 7 & 53 & 97 & 25.42\% & 63.61\% & 0.34\% \\
-    \cline{2-9}
-     & 3 & 31 & 4 & 60 & 95 & 25.02\% & 63.34\% & 0.06\% \\
-    \hline
-     & 1 & 63 & 3 & 32 & 98 & 24.66\% & 64.15\% & 0.26\% \\
-    \cline{2-9}
-    20 endpoints & 2 & 59 & 11 & 28 & 98 & 27.62\% & 66.18\% & 0.26\% \\
-    \cline{2-9}
-     & 3 & 58 & 2 & 37 & 97 & 27.62\% & 56.81\% & 0.21\% \\
-    \hline
-     & 1 & 39 & 3 & 51 & 93 & 23.34\% & 56.96\% & 0.3\% \\
-    \cline{2-9}
-    30 endpoints & 2 & 49 & 5 & 42 & 96 & 25.04\% & 64.68\% & 0.16\% \\
-    \cline{2-9}
-     & 3 & 59 & 10 & 27 & 96 & 25.7\% & 65.86\% & 0.03\% \\
-    \hline
+        \hline
+        Taille de & Tirage & \multicolumn{2}{c|}{Nb de requêtes parallélisées} & Nb de requêtes & Nb total de & \multicolumn{3}{c|}{Gain de temps (s)} \\
+        \cline{3-4}\cline{7-9}
+         la fédération & & Améliorées & $\neg$ améliorées & $\neg$ parallélisées & requêtes & Moyen & Max & Min \\
+        \hline
+         & 1 & 28 & 3 & 66 & 97 & 31.06\% & 53.08\% & 0.97\% \\
+        \cline{2-9}
+        10 endpoints & 2 & 37 & 7 & 53 & 97 & 25.42\% & 63.61\% & 0.34\% \\
+        \cline{2-9}
+         & 3 & 31 & 4 & 60 & 95 & 25.02\% & 63.34\% & 0.06\% \\
+        \hline
+         & 1 & 63 & 3 & 32 & 98 & 24.66\% & 64.15\% & 0.26\% \\
+        \cline{2-9}
+        20 endpoints & 2 & 59 & 11 & 28 & 98 & 27.62\% & 66.18\% & 0.26\% \\
+        \cline{2-9}
+         & 3 & 58 & 2 & 37 & 97 & 27.62\% & 56.81\% & 0.21\% \\
+        \hline
+         & 1 & 39 & 3 & 51 & 93 & 23.34\% & 56.96\% & 0.3\% \\
+        \cline{2-9}
+        30 endpoints & 2 & 49 & 5 & 42 & 96 & 25.04\% & 64.68\% & 0.16\% \\
+        \cline{2-9}
+         & 3 & 59 & 10 & 27 & 96 & 25.7\% & 65.86\% & 0.03\% \\
+        \hline
     \end{tabular}
     \caption{Statistiques sur les requêtes en fonction des fédération étudiées. Le gain de temps est présenté pour les requêtes parallélisées seulement.}
     \label{table:stats_pipeline}
@@ -203,9 +224,9 @@ La table \ref{table:stats_pipeline} présente différentes statistiques sur les 
 %--------------------------
 \subsection{Conclusion sur l'approche}
 
-Cette approche conserve les avantages de la première et apporte une amélioration significative du temps d'exécution qui correspond à nos attentes. Notre précédente conjecture semble donc valide et l'exécution des jointures en parallèle joue bien un rôle important dans l'amélioration des performances des requêtes. En effet, l'architecture pipeline permet d'éviter que le temps d'exécution de la plus longue jointure ne domine le temps d'exécution globale de la requête.
+Cette approche conserve les avantages de la première et apporte une amélioration significative du temps d'exécution qui correspond à nos attentes. Notre précédente conjecture semble donc valide et l'exécution des jointures en parallèle joue bien un rôle important dans l'amélioration des performances des requêtes. En effet, l'architecture pipeline permet d'éviter que le temps d'exécution de la plus longue jointure ne domine le temps d'exécution globale de la requête. De plus, l'empreinte mémoire de l'algorithme est considérablement réduite car nous ne stockons plus les bindings produits par l'outer loop.
 
-Nous considérons donc que cette approche est satisfaisante et répond à notre problématique. Mais elle pourrait encore améliorée dans notre implémentation. En effet, à cause de l'architecture de \fedx, nous n'avons pu implémenter l'architecture en pipeline que pour la première jointure de chaque requête. Les jointures suivantes sont donc toujours effectuées en séquence. Néanmoins, étant donné les gains actuels de performance avec cette implémentation, nous sommes confiants quand à sa capacité à être améliorée.
+Nous considérons donc que cette approche est satisfaisante et qu'elle répond à notre problématique. Mais elle pourrait encore améliorée dans notre implémentation. En effet, à cause de l'architecture logicielle de \fedx, nous n'avons pu implémenter l'architecture en pipeline que pour la première jointure de chaque requête. Les jointures suivantes sont donc toujours effectuées en séquence. Néanmoins, étant donné les gains actuels de performance avec cette implémentation, nous sommes confiants quand à sa capacité à être améliorée.
 
 %--------------------------
 \section{Implémentation de \peneloop dans \fedx}
@@ -219,13 +240,13 @@ Nous aurions pu aussi choisir \textsc{Anapsid} \cite{acosta2011anapsid} comme su
 
 Pour réaliser l'étude expérimentale de chaque approche, nous nous sommes basés sur la même configuration utilisée dans le cadre de \fedra \cite{montoya2014fedra}. Nous l'avons cependant adapté pour mieux correspondre à nos besoins.
 
-Pour nos expériences, nous nous sommes restreints au dataset \textsc{WatDiv} contenant $10^3$ triples. Nous avons choisi ce dataset car il contient suffisamment de données pour observer des résultats intéressants. Les requêtes qui y sont associées sont aussi forme variées, ce qui nous permet de tester des cas plus réalistes.
+Pour nos expériences, nous nous sommes restreints au dataset \textsc{WatDiv} contenant $10^3$ triples. Nous avons choisi ce dataset car il contient suffisamment de données pour observer des résultats intéressants. Les requêtes qui y sont associées sont aussi de forme variée, ce qui nous permet de tester des cas plus réalistes.
 
 Nous effectuons nos requêtes sur trois fédérations différentes composées de dix, vingt et trente endpoints. Pour chaque fédération, les données ont été réparties en fragments et chacun d'entre eux est présent dans exactement trois endpoints différents. Le facteur de réplication est donc une valeur constante entre chaque fédération. Cela nous permet de vérifier l'hypothèse \ref{hypo:localityVSparallel} en mesurant le nombre de triples patterns des requêtes localisés et parallélisés. Afin de limiter l'aspect aléatoire de la répartition des données dans les fédération, nous décidons de créer trois versions pour chaque taille de fédération, chacune avec une répartition des fragments différente. Nous effectuerons la moyenne des valeurs pour nos différentes métriques afin de calculer les résultats finaux pour chaque fédération.
 
-Nous utilisons uniquement des requêtes dont les constantes ont été remplacées par des variables distinctes. Ce faisant, nous diminuons la sélectivité des requêtes et faisons augmenter le nombre de résultats finaux et intermédiaires de chaque requête. Cela nous permet d'augmenter indirectement le temps d'exécution de chaque requête, et ainsi de mieux visualiser une potentielle amélioration. Nous modifions donc les requêtes associées au dataset \textsc{WatDiv}, en supprimant les constantes et les éventuels doublons. Nous sélectionnons ensuite de manière aléatoire 100 requêtes parmi les nouvelles. Elles seront utilisées pour toutes les expériences dans les deux approches.
+Nous utilisons uniquement des requêtes dont les constantes ont été remplacées par des variables distinctes. Ce faisant, nous diminuons la sélectivité des requêtes et faisons augmenter le nombre de résultats finaux et intermédiaires de chaque requête. Cela nous permet d'augmenter indirectement le temps d'exécution de chaque requête, et ainsi de mieux visualiser une potentielle amélioration. Nous modifions donc les requêtes associées au dataset \textsc{WatDiv}, en supprimant les constantes et les éventuels doublons. Nous sélectionnons ensuite de manière aléatoire 100 requêtes parmi les nouvelles. Elles seront utilisées pour toutes les expériences dans les deux approches. Les requêtes débouchant sur une erreur seront supprimées des résultats finaux.
 
-Nous avons également effectué des modifications au niveau de la configuration des serveurs Fuseki\footnote{\url{https://jena.apache.org/documentation/serving_data/}} qui contiennent les données des expériences. Nous avons limité le nombre de Threads utilisés pour traiter les requêtes entrantes à un, afin de garantir que les serveurs traiteront toutes les requêtes en séquence. Cela nous permet d'observer les gains de \peneloop au niveau de la répartition de charges et du temps d'exécution des requêtes quand les serveurs de la fédération sont surchargés de requêtes.
+Nous avons également effectué des modifications au niveau de la configuration des serveurs Fuseki\footnote{\url{https://jena.apache.org/documentation/serving_data/}} qui contiennent les données des expériences. Nous avons limité le nombre de Threads utilisés pour traiter les requêtes entrantes à un, afin de garantir que les serveurs traiteront toutes les requêtes en séquence. Cela nous permet d'observer les gains de \peneloop au niveau de la répartition de charges et du temps d'exécution des requêtes quand les serveurs de la fédération sont surchargés.
 
 Enfin, nous avons modifié les proxies utilisés dans l'expérience de \fedra afin qu'ils ajoutent 30ms de délai à chaque requête entre le client et les serveurs de la fédération. Cela nous permet de modéliser la latence du réseau dans l'expérience et de nous rapprocher d'un environnement plus réaliste.
 

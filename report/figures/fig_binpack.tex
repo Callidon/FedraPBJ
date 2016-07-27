@@ -1,4 +1,4 @@
-\begin{figure}[ht]
+\begin{figure}[t]
     \centering
     \begin{tikzpicture}[node distance=1cm, auto]  
     
@@ -23,17 +23,17 @@
         % arrows
         % ------------------
         
-        \draw[myarrow] (endpoint1.south) to node[left]{$\{b_1, \dots, b_4\}$} (B.north);
+        \draw[myarrow] (endpoint1.south) to node[left]{$\{B_1, \dots, B_4\}$} (B.north);
         
-        \draw[myarrow] (B.south) to node[left]{$\{b_1, b_2\}$} (endpoint2.north);
-        \draw[myarrow] (B.south) to node[left]{$\{b_3\}$} (endpoint3.north);
-        \draw[myarrow] (B.south) to node[right]{$\{b_4\}$} (endpoint4.north);
+        \draw[myarrow] (B.south) to node[left]{$\{B_1, B_2\}$} (endpoint2.north);
+        \draw[myarrow] (B.south) to node[left]{$\{B_3\}$} (endpoint3.north);
+        \draw[myarrow] (B.south) to node[right]{$\{B_4\}$} (endpoint4.north);
         
-        \draw[myarrow] (endpoint2.south) to node[left]{$\{b_5, b_6\}$} (end.north);
-        \draw[myarrow] (endpoint3.south) to node[left]{$\{b_7\}$} (end.north);
-        \draw[myarrow] (endpoint4.south) to node[right]{$\{b_8\}$} (end.north);
+        \draw[myarrow] (endpoint2.south) to node[left]{$\{b_1, b_2\}$} (end.north);
+        \draw[myarrow] (endpoint3.south) to node[left]{$\{b_3\}$} (end.north);
+        \draw[myarrow] (endpoint4.south) to node[right]{$\{b_4\}$} (end.north);
     
     \end{tikzpicture}
-    \caption{Répartition des bindings par \peneloop avec l'approche Bin Packing, où $tp_1, tp_2$ sont des triples patterns, $B$ l'ensemble des bindings produits par l'outer loop, $E_1$ la source pertinente de $tp_1$ et $E_2, E_3, E_4$ les répliques utilisées comme sources de $tp_2$.} 
+    \caption{Répartition des bindings par \peneloop avec l'approche Bin Packing, où $tp_1, tp_2$ sont des triples patterns, $B$ l'ensemble des buckets $\{ B_1, \dots, B_4 \}$ formés à partir des bindings produits par l'outer loop, $\{ b_1, \dots, b_4 \}$ l'ensemble des binfings produits par l'inner loop, $E_1$ la source pertinente de $tp_1$ et $E_2, E_3, E_4$ les répliques utilisées comme sources de $tp_2$.} 
     \label{fig:binpacking}
 \end{figure}

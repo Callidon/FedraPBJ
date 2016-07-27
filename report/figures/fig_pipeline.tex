@@ -1,4 +1,4 @@
-\begin{figure}[ht]
+\begin{figure}[t]
     \centering
     \begin{tikzpicture}[node distance=1cm, auto]  
         
@@ -20,17 +20,17 @@
         % arrows
         % ------------------
         
-        \draw[myarrow] (endpoint1.south) to node[left]{$\{b_1\}$} ([xshift=-0.2 cm]endpoint2.north);
-        \draw[myarrow] (endpoint1.south) to node[right]{$\{b_4\}$}([xshift=0.2 cm]endpoint2.north);
-        \draw[myarrow] (endpoint1.south) to node[right]{$\{b_2\}$} (endpoint3.north);
-        \draw[myarrow] (endpoint1.south) to node[right]{$\{b_3\}$} (endpoint4.north);
+        \draw[myarrow] (endpoint1.south) to node[left]{$\{B_1\}$} ([xshift=-0.2 cm]endpoint2.north);
+        \draw[myarrow] (endpoint1.south) to node[right]{$\{B_4\}$}([xshift=0.2 cm]endpoint2.north);
+        \draw[myarrow] (endpoint1.south) to node[right]{$\{B_2\}$} (endpoint3.north);
+        \draw[myarrow] (endpoint1.south) to node[right]{$\{B_3\}$} (endpoint4.north);
         
-        \draw[myarrow] ([xshift=-0.2 cm]endpoint2.south) to node[left]{$\{b_5\}$} (end.north);
-        \draw[myarrow] ([xshift=0.2 cm]endpoint2.south) to node[right]{$\{b_8\}$} (end.north);
-        \draw[myarrow] (endpoint3.south) to node[right]{$\{b_6\}$} (end.north);
-        \draw[myarrow] (endpoint4.south) to node[right]{$\{b_7\}$} (end.north);
+        \draw[myarrow] ([xshift=-0.2 cm]endpoint2.south) to node[left]{$\{b_1\}$} (end.north);
+        \draw[myarrow] ([xshift=0.2 cm]endpoint2.south) to node[right]{$\{b_4\}$} (end.north);
+        \draw[myarrow] (endpoint3.south) to node[right]{$\{b_2\}$} (end.north);
+        \draw[myarrow] (endpoint4.south) to node[right]{$\{b_3\}$} (end.north);
     
     \end{tikzpicture} 
-    \caption{Répartition des bindings par \peneloop avec l'approche pipeline, où $tp_1, tp_2$ sont des triples patterns, $E_1$ la source pertinente de $tp_1$ et $E_2, E_3, E_4$ les répliques utilisées comme sources de $tp_2$.}
+    \caption{Répartition des bindings par \peneloop avec l'approche pipeline, où $tp_1, tp_2$ sont des triples patterns, $\{ B_1, \dots, B_4 \}$ l'ensemble des buckets formés à partir des bindings produits par l'outer loop, $\{ b_1, \dots, b_4 \}$ l'ensemble des bindings produits par l'inner loop, $E_1$ la source pertinente de $tp_1$ et $E_2, E_3, E_4$ les répliques utilisées comme sources de $tp_2$.}
     \label{fig:pipeline}
 \end{figure}

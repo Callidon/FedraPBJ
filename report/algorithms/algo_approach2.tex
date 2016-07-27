@@ -1,19 +1,23 @@
-\begin{algorithm}[ht]
+\begin{algorithm}[t]
     \caption{Parallel Nested Loop algorithm: approach 2}\label{algo:pnl}
     \begin{algorithmic}[1]
-        \Require \textit{left} : triple pattern; \textit{right} : triple pattern; \textit{sources} : set of Endpoint
-        \Ensure \textit{results} : set of Binding
-        \Function{ParallelNestedLoop}{\textit{left}, \textit{sources}}
-            \State \textit{results} $\gets$ empty set of Binding
+        \Require \textit{left} : triple pattern; \textit{right} : triple pattern; \textit{sources} : set of Endpoint; \textit{bucketSize} : entier
+        \Ensure \textit{results} : set of Bindings
+        \Function{ParallelNestedLoop}{\textit{left}, \textit{sources}, \textit{bucketSize}}
+            \State \textit{results} $\gets$ empty set of Bindings
+            \State \textit{bucket} $\gets$ empty set of Bindings
             \State \textit{next} $\gets 0$
 
-            \For{\textit{bindings} \textbf{in} \Call{Execute}{\textit{left}}} \Comment{For each bindings of the outer loop}
-                \State \textit{data} $\gets$ \Call{SendBindings}{\textit{right}, \textit{bindings}, \textit{sources$[\textit{next}]$}}
-                \State \textit{results} $\gets$ \textit{results} $\cup$ \textit{data}
-                \State \textit{next} $\gets (\textit{next} + 1)$ mod \Call{size}{\textit{sources}}
+            \For{\textit{bindings} \textbf{in} \Call{ReceiveBindings}{\textit{left}} \textsc{in parallel}} \Comment{Each time we receive bindings}
+                \If{\Call{Size}{\textit{currentBucket}} $>$ \textit{bucketSize}}\Comment{Send bindings when bucket is full}
+                    \State \textit{data} $\gets$ \Call{SendBindings}{\textit{right}, \textit{bucket}, \textit{sources$[\textit{next}]$}} \textsc{in parallel}
+                    \State \textit{results} $\gets$ \textit{results} $\cup$ \textit{data}
+                    \State \textit{next} $\gets (\textit{next} + 1)$ mod \Call{size}{\textit{sources}}
+                    \State \textit{bucket} $\gets$ empty set of Bindings
+                \EndIf
+                \State \textit{bucket} $\gets \textit{bucket} \cup \{ \textit{bindings} \}$
             \EndFor
 
-            \State \emph{wait for all processes to finish}
             \State \textbf{return} \textit{results}
         \EndFunction
     \end{algorithmic}
