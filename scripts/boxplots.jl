@@ -47,6 +47,6 @@ tuplesAll = plot(all, xgroup=:endpoints, x=:strategy, y=:tuples, Geom.subplot_gr
 complAll = plot(all, xgroup=:endpoints, x=:strategy, y=:completeness, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Answer completeness"), Scale.x_discrete)
 
 # save in PDF
-draw(PDF("execution_time.pdf", 7inch, 6inch), timeAll)
-draw(PDF("transferred_tuples.pdf", 7inch, 6inch), tuplesAll)
-draw(PDF("completeness.pdf", 7inch, 6inch), complAll)
+draw(PDF("execution_time.pdf", 7inch, 5inch), timeAll)
+draw(PDF("transferred_tuples.pdf", 7inch, 5inch), tuplesAll)
+draw(PDF("completeness.pdf", 7inch, 4inch), complAll)
