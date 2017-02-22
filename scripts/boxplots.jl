@@ -1,10 +1,6 @@
 using Gadfly
 using RDatasets
 
-custom_panel = Theme(
-    default_color=colorant"blue"
-)
-
 # Load data with only columns "exec time", "completeness" and "nb tuples"
 function load(file, endpoints, strategy)
 	x = readtable(file, header = false, separator = ' ')[:,[:x2,:x6,:x11]]
