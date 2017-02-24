@@ -46,7 +46,10 @@ tuplesAll = plot(all, xgroup=:endpoints, x=:strategy, y=:tuples, Geom.subplot_gr
 
 complAll = plot(all, xgroup=:endpoints, x=:strategy, y=:completeness, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Answer completeness"), Scale.x_discrete)
 
+density = plot([Fedra;Peneloop;Fedra20e;Peneloop20e;Fedra30e;Peneloop30e], xgroup=:endpoints, color=:strategy, y=:tuples, x=:time, Geom.subplot_grid(Geom.density), Scale.x_log10)
+
 # save in PDF
 draw(PDF("execution_time.pdf", 7inch, 5inch), timeAll)
 draw(PDF("transferred_tuples.pdf", 7inch, 5inch), tuplesAll)
 draw(PDF("completeness.pdf", 7inch, 4inch), complAll)
+draw(PDF("density.pdf", 15inch, 4inch), density)
