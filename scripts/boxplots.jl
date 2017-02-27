@@ -10,6 +10,11 @@ function load(file, endpoints, strategy)
 	return x
 end
 
+# get colors scale for boxplots
+function colors()
+ return Scale.color_discrete_manual(colorant"#990000", colorant"#ff4000", colorant"#ffbf00")
+end
+
 outputWatDivEngine = "../results/definitive/fed10e/federation3/outputFedXengineFEDERATION10Client"
 outputWatDivFedra = "../results/definitive/fed10e/federation3/outputFedXFedraFEDERATION10Client"
 outputWatDivPeneloop = "../results/definitive/fed10e/federation3/outputFedXFedra-PBJ-hybridFEDERATION10Client"
@@ -40,16 +45,18 @@ results20e = [Engine20e;Fedra20e;Peneloop20e]
 results30e = [Engine30e;Fedra30e;Peneloop30e]
 
 # plots
-timeAll = plot(all, xgroup=:endpoints, x=:strategy, y=:time, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Execution time (s)"), Scale.x_discrete, Scale.y_log10)
+timeAll = plot(all, xgroup=:endpoints, x=:strategy, y=:time, color=:strategy, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Execution time (s)"), Guide.colorkey("Configuration"), Scale.x_discrete, Scale.y_log10, colors())
 
-tuplesAll = plot(all, xgroup=:endpoints, x=:strategy, y=:tuples, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Number of transferred tuples"), Scale.x_discrete, Scale.y_log10)
+timeSubset = plot(all[all[:tuples] .>= 1000.0, :], xgroup=:endpoints, x=:strategy, y=:time, color=:strategy, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Execution time (s)"), Guide.colorkey("Configuration"), Scale.x_discrete, Scale.y_log10, colors())
 
-complAll = plot(all, xgroup=:endpoints, x=:strategy, y=:completeness, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Answer completeness"), Scale.x_discrete)
+tuplesAll = plot(all, xgroup=:endpoints, x=:strategy, y=:tuples, color=:strategy, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Number of transferred tuples"), Guide.colorkey("Configuration"), Scale.x_discrete, Scale.y_log10, colors())
 
-density = plot([Fedra;Peneloop;Fedra20e;Peneloop20e;Fedra30e;Peneloop30e], xgroup=:endpoints, color=:strategy, y=:tuples, x=:time, Geom.subplot_grid(Geom.density), Scale.x_log10)
+complAll = plot(all, xgroup=:endpoints, x=:strategy, y=:completeness, color=:strategy, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Answer completeness"), Guide.colorkey("Configuration"), Scale.x_discrete, colors())
+
+# density = plot([Fedra;Peneloop;Fedra20e;Peneloop20e;Fedra30e;Peneloop30e], xgroup=:endpoints, color=:strategy, y=:tuples, x=:time, Geom.subplot_grid(Geom.density), Scale.x_log10)
 
 # save in PDF
 draw(PDF("execution_time.pdf", 7inch, 5inch), timeAll)
+draw(PDF("execution_time_min1k.pdf", 7inch, 5inch), timeSubset)
 draw(PDF("transferred_tuples.pdf", 7inch, 5inch), tuplesAll)
 draw(PDF("completeness.pdf", 7inch, 4inch), complAll)
-draw(PDF("density.pdf", 15inch, 4inch), density)
