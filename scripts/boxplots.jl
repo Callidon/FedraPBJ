@@ -1,6 +1,12 @@
 using Gadfly
 using RDatasets
 
+panel_theme = Theme(
+    key_position = :none
+)
+
+Gadfly.push_theme(panel_theme)
+
 # Load data with only columns "exec time", "completeness" and "nb tuples"
 function load(file, endpoints, strategy)
 	x = readtable(file, header = false, separator = ' ')[:,[:x2,:x6,:x11]]
@@ -45,13 +51,13 @@ results20e = [Engine20e;Fedra20e;Peneloop20e]
 results30e = [Engine30e;Fedra30e;Peneloop30e]
 
 # plots
-timeAll = plot(all, xgroup=:endpoints, x=:strategy, y=:time, color=:strategy, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Execution time (s)"), Guide.colorkey("Configuration"), Scale.x_discrete, Scale.y_log10, colors())
+timeAll = plot(all, xgroup=:endpoints, x=:strategy, y=:time, color=:strategy, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Execution time (s)"), Scale.x_discrete, Scale.y_log10, colors())
 
-timeSubset = plot(all[all[:tuples] .>= 1000.0, :], xgroup=:endpoints, x=:strategy, y=:time, color=:strategy, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Execution time (s)"), Guide.colorkey("Configuration"), Scale.x_discrete, Scale.y_log10, colors())
+timeSubset = plot(all[all[:tuples] .>= 1000.0, :], xgroup=:endpoints, x=:strategy, y=:time, color=:strategy, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Execution time (s)"), Scale.x_discrete, Scale.y_log10, colors())
 
-tuplesAll = plot(all, xgroup=:endpoints, x=:strategy, y=:tuples, color=:strategy, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Number of transferred tuples"), Guide.colorkey("Configuration"), Scale.x_discrete, Scale.y_log10, colors())
+tuplesAll = plot(all, xgroup=:endpoints, x=:strategy, y=:tuples, color=:strategy, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Number of transferred tuples"), Scale.x_discrete, Scale.y_log10, colors())
 
-complAll = plot(all, xgroup=:endpoints, x=:strategy, y=:completeness, color=:strategy, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Answer completeness"), Guide.colorkey("Configuration"), Scale.x_discrete, colors())
+complAll = plot(all, xgroup=:endpoints, x=:strategy, y=:completeness, color=:strategy, Geom.subplot_grid(Geom.boxplot), Guide.xlabel("Number of endpoints in federation"), Guide.ylabel("Answer completeness"), Scale.x_discrete, colors())
 
 # density = plot([Fedra;Peneloop;Fedra20e;Peneloop20e;Fedra30e;Peneloop30e], xgroup=:endpoints, color=:strategy, y=:tuples, x=:time, Geom.subplot_grid(Geom.density), Scale.x_log10)
 
