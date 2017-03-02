@@ -62,7 +62,7 @@ complAll = plot(all, xgroup=:endpoints, x=:strategy, y=:completeness, color=:str
 # density = plot([Fedra;Peneloop;Fedra20e;Peneloop20e;Fedra30e;Peneloop30e], xgroup=:endpoints, color=:strategy, y=:tuples, x=:time, Geom.subplot_grid(Geom.density), Scale.x_log10)
 
 # save in PDF
-draw(PDF("execution_time.pdf", 7inch, 5inch), timeAll)
-draw(PDF("execution_time_min1k.pdf", 7inch, 5inch), timeSubset)
-draw(PDF("transferred_tuples.pdf", 7inch, 5inch), tuplesAll)
-draw(PDF("completeness.pdf", 7inch, 4inch), complAll)
+draw(PDF("../results/execution_time.pdf", 7inch, 5inch), timeAll)
+draw(PDF("../results/execution_time_min1k.pdf", 7inch, 5inch), timeSubset)
+draw(PDF("../results/transferred_tuples.pdf", 7inch, 5inch), tuplesAll)
+draw(PDF("../results/completeness.pdf", 7inch, 4inch), complAll)

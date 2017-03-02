@@ -1,0 +1,37 @@
+endpoints;status;value
+10;"timeout";3
+10;"timeout";3
+10;"timeout";5
+20;"timeout";2
+20;"timeout";2
+20;"timeout";3
+30;"timeout";7
+30;"timeout";4
+30;"timeout";4
+10;"qunparallelized";66
+10;"qunparallelized";53
+10;"qunparallelized";60
+20;"qunparallelized";32
+20;"qunparallelized";28
+20;"qunparallelized";37
+30;"qunparallelized";51
+30;"qunparallelized";42
+30;"qunparallelized";27
+10;"parallelized + unimproved";3
+10;"parallelized + unimproved";7
+10;"parallelized + unimproved";4
+20;"parallelized + unimproved";3
+20;"parallelized + unimproved";11
+20;"parallelized + unimproved";2
+30;"parallelized + unimproved";3
+30;"parallelized + unimproved";5
+30;"parallelized + unimproved";10
+10;"parallelized + improved";28
+10;"parallelized + improved";37
+10;"parallelized + improved";31
+20;"parallelized + improved";63
+20;"parallelized + improved";59
+20;"parallelized + improved";58
+30;"parallelized + improved";39
+30;"parallelized + improved";49
+30;"parallelized + improved";59
