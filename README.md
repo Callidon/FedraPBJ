@@ -1,4 +1,4 @@
-# PeNeLoop - Parallelizing Federated SPARQL Queries in Presence of Replicated Fragments
+# PeNeLoop: Parallelizing Federated SPARQL Queries in Presence of Replicated Fragments
 
 Replicating data in Linked Data is able to improve data availability and performances of federated query engines. Existing replication-aware federated query engines mainly focused on source-selection and query decomposition in order to prune redundant sources and reduce intermediate results thanks to data-locality.
 
