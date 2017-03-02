@@ -66,3 +66,9 @@ draw(PDF("../results/execution_time.pdf", 7inch, 5inch), timeAll)
 draw(PDF("../results/execution_time_min1k.pdf", 7inch, 5inch), timeSubset)
 draw(PDF("../results/transferred_tuples.pdf", 7inch, 5inch), tuplesAll)
 draw(PDF("../results/completeness.pdf", 7inch, 4inch), complAll)
+
+# save in PNG
+draw(PNG("../results/execution_time.png", 7inch, 5inch), timeAll)
+draw(PNG("../results/execution_time_min1k.png", 7inch, 5inch), timeSubset)
+draw(PNG("../results/transferred_tuples.png", 7inch, 5inch), tuplesAll)
+draw(PNG("../results/completeness.png", 7inch, 4inch), complAll)
