@@ -100,6 +100,8 @@ percent_5 = meanPercent5(computePercents5(calls_5))
 # percent_peneloop_eq[:approach] = "TP"
 # percent_all_eq[:approach] = "TQP"
 
-plot_percent = plot([percent_2;percent_3;percent_5], xgroup=:approach, x=:server, y=:mean, color=:approach, Geom.subplot_grid(Geom.bar), Guide.xlabel(""), Guide.ylabel("Percentage of total HTTP calls", orientation=:vertical), Guide.colorkey(""), Scale.x_discrete, colors())
+plot_percent = plot(percent_2, x=:server, y=:mean, color=:approach, Geom.bar, Guide.xlabel("2 servers"), Guide.ylabel("% of total HTTP calls", orientation=:vertical), Guide.colorkey(""), Guide.yticks(ticks=[0,10,20,30,40,50,60]), Scale.x_discrete, Scale.color_discrete_manual(colorant"#990000"))
+plot_percent_2 = plot(percent_3, x=:server, y=:mean, color=:approach, Geom.bar, Guide.xlabel("3 servers"), Guide.ylabel(""), Guide.colorkey(""), Guide.yticks(ticks=[0,10,20,30,40,50,60], label=false), Scale.x_discrete, Scale.color_discrete_manual(colorant"#ff4000"))
+plot_percent_3 = plot(percent_5, x=:server, y=:mean, color=:approach, Geom.bar, Guide.xlabel("5 servers"), Guide.ylabel(""), Guide.colorkey(""), Guide.yticks(ticks=[0,10,20,30,40,50,60], label=false), Scale.x_discrete, Scale.color_discrete_manual(colorant"#ffbf00"))
 
-draw(PDF("../results/http_calls.pdf", 4.5inch, 3inch), plot_percent)
+draw(PDF("../results/http_calls.pdf", 5inch, 3inch), hstack(plot_percent, plot_percent_2, plot_percent_3))
